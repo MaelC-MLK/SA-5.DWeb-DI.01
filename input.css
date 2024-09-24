@@ -23,3 +23,27 @@
   font-size: 14px;
   color: #4a4a4a;
 }
+
+.control{
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  gap: 1rem;
+  top: 10px;
+  left: 10px;
+  z-index: 1; /* Met le bouton au premier plan */
+}
+
+button {
+    
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.8); /* Arrière-plan blanc légèrement transparent */
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: rgba(255, 255, 255, 1); /* Rendre complètement blanc lors du survol */
+  }
+  

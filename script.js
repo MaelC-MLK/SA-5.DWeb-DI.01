@@ -16,6 +16,40 @@ document.addEventListener('DOMContentLoaded', function() {
   const customFileInputBtn = document.getElementById('customFileInputBtn');
   const fileName = document.getElementById('fileName');
 
+  document.getElementById('addTagBtn').addEventListener('click', addTag);
+
+  function addTag() {
+    const selectedSceneId = sceneDropdown.value; // Récupérer l'ID de la scène sélectionnée
+    const scene = document.getElementById(selectedSceneId); // Sélectionner la scène
+
+    if (!scene) {
+        console.error("Scène non trouvée.");
+        return;
+    }
+
+    const camera = scene.querySelector('#camera');
+    if (!camera) {
+        console.error("Caméra non trouvée dans la scène.");
+        return;
+    }
+
+    const cameraDirection = new THREE.Vector3();
+    camera.object3D.getWorldDirection(cameraDirection);
+    
+    const distance = -10; // Distance (peut être réglée)
+    const tagPosition = new THREE.Vector3();
+    tagPosition.copy(camera.object3D.position).addScaledVector(cameraDirection, distance);
+    
+    const newBox = document.createElement('a-box');
+    newBox.setAttribute('position', tagPosition);
+    newBox.setAttribute('rotation', '0 45 0'); 
+    newBox.setAttribute('color', '#4CC3D9');   
+    newBox.setAttribute('dragndrop', ''); 
+    
+    scene.appendChild(newBox);
+
+}
+
   // Gestionnaire d'événements pour le bouton de création de scène
   createSceneBtn.addEventListener('click', function() {
     fileInput.click();
@@ -165,6 +199,9 @@ document.getElementById('ExportSceneBtn').addEventListener('click', function() {
   URL.revokeObjectURL(url);
 });
 
+
+
+
 function createSceneElement(sceneId, src) {
   const sceneElement = document.createElement('a-scene');
   sceneElement.setAttribute('id', sceneId);
@@ -175,6 +212,7 @@ function createSceneElement(sceneId, src) {
   cameraEntity.setAttribute('camera', '');
   cameraEntity.setAttribute('wasd-controls', 'enabled: false');
   cameraEntity.setAttribute('look-controls', 'enabled: true; reverseMouseDrag: true; reverseTouchDrag: true; reverseY: true;');
+  cameraEntity.setAttribute('id', 'camera');
   sceneElement.appendChild(cameraEntity);
 
   const skyElement = document.createElement('a-sky');
@@ -182,10 +220,20 @@ function createSceneElement(sceneId, src) {
   skyElement.style.transform = 'scaleX(-1)';
   sceneElement.appendChild(skyElement);
 
+  const pointer = document.createElement('a-sphere');
+  pointer.setAttribute('position', '0 1.5 -3');
+  pointer.setAttribute('radius', '0.02');
+  pointer.setAttribute('color', '#FFFFFF');
+  pointer.setAttribute('id', 'point-central');
+  pointer.setAttribute('follow-camera', '');  
+  sceneElement.appendChild(pointer);
+
+
   sceneContainer.appendChild(sceneElement);
 
   document.getElementById('ExportSceneBtn').disabled = false;
 }
+
 
 
   function displayScene(sceneId) {
@@ -215,4 +263,9 @@ function createSceneElement(sceneId, src) {
 
 
   displayDefaultScene();
+
+  
 });
+
+
+
