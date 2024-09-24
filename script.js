@@ -1,5 +1,5 @@
+// Permet de s'asurer que tout le DOM est chargé avant d'exécuter le script
 document.addEventListener('DOMContentLoaded', function() {
-  // Initialisation des variables
   const scenes = [];
   const sceneDropdown = document.getElementById('sceneDropdown');
   const fileInput = document.getElementById('fileInput');
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Gestionnaire d'événements pour le changement de scène dans le dropdown
+  // Gestionnaire d'événements pour le changement de scène dans le dropdown (liste déroulante)
   sceneDropdown.addEventListener('change', function() {
     const selectedSceneId = sceneDropdown.value;
     if (selectedSceneId) {
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     } else {
       editSceneForm.classList.add('hidden');
-      fileName.textContent = ''; // Réinitialiser le nom du fichier
+      fileName.textContent = ''; 
     }
   });
 
@@ -122,7 +122,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     deleteModal.classList.remove('show');
   });
-
   // Gestionnaire d'événements pour le bouton personnalisé de sélection de fichier
   customFileInputBtn.addEventListener('click', function() {
     editFileInput.click();
@@ -138,27 +137,57 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Fonction pour créer un élément de scène
-  function createSceneElement(sceneId, src) {
-    const sceneElement = document.createElement('a-scene');
-    sceneElement.setAttribute('id', sceneId);
-    sceneElement.setAttribute('embedded', '');
-    sceneElement.style.display = 'none';
+// Gestionnaire d'événements pour le bouton d'exportation de la scène
+document.getElementById('ExportSceneBtn').addEventListener('click', function() {
+  const scenes = document.querySelectorAll('a-scene:not(#defaultScene)');
 
-    const cameraEntity = document.createElement('a-entity');
-    cameraEntity.setAttribute('camera', '');
-    cameraEntity.setAttribute('wasd-controls', 'enabled: false');
-    cameraEntity.setAttribute('look-controls', 'enabled: true');
-    sceneElement.appendChild(cameraEntity);
+  // Créer un nouveau document HTML
+  let exportContent = '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Exported Scenes</title>';
+  exportContent += '<script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>';
+  exportContent += '<style>a-scene { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0;     transform: scaleX(-1); }</style></head><body>';
+  
+  scenes.forEach(scene => {
+      // Ajouter les contrôles de caméra
+      const cameraEntity = scene.querySelector('[camera]');
+      if (cameraEntity) {
+          cameraEntity.setAttribute('wasd-controls', 'enabled: false');
+          cameraEntity.setAttribute('look-controls', 'enabled: true');
+      }
+      exportContent += scene.outerHTML;
+  });
+  
+  exportContent += '</body></html>';
+  
+  // Créer un blob et ouvrir l'URL dans une nouvelle fenêtre
+  const blob = new Blob([exportContent], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+  URL.revokeObjectURL(url);
+});
 
-    const skyElement = document.createElement('a-sky');
-    skyElement.setAttribute('src', src);
-    sceneElement.appendChild(skyElement);
+function createSceneElement(sceneId, src) {
+  const sceneElement = document.createElement('a-scene');
+  sceneElement.setAttribute('id', sceneId);
+  sceneElement.setAttribute('embedded', '');
+  sceneElement.style.display = 'none';
 
-    sceneContainer.appendChild(sceneElement);
-  }
+  const cameraEntity = document.createElement('a-entity');
+  cameraEntity.setAttribute('camera', '');
+  cameraEntity.setAttribute('wasd-controls', 'enabled: false');
+  cameraEntity.setAttribute('look-controls', 'enabled: true; reverseMouseDrag: true; reverseTouchDrag: true; reverseY: true;');
+  sceneElement.appendChild(cameraEntity);
 
-  // Fonction pour afficher une scène spécifique
+  const skyElement = document.createElement('a-sky');
+  skyElement.setAttribute('src', src);
+  skyElement.style.transform = 'scaleX(-1)';
+  sceneElement.appendChild(skyElement);
+
+  sceneContainer.appendChild(sceneElement);
+
+  document.getElementById('ExportSceneBtn').disabled = false;
+}
+
+
   function displayScene(sceneId) {
     const allScenes = document.querySelectorAll('a-scene');
     allScenes.forEach(scene => {
@@ -171,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Fonction pour afficher la scène par défaut
+
   function displayDefaultScene() {
     const allScenes = document.querySelectorAll('a-scene');
     allScenes.forEach(scene => {
@@ -184,6 +213,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Afficher la scène par défaut au chargement de la page
+
   displayDefaultScene();
 });
