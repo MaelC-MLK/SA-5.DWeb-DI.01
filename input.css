@@ -2,10 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
-:root{
-    --primary-color: hsla(204, 100%, 9%, 1);
-    --secondary-color: hsla(38, 100%, 93%, 1);
-    --third-color: hsla(201, 40%, 27%, 1);
-    --fourth-color: hsla(215, 16%, 74%, 1);
-    --navbar-color: hsla(204, 100%, 9%, 0.9);
+
+#deleteModal {
+    display: none;
+}
+#deleteModal.show {
+  display: flex;
+}
+.hidden {
+  display: none;
+}
+
+.file-input-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+#customFileInputBtn {
+  cursor: pointer;
+}
+
+#fileName {
+  margin-left: 10px;
+  font-size: 14px;
+  color: #4a4a4a;
 }

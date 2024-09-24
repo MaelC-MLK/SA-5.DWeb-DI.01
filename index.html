@@ -6,21 +6,63 @@
     <link href="./dist/output.css" rel="stylesheet" />
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="script.js"></script>
-    <title> SAE501VR </title>
+    <title>SAE501VR</title>
   </head>
   <body class="flex h-screen">
-    <div id="menu" class="flex items-center flex-col gap-4 w-64 bg-gray-100 p-4 shadow-lg z-10">
+    <!-- Menu de gauche pour gérer les scènes -->
+    <div id="menu" class="flex items-center flex-col gap-4 w-80 bg-gray-100 p-4 shadow-lg z-10">
       <p class="text-xl font-bold">Scènes</p>
-      <button id="chooseImageBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Choisir une image</button>
+      <!-- Input de fichier caché pour créer une nouvelle scène -->
       <input type="file" id="fileInput" class="hidden" accept="image/*" />
+      <!-- Dropdown pour sélectionner une scène -->
+      <select id="sceneDropdown" class="w-full mt-4 p-2 border rounded">
+        <option value="">Sélectionner une scène</option>
+      </select>
+      <!-- Formulaire d'édition de la scène -->
+      <div id="editSceneForm" class="flex flex-col gap-4 w-full rounded hidden">
+        <div class="flex flex-col gap-1 mb-4">
+          <p class="font-semibold">Nom de votre scène</p>
+          <input type="text" id="sceneNameInput" class="w-full py-2 border-b-2 border-black bg-gray-100 focus:outline-0" placeholder="Scène 1" />
+        </div>
+        <!-- Input de fichier personnalisé pour changer l'image de la scène -->
+        <div class="file-input-wrapper">
+          <input type="file" id="editFileInput" class="hidden" accept="image/*" />
+          <button id="customFileInputBtn" class="w-40 px-4 font-semibold py-2 rounded  bg-transparent border-2 border-blue-500 duration-300 text-blue-500 hover:border-transparent hover:duration-300 hover:bg-blue-500 hover:text-white">Choisir une image</button>
+          <span id="fileName" class="ml-2 text-gray-700 font-semibold text-center"></span>
+        </div>
+        <!-- Boutons pour enregistrer ou supprimer la scène -->
+        <div class="w-full flex flex-row gap-3">
+          <button id="saveSceneBtn" class="w-1/2 px-4 font-semibold py-2 rounded mt-2 bg-transparent border-2 border-blue-500 duration-300 text-blue-500 hover:border-transparent hover:duration-300 hover:bg-blue-500 hover:text-white">Enregistrer</button>
+          <button id="deleteSceneBtn" class="w-1/2 px-4 font-semibold py-2 rounded mt-2 bg-transparent border-2 border-red-500 duration-300 text-red-500 hover:border-transparent hover:duration-300 hover:bg-red-500 hover:text-white">Supprimer</button>
+        </div>
+      </div>
+      <!-- Bouton pour créer une nouvelle scène -->
+      <button id="createSceneBtn" class="font-semibold px-4 py-2 rounded bg-transparent border-2 border-green-500 duration-300 text-green-500 hover:border-transparent hover:duration-300 hover:bg-green-500 hover:text-white">Créer une scène</button>
     </div>
-    <div id="scene-container" class="flex-grow relative">
-      <a-scene class="w-full h-full">
-        <a-sky src="/asset/GS__3523.jpg" rotation="0 -130 0"></a-sky>
+
+    <!-- Conteneur pour afficher les scènes -->
+    <div id="sceneContainer" class="flex-grow relative">
+      <a-scene id="defaultScene" class="w-full h-full">
+        <a-entity camera wasd-controls="enabled: false" look-controls="enabled: true"></a-entity>
+        <a-sky color="#FFFFFF"></a-sky>
+        <a-text value="Cliquez sur 'Créer une scène' pour commencer" position="0 2 -4" align="center" color="#000000" width="6"></a-text>
       </a-scene>
     </div>
-    <div id="menu" class="flex items-center flex-col gap-4 w-64 bg-gray-100 p-4 shadow-lg z-10">
+
+    <!-- Menu de droite pour gérer les tags -->
+    <div id="menu" class="flex items-center flex-col gap-4 w-80 bg-gray-100 p-4 shadow-lg z-10">
       <p class="text-xl font-bold">Tags</p>
+    </div>
+
+    <!-- Modale de confirmation de suppression -->
+    <div id="deleteModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+      <div class="bg-white p-6 rounded shadow-lg">
+        <p class="text-lg font-semibold">Êtes-vous sûr de vouloir supprimer cette scène ?</p>
+        <div class="flex justify-end gap-4 mt-4">
+          <button id="cancelDeleteBtn" class="font-semibold px-4 py-2 rounded bg-transparent border-2 border-gray-500 duration-300 text-gray-500 hover:border-transparent hover:duration-300 hover:bg-gray-500 hover:text-white">Annuler</button>
+          <button id="confirmDeleteBtn" class="font-semibold px-4 py-2 rounded bg-transparent border-2 border-red-500 duration-300 text-red-500 hover:border-transparent hover:duration-300 hover:bg-red-500 hover:text-white">Supprimer</button>
+        </div>
+      </div>
     </div>
   </body>
 </html>
