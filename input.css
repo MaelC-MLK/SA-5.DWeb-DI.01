@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+    --primary-color: hsla(204, 100%, 9%, 1);
+    --secondary-color: hsla(38, 100%, 93%, 1);
+    --third-color: hsla(201, 40%, 27%, 1);
+    --fourth-color: hsla(215, 16%, 74%, 1);
+    --navbar-color: hsla(204, 100%, 9%, 0.9);
+}

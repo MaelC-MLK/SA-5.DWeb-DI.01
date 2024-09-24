@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./dist/output.css" rel="stylesheet" />
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="script.js"></script>
+    <title> SAE501VR </title>
+  </head>
+  <body class="flex h-screen">
+    <div id="menu" class="flex items-center flex-col gap-4 w-64 bg-gray-100 p-4 shadow-lg z-10">
+      <p class="text-xl font-bold">Scènes</p>
+      <button id="chooseImageBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Choisir une image</button>
+      <input type="file" id="fileInput" class="hidden" accept="image/*" />
+    </div>
+    <div id="scene-container" class="flex-grow relative">
+      <a-scene class="w-full h-full">
+        <a-sky src="/asset/GS__3523.jpg" rotation="0 -130 0"></a-sky>
+      </a-scene>
+    </div>
+    <div id="menu" class="flex items-center flex-col gap-4 w-64 bg-gray-100 p-4 shadow-lg z-10">
+      <p class="text-xl font-bold">Tags</p>
+    </div>
+  </body>
+</html>
