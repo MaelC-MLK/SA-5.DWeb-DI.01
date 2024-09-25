@@ -21,13 +21,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const doorTagRange = document.getElementById('doorTagRange');
   const doorTagRangeValue = document.getElementById('doorTagRangeValue');
   const doorSceneSelect = document.getElementById('doorSceneSelect');
-  const createDoorTagBtn = document.getElementById('createDoorTagBtn');
   const photoTagRange = document.getElementById('photoTagRange');
   const photoTagRangeValue = document.getElementById('photoTagRangeValue');
-  const createPhotoTagBtn = document.getElementById('createPhotoTagBtn');
   const videoTagRange = document.getElementById('videoTagRange');
   const videoTagRangeValue = document.getElementById('videoTagRangeValue');
-  const createVideoTagBtn = document.getElementById('createVideoTagBtn');
 
   function closeAllMenus() {
     textTagFormContainer.classList.add('hidden');
@@ -36,63 +33,34 @@ document.addEventListener('DOMContentLoaded', function() {
     videoTagFormContainer.classList.add('hidden');
   }
 
-  doorTagRange.addEventListener('input', function() {
-    doorTagRangeValue.value = doorTagRange.value;
-  });
-
-  doorTagRangeValue.addEventListener('input', function() {
-    doorTagRange.value = doorTagRangeValue.value;
-  });
-
-  photoTagRange.addEventListener('input', function() {
-    photoTagRangeValue.value = photoTagRange.value;
-  });
-
-  photoTagRangeValue.addEventListener('input', function() {
-    photoTagRange.value = photoTagRangeValue.value;
-  });
-
-  videoTagRange.addEventListener('input', function() {
-    videoTagRangeValue.value = videoTagRange.value;
-  });
-
-  videoTagRangeValue.addEventListener('input', function() {
-    videoTagRange.value = videoTagRangeValue.value;
+  // Synchronisation des éléments range et input
+  ['doorTag', 'photoTag', 'videoTag', 'tag'].forEach(tag => {
+    const range = document.getElementById(`${tag}Range`);
+    const rangeValue = document.getElementById(`${tag}RangeValue`);
+  
+    range.addEventListener('input', function() {
+      rangeValue.value = range.value;
+    });
+  
+    rangeValue.addEventListener('input', function() {
+      range.value = rangeValue.value;
+    });
   });
   
+  [
+    { button: OpenTagMenuText, containerId: 'textTagFormContainer' },
+    { button: OpenTagMenuDoor, containerId: 'doorTagFormContainer' },
+    { button: OpenTagMenuPhoto, containerId: 'photoTagFormContainer' },
+    { button: OpenTagMenuVideo, containerId: 'videoTagFormContainer' }
+  ].forEach(menu => {
+    menu.button.addEventListener('click', function() {
+      closeAllMenus();
+      const formContainer = document.getElementById(menu.containerId);
+      formContainer.classList.toggle('hidden');
+    });
+  });;
 
-  OpenTagMenuText.addEventListener('click', function() {
-    closeAllMenus();
-    const textTagFormContainer = document.getElementById('textTagFormContainer');
-    textTagFormContainer.classList.toggle('hidden');
-  });
-
-  OpenTagMenuDoor.addEventListener('click', function() {
-    closeAllMenus();
-    const doorTagFormContainer = document.getElementById('doorTagFormContainer');
-    doorTagFormContainer.classList.toggle('hidden');
-  });
-
-  OpenTagMenuPhoto.addEventListener('click', function() {
-    closeAllMenus();
-    const photoTagFormContainer = document.getElementById('photoTagFormContainer');
-    photoTagFormContainer.classList.toggle('hidden');
-  });
-
-  OpenTagMenuVideo.addEventListener('click', function() {
-    closeAllMenus();
-    const videoTagFormContainer = document.getElementById('videoTagFormContainer');
-    videoTagFormContainer.classList.toggle('hidden');
-  });
   
-
-  tagRange.addEventListener('input', function() {
-    tagRangeValue.value = tagRange.value;
-  });
-
-  tagRangeValue.addEventListener('input', function() {
-    tagRange.value = tagRangeValue.value;
-  });
 
   createSceneBtn.addEventListener('click', function() {
     fileInput.click();
@@ -270,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-x
+
   function createSceneElement(sceneId, src) {
   const sceneElement = document.createElement('a-scene');
   sceneElement.setAttribute('id', sceneId);

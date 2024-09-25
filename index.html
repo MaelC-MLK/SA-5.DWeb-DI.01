@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="./dist/output.css" rel="stylesheet" />
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    <script src="script.js"></script>
+    <script type="module" src="main.js"></script>
     <title>SAE501VR</title>
   </head>
   <body class="flex h-screen">
@@ -35,13 +35,14 @@
           <button id="deleteSceneBtn" class="w-1/2 font-semibold px-4 text-white py-2 rounded bg-black border-2  duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black">Supprimer</button>
         </div>
       </div>
-
-      <button id="createSceneBtn" class="font-semibold px-4 text-black py-2 rounded bg-white border-2  duration-500 border-black hover:bg-black hover:border-transparent hover:duration-500 hover:bg-grayborder-gray-800 hover:text-white">Créer une scène</button>
+      <div class="w-full flex flex-row gap-4">
+      <button id="createSceneBtn" class="w-1/2 font-semibold px-4 text-black py-2 rounded bg-white border-2  duration-500 border-black hover:bg-black hover:border-transparent hover:duration-500 hover:bg-grayborder-gray-800 hover:text-white">Créer une scène</button>
+      <button id="ExportSceneBtn" class="w-1/2 font-semibold px-4 text-black py-2 rounded bg-white border-2  duration-500 border-black hover:bg-black hover:border-transparent hover:duration-500 hover:bg-grayborder-gray-800 hover:text-white"" disabled>Exporter l'expérience</button>
+    </div>
     </div>
 
 
     <div id="sceneContainer" class="flex-grow relative">
-      <button id="ExportSceneBtn" class="absolute top-4 right-1/2 font-semibold px-4 text-white py-2 rounded bg-black border-2  duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black z-10" disabled>Exporter --></button>
       <a-scene id="defaultScene" class="w-full h-full">
         <a-entity camera wasd-controls="enabled: false" look-controls="enabled: true"></a-entity>
         <a-sky color="#FFFFFF"></a-sky>
@@ -78,7 +79,7 @@
           <input type="range" id="tagRange" name="tagRange" class="border rounded p-2 w-full" min="0" max="300" value="150">
           <input type="number" id="tagRangeValue" class="ml-2 w-16 p-2 border-2 rounded-lg border-black bg-gray-100 focus:outline-0" min="0" max="300" value="150">
         </div>
-        <button id="createTagBtn" class="mt-8 w-full font-semibold px-4 text-white py-2 rounded bg-black border-2  duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black">Créer Tag Info</button>
+        <button id="createTagBtnText" class="mt-8 w-full font-semibold px-4 text-white py-2 rounded bg-black border-2  duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black">Créer Tag Info</button>
       </form>
     </div>
     <div id="doorTagFormContainer" class="w-full hidden">

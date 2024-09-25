@@ -850,6 +850,10 @@ video {
   display: none;
 }
 
+.h-12 {
+  height: 3rem;
+}
+
 .h-8 {
   height: 2rem;
 }
@@ -860,10 +864,6 @@ video {
 
 .h-screen {
   height: 100vh;
-}
-
-.h-12 {
-  height: 3rem;
 }
 
 .w-1\/2 {
@@ -896,6 +896,10 @@ video {
 
 .w-full {
   width: 100%;
+}
+
+.w-2\/5 {
+  width: 40%;
 }
 
 .flex-shrink {
