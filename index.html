@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="./dist/output.css" rel="stylesheet" />
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    <script type="module" src="main.js"></script>
+    <script type="module" src="main.js" defer></script>
+    <script src="components/follow-camera.js" defer></script>
+    <script src="components/dragndrop.js" defer></script>
+    <script src="components/follow-info.js" defer></script>
     <title>SAE501VR</title>
   </head>
   <body class="flex h-screen">
@@ -96,9 +99,11 @@
         <select id="doorSceneSelect" name="doorSceneSelect" class="w-full h-12 py-2 border-b-2 border-black bg-gray-100 focus:outline-0">
           <option value="">Sélectionnez une scène</option>
         </select>
-        <button id="createDoorTagBtn" class="mt-8 w-full font-semibold px-4 text-white py-2 rounded bg-black border-2  duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black">Créer Tag Door</button>
+        
       </form>
+      <button id="createDoorTagBtn" class="mt-8 w-full font-semibold px-4 text-white py-2 rounded bg-black border-2  duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black">Créer Tag Door</button>
     </div>
+   
     <div id="photoTagFormContainer" class="w-full hidden">
       <h2 class="text-lg font-bold pb-8">Créer un tag Photo 2D</h2>
       <form class="w-full flex flex-col">
