@@ -206,6 +206,7 @@ function createSceneElement(sceneId, src) {
   const sceneElement = document.createElement('a-scene');
   sceneElement.setAttribute('id', sceneId);
   sceneElement.setAttribute('embedded', '');
+  sceneElement.setAttribute('cursor', 'rayOrigin: mouse');
   sceneElement.style.display = 'none';
 
   const cameraEntity = document.createElement('a-entity');
