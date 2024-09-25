@@ -15,13 +15,89 @@ document.addEventListener('DOMContentLoaded', function() {
   const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
   const customFileInputBtn = document.getElementById('customFileInputBtn');
   const fileName = document.getElementById('fileName');
+  const OpenTagMenuText = document.getElementById('OpenTagMenuText');
+  const tagRange = document.getElementById('tagRange');
+  const tagRangeValue = document.getElementById('tagRangeValue');
+  const doorTagRange = document.getElementById('doorTagRange');
+  const doorTagRangeValue = document.getElementById('doorTagRangeValue');
+  const doorSceneSelect = document.getElementById('doorSceneSelect');
+  const createDoorTagBtn = document.getElementById('createDoorTagBtn');
+  const photoTagRange = document.getElementById('photoTagRange');
+  const photoTagRangeValue = document.getElementById('photoTagRangeValue');
+  const createPhotoTagBtn = document.getElementById('createPhotoTagBtn');
+  const videoTagRange = document.getElementById('videoTagRange');
+  const videoTagRangeValue = document.getElementById('videoTagRangeValue');
+  const createVideoTagBtn = document.getElementById('createVideoTagBtn');
 
-  // Gestionnaire d'événements pour le bouton de création de scène
+  function closeAllMenus() {
+    textTagFormContainer.classList.add('hidden');
+    doorTagFormContainer.classList.add('hidden');
+    photoTagFormContainer.classList.add('hidden');
+    videoTagFormContainer.classList.add('hidden');
+  }
+
+  doorTagRange.addEventListener('input', function() {
+    doorTagRangeValue.value = doorTagRange.value;
+  });
+
+  doorTagRangeValue.addEventListener('input', function() {
+    doorTagRange.value = doorTagRangeValue.value;
+  });
+
+  photoTagRange.addEventListener('input', function() {
+    photoTagRangeValue.value = photoTagRange.value;
+  });
+
+  photoTagRangeValue.addEventListener('input', function() {
+    photoTagRange.value = photoTagRangeValue.value;
+  });
+
+  videoTagRange.addEventListener('input', function() {
+    videoTagRangeValue.value = videoTagRange.value;
+  });
+
+  videoTagRangeValue.addEventListener('input', function() {
+    videoTagRange.value = videoTagRangeValue.value;
+  });
+  
+
+  OpenTagMenuText.addEventListener('click', function() {
+    closeAllMenus();
+    const textTagFormContainer = document.getElementById('textTagFormContainer');
+    textTagFormContainer.classList.toggle('hidden');
+  });
+
+  OpenTagMenuDoor.addEventListener('click', function() {
+    closeAllMenus();
+    const doorTagFormContainer = document.getElementById('doorTagFormContainer');
+    doorTagFormContainer.classList.toggle('hidden');
+  });
+
+  OpenTagMenuPhoto.addEventListener('click', function() {
+    closeAllMenus();
+    const photoTagFormContainer = document.getElementById('photoTagFormContainer');
+    photoTagFormContainer.classList.toggle('hidden');
+  });
+
+  OpenTagMenuVideo.addEventListener('click', function() {
+    closeAllMenus();
+    const videoTagFormContainer = document.getElementById('videoTagFormContainer');
+    videoTagFormContainer.classList.toggle('hidden');
+  });
+  
+
+  tagRange.addEventListener('input', function() {
+    tagRangeValue.value = tagRange.value;
+  });
+
+  tagRangeValue.addEventListener('input', function() {
+    tagRange.value = tagRangeValue.value;
+  });
+
   createSceneBtn.addEventListener('click', function() {
     fileInput.click();
   });
 
-  // Gestionnaire d'événements pour le changement de fichier
   fileInput.addEventListener('change', function(event) {
     const file = event.target.files[0];
     if (file) {
@@ -46,7 +122,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Gestionnaire d'événements pour le changement de scène dans le dropdown (liste déroulante)
   sceneDropdown.addEventListener('change', function() {
     const selectedSceneId = sceneDropdown.value;
     if (selectedSceneId) {
@@ -63,7 +138,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Gestionnaire d'événements pour le bouton de sauvegarde de la scène
   saveSceneBtn.addEventListener('click', function() {
     const selectedSceneId = sceneDropdown.value;
     const selectedScene = scenes.find(scene => scene.id === selectedSceneId);
@@ -91,17 +165,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Gestionnaire d'événements pour le bouton de suppression de la scène
   deleteSceneBtn.addEventListener('click', function() {
     deleteModal.classList.add('show');
   });
 
-  // Gestionnaire d'événements pour le bouton d'annulation de la suppression
   cancelDeleteBtn.addEventListener('click', function() {
     deleteModal.classList.remove('show');
   });
 
-  // Gestionnaire d'événements pour le bouton de confirmation de la suppression
   confirmDeleteBtn.addEventListener('click', function() {
     const selectedSceneId = sceneDropdown.value;
     const selectedSceneIndex = scenes.findIndex(scene => scene.id === selectedSceneId);
@@ -122,12 +193,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     deleteModal.classList.remove('show');
   });
-  // Gestionnaire d'événements pour le bouton personnalisé de sélection de fichier
+
   customFileInputBtn.addEventListener('click', function() {
     editFileInput.click();
   });
 
-  // Gestionnaire d'événements pour le changement de fichier dans le formulaire d'édition
   editFileInput.addEventListener('change', function(event) {
     const file = event.target.files[0];
     if (file) {
@@ -137,8 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-// Gestionnaire d'événements pour le bouton d'exportation de la scène
-document.getElementById('ExportSceneBtn').addEventListener('click', function() {
+  document.getElementById('ExportSceneBtn').addEventListener('click', function() {
   const scenes = document.querySelectorAll('a-scene:not(#defaultScene)');
 
   // Créer un nouveau document HTML
@@ -163,9 +232,46 @@ document.getElementById('ExportSceneBtn').addEventListener('click', function() {
   const url = URL.createObjectURL(blob);
   window.open(url, '_blank');
   URL.revokeObjectURL(url);
-});
+  });
 
-function createSceneElement(sceneId, src) {
+  function updateSceneDropdown() {
+    doorSceneSelect.innerHTML = '<option value="">Sélectionnez une scène</option>';
+    const allScenes = document.querySelectorAll('a-scene');
+    allScenes.forEach(scene => {
+      const sceneId = scene.getAttribute('id');
+      const sceneName = scene.getAttribute('data-name') || sceneId;
+      if (sceneId && sceneId !== 'defaultScene') {
+        const option = document.createElement('option');
+        option.value = sceneId;
+        option.textContent = sceneName;
+        option.setAttribute('data-name', sceneName); 
+        doorSceneSelect.appendChild(option);
+      }
+    });
+  }
+
+  function updateSceneName(sceneId, newName) {
+    const sceneElement = document.getElementById(sceneId);
+    if (sceneElement) {
+      sceneElement.setAttribute('data-name', newName);
+      const option = doorSceneSelect.querySelector(`option[value="${sceneId}"]`);
+      if (option) {
+        option.textContent = newName;
+        option.setAttribute('data-name', newName);
+      }
+    }
+  }
+
+  document.getElementById('sceneNameInput').addEventListener('input', function(event) {
+    const sceneId = document.getElementById('sceneDropdown').value;
+    const newName = event.target.value;
+    if (sceneId) {
+      updateSceneName(sceneId, newName);
+    }
+  });
+
+x
+  function createSceneElement(sceneId, src) {
   const sceneElement = document.createElement('a-scene');
   sceneElement.setAttribute('id', sceneId);
   sceneElement.setAttribute('embedded', '');
@@ -185,8 +291,10 @@ function createSceneElement(sceneId, src) {
   sceneContainer.appendChild(sceneElement);
 
   document.getElementById('ExportSceneBtn').disabled = false;
-}
 
+  updateSceneDropdown();
+
+  }
 
   function displayScene(sceneId) {
     const allScenes = document.querySelectorAll('a-scene');
@@ -200,7 +308,6 @@ function createSceneElement(sceneId, src) {
     }
   }
 
-
   function displayDefaultScene() {
     const allScenes = document.querySelectorAll('a-scene');
     allScenes.forEach(scene => {
@@ -212,7 +319,6 @@ function createSceneElement(sceneId, src) {
       defaultScene.style.display = 'block';
     }
   }
-
 
   displayDefaultScene();
 });
