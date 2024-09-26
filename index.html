@@ -97,15 +97,19 @@
           <input type="range" id="doorTagRange" name="doorTagRange" class="border rounded p-2 w-full" min="0" max="50" value="15">
           <input type="number" id="doorTagRangeValue" class="ml-2 w-16 p-2 border-2 rounded-lg border-black bg-gray-100 focus:outline-0" min="0" max="50" value="15">
         </div>
-        
-        
-      </form>
-      <button id="createDoorTagBtn" class="mt-8 w-full font-semibold px-4 text-white py-2 rounded bg-black border-2  duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black">Créer Tag Door</button>
-
-      <label class="font-semibold mt-1" for="doorSceneSelect">Vers la scène :</label>
+        <label class="font-semibold mt-1" for="doorSceneSelect">Vers la scène :</label>
         <select id="doorSceneSelect" name="doorSceneSelect" class="w-full h-12 py-2 px-8 border-b-2 border-black bg-gray-100 focus:outline-0">
           <option value="">Sélectionnez une scène</option>
         </select>
+        
+      </form>
+      <button id="createDoorTagBtn" class="mt-8 w-full font-semibold px-4 text-white py-2 rounded bg-black border-2  duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black">Créer Tag Door</button>
+      <br></br>
+      <label for="tagSelector">Tags de la scène :</label>
+      <select id="tagSelector">
+        <option value="" disabled selected>Sélectionnez un tag</option>
+      </select>
+      
     </div>
    
     <div id="photoTagFormContainer" class="w-full hidden">
