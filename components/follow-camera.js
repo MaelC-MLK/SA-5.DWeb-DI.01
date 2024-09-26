@@ -1,7 +1,8 @@
 AFRAME.registerComponent('follow-camera', {
     tick: function () {
         // Récupère référence à l'entité de la caméra
-        var camera = document.getElementById('camera');
+        var sceneId = this.el.sceneEl.id; // Récupérer l'ID de la scène
+        var camera = document.getElementById('camera-' + sceneId);
         // Récupère la direction dans laquelle la caméra regarde
         var cameraDirection = new THREE.Vector3();
         camera.object3D.getWorldDirection(cameraDirection);

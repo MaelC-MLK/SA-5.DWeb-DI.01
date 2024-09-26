@@ -205,6 +205,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // TAGS 
 
   createDoorBtn.addEventListener('click', function () {
+    // récupere la scene selectionné
     const selectedSceneId = sceneDropdown.value;
     const scene = document.getElementById(selectedSceneId);
     let messageError = document.getElementById('error');
@@ -214,10 +215,24 @@ document.addEventListener('DOMContentLoaded', function () {
       console.error("Scène non trouvée.");
       return;
     }
-  
+    
+    const doorTagTitle = document.getElementById('doorTagTitle').value; // Titre
+    const doorTagRange = document.getElementById('doorTagRange').value; // Profondeur
+    const doorSceneSelect = document.getElementById('doorSceneSelect'); // scene suivante
+
+    const cameraId = 'camera-' + selectedSceneId; // Construire l'ID de la caméra
+    const camera = document.getElementById(cameraId);
+
+    if (!camera || !camera.object3D) {
+        console.error("Caméra non trouvée ou non initialisée.");
+        return; // Sortir si la caméra n'est pas trouvée
+    }
+
     const cameraDirection = new THREE.Vector3();
     camera.object3D.getWorldDirection(cameraDirection);
-    const distance = -10;
+
+    // récupere la profondeur sélectionné par l'utilisateur 
+    const distance = -doorTagRange;
   
     const tagPosition = new THREE.Vector3();
     tagPosition.copy(camera.object3D.position).addScaledVector(cameraDirection, distance);
@@ -226,40 +241,82 @@ document.addEventListener('DOMContentLoaded', function () {
       tagsByScene[selectedSceneId] = [];
     }
   
-  const tagCounter = tagsByScene[selectedSceneId].length + 1;
-  const tagId = `${tagCounter}`;
+    const tagCounter = tagsByScene[selectedSceneId].length + 1;
+    const tagId = `${tagCounter}`;
   
 
-  // Création de la sphère à côté de la box
-  const newSphere = document.createElement('a-sphere');
-  newSphere.setAttribute('position', tagPosition);
-  newSphere.setAttribute('radius', '0.5'); // Rayon de la sphère (peut être modifié)
-  newSphere.setAttribute('color', '#EF2D5E'); // Couleur de la sphère (peut être modifié)
-  newSphere.setAttribute('dragndrop', '')
-  
-  scene.appendChild(newSphere);
-  
-
-  const newBox = document.createElement('a-box');
-  newBox.setAttribute('position', tagPosition);
-  // newBox.setAttribute('rotation', '0 45 0');
-  newBox.setAttribute('color', '#4CC3D9');
-  newBox.setAttribute('id', tagId);
-  newBox.setAttribute('follow-mover', { target: newSphere })
-  newBox.setAttribute('width', '2');   
-  newBox.setAttribute('height', '4');  
-  newBox.setAttribute('depth', '0.5'); 
-
-  // Ajout de la box à la scène
-  scene.appendChild(newBox);
+    // Création de la sphère à côté de la box
+    const newSphere = document.createElement('a-sphere');
+    newSphere.setAttribute('position', tagPosition);
+    newSphere.setAttribute('radius', '0.5'); // Rayon de la sphère (peut être modifié)
+    newSphere.setAttribute('color', '#EF2D5E'); // Couleur de la sphère (peut être modifié)
+    newSphere.setAttribute('dragndrop', '')
+    
     
   
-  tagsByScene[selectedSceneId].push(tagId);
-    console.log(tagsByScene[selectedSceneId]);
+
+    const newBox = document.createElement('a-box');
+    newBox.setAttribute('position', tagPosition);
+    // newBox.setAttribute('rotation', '0 45 0');
+    newBox.setAttribute('color', '#4CC3D9');
+    newBox.setAttribute('id', tagId);
+    newBox.setAttribute('follow-mover', { target: newSphere })
+    newBox.setAttribute('width', '2');   
+    newBox.setAttribute('height', '4');  
+    newBox.setAttribute('depth', '0.5'); 
+
+    newBox.addEventListener('click', function () {
+      // Récupérer la scène sélectionnée dans le select
+      const doorSceneSelect = document.getElementById('doorSceneSelect');
+      const targetSceneId = doorSceneSelect.value;
+
+      // Vérifier si une scène a été sélectionnée dans le select
+      if (targetSceneId) {
+        // Appeler la fonction de changement de scène avec la scène sélectionnée
+        changeScene(targetSceneId); 
+        updateSceneMenu(targetSceneId);
+      } else {
+        console.warn("Aucune scène sélectionnée pour la navigation.");
+      }
+    });
+
+    // Ajout de la box à la scène
+    scene.appendChild(newBox);
+    //ajout de la sphere a la scene
+    scene.appendChild(newSphere);
   
-    // // Ajouter le tag au sélecteur
-    // addTagToSelector(tagId, selectedSceneId);
-  });
+
+
+    tagsByScene[selectedSceneId].push(tagId);
+    console.log(tagsByScene[selectedSceneId]);
+    
+      // // Ajouter le tag au sélecteur
+      // addTagToSelector(tagId, selectedSceneId);
+
+
+    });
+
+  
+
+    function changeScene(sceneId) {
+      const scene = document.getElementById(sceneId); // Sélectionner la nouvelle scène
+    
+      if (!scene) {
+          console.error("Scène non trouvée.");
+          return;
+      }
+    
+      // Cacher toutes les scènes existantes
+      const allScenes = document.querySelectorAll('a-scene');
+      allScenes.forEach(s => s.style.display = 'none');
+    
+      // Afficher la nouvelle scène
+      scene.style.display = 'block';;
+      sceneDropdown.value = sceneId; // Mettre à jour le sélecteur de scène
+    
+      // maj du selecteur de tag
+      updateTagSelector(sceneId);
+    }
   
 
 // ajoute un tag au selecteur

@@ -14,7 +14,7 @@ export function createSceneElement(sceneId, src) {
   cameraEntity.setAttribute('camera', '');
   cameraEntity.setAttribute('wasd-controls', 'enabled: false');
   cameraEntity.setAttribute('look-controls', 'enabled: true; reverseMouseDrag: true; reverseTouchDrag: true; reverseY: true;');
-  cameraEntity.setAttribute('id', 'camera');
+  cameraEntity.setAttribute('id', 'camera-' + sceneId);
   sceneElement.appendChild(cameraEntity);
 
   const skyElement = document.createElement('a-sky');
