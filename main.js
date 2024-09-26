@@ -1,4 +1,4 @@
-import { closeAllMenus, syncRangeAndValue } from './domUtils.js';
+import { closeAllMenus } from './domUtils.js';
 import { scenes, createSceneElement, displayScene, displayDefaultScene } from './sceneManager.js';
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -20,11 +20,33 @@ document.addEventListener('DOMContentLoaded', function () {
   const createDoorBtn = document.getElementById('createDoorTagBtn');
   const tagsByScene = {};
 
+  // syncRangeAndValue('photoTagRange', 'photoTagRangeValue');
 
-  ['doorTag', 'photoTag', 'videoTag', 'tag'].forEach(tag => {
-    syncRangeAndValue(`${tag}Range`, `${tag}RangeValue`);
+  // ['doorTag', 'photoTag', 'videoTag', 'tag'].forEach(tag => {
+  //   syncRangeAndValue(`${tag}Range`, `${tag}RangeValue`);
+  // });
+
+  let selectedImage = null;
+
+  // Gestionnaire d'événements pour sélectionner une image
+  document.addEventListener('click', function (event) {
+      if (event.target.tagName === 'A-IMAGE') {
+          if (selectedImage) {
+              selectedImage.classList.remove('selected'); 
+          }
+          selectedImage = event.target;
+
+      }
   });
-
+  
+  // Gestionnaire d'événements pour supprimer l'image sélectionnée
+  document.addEventListener('keydown', function (event) {
+      if (event.key === 'Delete' && selectedImage) {
+          selectedImage.parentNode.removeChild(selectedImage);
+          selectedImage = null;
+      }
+  });
+  
   [
     { button: OpenTagMenuText, containerId: 'textTagFormContainer' },
     { button: OpenTagMenuDoor, containerId: 'doorTagFormContainer' },
@@ -158,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Créer un nouveau document HTML
     let exportContent = '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Exported Scenes</title>';
     exportContent += '<script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>';
-    exportContent += '<style>a-scene { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; transform: scaleX(-1); }</style></head><body>';
+    exportContent += '<style>a-scene { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0;  }</style></head><body>';
 
     scenes.forEach(scene => {
       // Ajouter les contrôles de caméra
@@ -200,8 +222,64 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  document.getElementById('createPhotoTagBtn').addEventListener('click', function () {
+    createPhotoTag();
+  });
 
+  function resetPhotoTagForm() {
+    document.getElementById('photoTagTitle').value = '';
+    document.getElementById('photoTagRange').value = 5;
+    document.getElementById('photoTagRangeValue').value = 5;
+    document.getElementById('photoFileInput').value = '';
+  }
 
+  function createPhotoTag() {
+    const selectedSceneId = document.getElementById('sceneDropdown').value;
+    const scene = document.getElementById(selectedSceneId);
+    if (!scene) {
+        console.error('Scene not found.');
+        return;
+    }
+
+    const title = document.getElementById('photoTagTitle').value;
+    if (!title) {
+        alert('Le titre est obligatoire.');
+        return;
+    }
+
+    const fileInput = document.getElementById('photoFileInput');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        console.error('No file selected.');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const imageUrl = e.target.result;
+
+        // Créer l'image 2D
+        const image = document.createElement('a-image');
+        const imageId = `image-${Date.now()}`; 
+        image.setAttribute('id', imageId);
+        image.setAttribute('src', imageUrl);
+        image.setAttribute('position', '0 1.6 -2'); 
+        image.setAttribute('width', '2');
+        image.setAttribute('height', '2');
+        image.setAttribute('dragndrop', '');
+        image.setAttribute('look-at-camera', ''); 
+        scene.appendChild(image);
+        resetPhotoTagForm();
+    };
+    reader.readAsDataURL(file);
+}
+  
+
+  function resetPhotoTagForm() {
+    document.getElementById('photoTagTitle').value = '';
+    document.getElementById('photoFileInput').value = '';
+  }
   // TAGS 
 
   createDoorBtn.addEventListener('click', function () {
@@ -277,19 +355,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     );
 
-
-// ajoute un tag au selecteur
-function addTagToSelector(tagId, sceneId) {
-  const selectedSceneId = sceneDropdown.value; // Récupérer l'ID de la scène sélectionnée
-
-  // Vérifie si le tag appartient à la scène sélectionnée
-  if (sceneId === selectedSceneId) {
-    const option = document.createElement('option');
-    option.value = tagId;
-    option.textContent = `Tag ${tagId}`;
-    tagSelector.appendChild(option);
-  }
-}
 
 displayDefaultScene();
 });

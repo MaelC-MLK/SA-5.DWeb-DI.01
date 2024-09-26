@@ -5,18 +5,18 @@ export function closeAllMenus() {
     document.getElementById('videoTagFormContainer').classList.add('hidden');
   }
   
-  export function syncRangeAndValue(rangeId, valueId) {
-    const range = document.getElementById(rangeId);
-    const rangeValue = document.getElementById(valueId);
+  // export function syncRangeAndValue(rangeId, valueId) {
+  //   const range = document.getElementById(rangeId);
+  //   const rangeValue = document.getElementById(valueId);
   
-    range.addEventListener('input', function() {
-      rangeValue.value = range.value;
-    });
+  //   range.addEventListener('input', function() {
+  //     rangeValue.value = range.value;
+  //   });
   
-    rangeValue.addEventListener('input', function() {
-      range.value = rangeValue.value;
-    });
-  }
+  //   rangeValue.addEventListener('input', function() {
+  //     range.value = rangeValue.value;
+  //   });
+  // }
 
   export function updateSceneDropdown() {
     doorSceneSelect.innerHTML = '<option value="">Sélectionnez une scène</option>';
