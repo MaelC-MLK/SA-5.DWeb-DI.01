@@ -205,78 +205,62 @@ document.addEventListener('DOMContentLoaded', function () {
   // TAGS 
 
   createDoorBtn.addEventListener('click', function () {
-    const selectedSceneId = sceneDropdown.value; // Récupérer l'ID de la scène sélectionnée
-    const scene = document.getElementById(selectedSceneId); // Sélectionner la scène
+    const selectedSceneId = sceneDropdown.value;
+    const scene = document.getElementById(selectedSceneId);
     let messageError = document.getElementById('error');
-
+  
     if (!scene) {
       messageError.innerText = "Erreur : Scène non trouvée.";
       console.error("Scène non trouvée.");
       return;
     }
-
-    const camera = scene.querySelector('#camera');
-    if (!camera) {
-      console.error("Caméra non trouvée dans la scène.");
-      return;
-    }
-
-    // messageError.innerText = "";
+  
     const cameraDirection = new THREE.Vector3();
     camera.object3D.getWorldDirection(cameraDirection);
-
-    const distance = -10; // Distance (peut être réglée)
-
-    // Récupere la position de la camera
+    const distance = -10;
+  
     const tagPosition = new THREE.Vector3();
     tagPosition.copy(camera.object3D.position).addScaledVector(cameraDirection, distance);
-
-
-    // sinon ajouter un au compteur de tag
-    // ajouter un au compteur de tag
+  
     if (!tagsByScene[selectedSceneId]) {
       tagsByScene[selectedSceneId] = [];
     }
+  
+  const tagCounter = tagsByScene[selectedSceneId].length + 1;
+  const tagId = `${tagCounter}`;
+  
 
+  // Création de la sphère à côté de la box
+  const newSphere = document.createElement('a-sphere');
+  newSphere.setAttribute('position', tagPosition);
+  newSphere.setAttribute('radius', '0.5'); // Rayon de la sphère (peut être modifié)
+  newSphere.setAttribute('color', '#EF2D5E'); // Couleur de la sphère (peut être modifié)
+  newSphere.setAttribute('dragndrop', '')
+  
+  scene.appendChild(newSphere);
+  
 
-    // Récupérer le compteur de tags pour cette scène
-    const tagCounter = tagsByScene[selectedSceneId].length + 1;  // Le compteur est la taille actuelle + 1
-    const tagId = `${tagCounter}`;
+  const newBox = document.createElement('a-box');
+  newBox.setAttribute('position', tagPosition);
+  // newBox.setAttribute('rotation', '0 45 0');
+  newBox.setAttribute('color', '#4CC3D9');
+  newBox.setAttribute('id', tagId);
+  newBox.setAttribute('follow-mover', { target: newSphere })
+  newBox.setAttribute('width', '2');   
+  newBox.setAttribute('height', '4');  
+  newBox.setAttribute('depth', '0.5'); 
 
-
-    // Création de l'objet
-    const newBox = document.createElement('a-box');
-    newBox.setAttribute('position', tagPosition);
-    newBox.setAttribute('rotation', '0 45 0');
-    newBox.setAttribute('color', '#4CC3D9');
-    newBox.setAttribute('dragndrop', '');
-    newBox.setAttribute('color', '#4CC3D9');
-    newBox.setAttribute('dragndrop', '');
-    newBox.setAttribute('id', tagId);
-
-
-
-    newBox.addEventListener('dblclick', function () {
-      // Appeler la fonction de changement de scène
-      console.log("doubleclik okj")
-      changeScene('scene-2'); // Exemple : vers la scène 2
-      updateSceneMenu('scene-2');
-    });
-
-    // Ajout de l'objet a la scene
-    scene.appendChild(newBox);
-
-    tagsByScene[selectedSceneId].push(tagId);
+  // Ajout de la box à la scène
+  scene.appendChild(newBox);
+    
+  
+  tagsByScene[selectedSceneId].push(tagId);
     console.log(tagsByScene[selectedSceneId]);
-
-    // ajoute le tag au selecteur 
-    addTagToSelector(tagId, selectedSceneId);
-
-  }
-
-
-    );
-
+  
+    // // Ajouter le tag au sélecteur
+    // addTagToSelector(tagId, selectedSceneId);
+  });
+  
 
 // ajoute un tag au selecteur
 function addTagToSelector(tagId, sceneId) {

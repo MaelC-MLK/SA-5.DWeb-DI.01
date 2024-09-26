@@ -9,6 +9,7 @@
     <script src="components/follow-camera.js" defer></script>
     <script src="components/dragndrop.js" defer></script>
     <script src="components/follow-info.js" defer></script>
+    <script src="components/follow-mover.js" defer></script>
     <title>SAE501VR</title>
   </head>
   <body class="flex h-screen">
@@ -56,6 +57,7 @@
 
     <div id="menu" class="flex items-center flex-col gap-4 w-80 bg-gray-100 p-4 shadow-lg z-10">
       <p class="text-xl font-bold">Tags</p>
+      <p id="error"></p>
       <div class="w-full flex flex-row justify-between">
       <button id="OpenTagMenuText" class="font-semibold px-4 py-4 rounded bg-black border-2 border-gray-800 duration-300 text-graborder-gray-800 hover:bg-gray-600 hover:border-transparent hover:duration-300 hover:bg-graborder-gray-800 hover:text-white">
         <img src="./asset/text-icon.svg" height="24px" width="24px"/>
@@ -82,8 +84,8 @@
           <input type="range" id="tagRange" name="tagRange" class="border rounded p-2 w-full" min="0" max="300" value="150">
           <input type="number" id="tagRangeValue" class="ml-2 w-16 p-2 border-2 rounded-lg border-black bg-gray-100 focus:outline-0" min="0" max="300" value="150">
         </div>
-        <button id="createTagBtnText" class="mt-8 w-full font-semibold px-4 text-white py-2 rounded bg-black border-2  duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black">Créer Tag Info</button>
       </form>
+      <button id="createTagBtnText" class="mt-8 w-full font-semibold px-4 text-white py-2 rounded bg-black border-2  duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black">Créer Tag Info</button>
     </div>
     <div id="doorTagFormContainer" class="w-full hidden">
       <h2 class="text-lg font-bold pb-8">Créer un tag Door</h2>
