@@ -202,7 +202,6 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
 
-
   // TAGS 
 
   createDoorBtn.addEventListener('click', function () {
@@ -272,7 +271,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // Récupérer la scène sélectionnée dans le select
         // Vérifier si une scène a été sélectionnée dans le select
         if (targetSceneId) {
-          // Appeler la fonction de changement de scène avec la scène sélectionnée
           changeScene(targetSceneId); 
           updateSceneMenu(targetSceneId);
         } else {
@@ -302,6 +300,12 @@ document.addEventListener('DOMContentLoaded', function () {
     
       updateTagSelector(selectedSceneId);
 
+      document.getElementById('doorTagTitle').value = ''; // Réinitialise le champ du titre du tag
+      document.getElementById('doorTagRange').value = '15'; // Réinitialise la profondeur à une valeur par défaut (par ex: 1)
+      document.getElementById('doorTagRangeValue').value = '15'; // Réinitialise la profondeur à une valeur par défaut (par ex: 1)
+      doorSceneSelect.value = ''; // Réinitialise la sélection de la scène cible
+      messageError.innerText = '';
+
 
 });
 
@@ -330,6 +334,29 @@ function updateTagSelector(sceneId) {
     tagSelector.appendChild(noTagsOption);
   }
 }
+
+const tagSelector = document.getElementById('tagSelector');
+tagSelector.addEventListener('change', function () {
+  const selectedTagId = tagSelector.value; // Récupère l'ID du tag sélectionné
+  const selectedSceneId = sceneDropdown.value; // Récupère l'ID de la scène actuelle
+
+  // Si un tag est sélectionné et qu'il appartient bien à la scène actuelle
+  if (selectedTagId && tagsByScene[selectedSceneId]) {
+    for (let i = 0; i < tagsByScene[selectedSceneId].length; i++) {
+      if (tagsByScene[selectedSceneId][i] === selectedTagId) {
+        // Remplir les champs du formulaire avec les informations du tag
+        const tagInfo = tagsByScene[selectedSceneId][i]; // Récupère l'ID du tag sélectionné
+
+        // Exemples de champs à remplir (ajuste en fonction de tes champs de formulaire)
+        document.getElementById('tagIdInput').value = tagInfo; // ID du tag
+        document.getElementById('doorTagName').value = name;
+        document.getElementById('doorTagRange').value = depth; // Profondeur (ajuste selon ta logique)
+
+        console.log(`Tag sélectionné : ${tagInfo}`);
+      }
+    }
+  }
+});
 
 
   
