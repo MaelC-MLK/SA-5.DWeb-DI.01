@@ -588,10 +588,12 @@ function changeScene(sceneId) {
   displayDefaultScene();
 
   // Créer deux nouvelles scènes
-  createSceneElement('Scene Test 1', './asset/GS__3523.jpg');
-  createSceneElement('Scene Test 2', './asset/GS__3524.jpg');
+  createSceneElement('sceneTest1', './asset/GS__3523.jpg');
+  createSceneElement('sceneTest2', './asset/GS__3524.jpg');
 
   // Mettre à jour le sélecteur de scènes
   updateSceneDropdown();
 
+  // Afficher la scène par défaut ou une scène spécifique
+  displayScene('defaultScene');
 });

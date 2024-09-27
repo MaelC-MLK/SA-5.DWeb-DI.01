@@ -19,7 +19,11 @@ export function closeAllMenus() {
   }
   export function updateSceneDropdown() {
     const sceneDropdown = document.getElementById('sceneDropdown');
+    const doorSceneSelect = document.getElementById('doorSceneSelect');
+    
+    // Réinitialiser les sélecteurs
     sceneDropdown.innerHTML = '<option value="defaultScene">Sélectionner une scène</option>';
+    doorSceneSelect.innerHTML = '<option value="">Sélectionnez une scène</option>';
     
     const allScenes = document.querySelectorAll('a-scene');
     allScenes.forEach(scene => {
@@ -31,6 +35,12 @@ export function closeAllMenus() {
         option.textContent = sceneName;
         option.setAttribute('data-name', sceneName); 
         sceneDropdown.appendChild(option);
+  
+        const doorOption = document.createElement('option');
+        doorOption.value = sceneId;
+        doorOption.textContent = sceneName;
+        doorOption.setAttribute('data-name', sceneName); 
+        doorSceneSelect.appendChild(doorOption);
       }
     });
   }
