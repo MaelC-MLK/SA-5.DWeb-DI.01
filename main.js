@@ -501,24 +501,29 @@ tagSelector.addEventListener('change', function () {
 
 
 function changeScene(sceneId) {
-      const scene = document.getElementById(sceneId); // Sélectionner la nouvelle scène
-    
-      if (!scene) {
-          console.error("Scène non trouvée.");
-          return;
-      }
-    
-      // Cacher toutes les scènes existantes
-      const allScenes = document.querySelectorAll('a-scene');
-      allScenes.forEach(s => s.style.display = 'none');
-    
-      // Afficher la nouvelle scène
-      scene.style.display = 'block';;
-      sceneDropdown.value = sceneId; // Mettre à jour le sélecteur de scène
-    
-      // maj du selecteur de tag
-      updateTagSelector(sceneId);
-    }
+  const scene = document.getElementById(sceneId); // Sélectionner la nouvelle scène
+
+  if (!scene) {
+    console.error("Scène non trouvée.");
+    return;
+  }
+
+  // Cacher toutes les scènes existantes
+  const allScenes = document.querySelectorAll('a-scene');
+  allScenes.forEach(s => s.style.display = 'none');
+
+  // Afficher la nouvelle scène
+  scene.style.display = 'block';
+  document.getElementById('sceneDropdown').value = sceneId; // Mettre à jour le sélecteur de scène
+
+  // maj du selecteur de tag
+  updateTagSelector(sceneId);
+
+  // Forcer une mise à jour de l'affichage
+  requestAnimationFrame(() => {
+    window.dispatchEvent(new Event('resize'));
+  });
+}
 
 
     // Tags image 2D
@@ -542,25 +547,25 @@ function changeScene(sceneId) {
         console.error("Scene not found.");
         return;
       }
-  
+    
       const title = document.getElementById("photoTagTitle").value;
       if (!title) {
         alert("Le titre est obligatoire.");
         return;
       }
-  
+    
       const fileInput = document.getElementById("photoFileInput");
       const file = fileInput.files[0];
-  
+    
       if (!file) {
         console.error("No file selected.");
         return;
       }
-  
+    
       const reader = new FileReader();
       reader.onload = function (e) {
         const imageUrl = e.target.result;
-  
+    
         // Créer l'image 2D
         const image = document.createElement("a-image");
         const imageId = `image-${Date.now()}`;
@@ -573,6 +578,11 @@ function changeScene(sceneId) {
         image.setAttribute("look-at-camera", "");
         scene.appendChild(image);
         resetPhotoTagForm();
+    
+        // Forcer une mise à jour de l'affichage
+        requestAnimationFrame(() => {
+          window.dispatchEvent(new Event('resize'));
+        });
       };
       reader.readAsDataURL(file);
     }
@@ -588,8 +598,8 @@ function changeScene(sceneId) {
   displayDefaultScene();
 
   // Créer deux nouvelles scènes
-  createSceneElement('sceneTest1', './asset/GS__3523.jpg');
-  createSceneElement('sceneTest2', './asset/GS__3524.jpg');
+  createSceneElement('Scene test 1', './asset/GS__3523.jpg');
+  createSceneElement('Scene test 2', './asset/GS__3524.jpg');
 
   // Mettre à jour le sélecteur de scènes
   updateSceneDropdown();

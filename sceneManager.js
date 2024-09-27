@@ -58,6 +58,10 @@ export function displayScene(sceneId) {
   scene.style.display = 'block';
   document.getElementById('sceneDropdown').value = sceneId; // Mettre à jour le sélecteur de scène
 
+  // Forcer une mise à jour de l'affichage
+  requestAnimationFrame(() => {
+    window.dispatchEvent(new Event('resize'));
+  });
 }
 
 export function displayDefaultScene() {
