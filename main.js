@@ -39,26 +39,26 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   
-  leftHand.addEventListener('triggerdown', () => {
-    console.log('Left trigger pressed');
-  });
 
-  leftHand.addEventListener('triggerup', () => {
-    console.log('Left trigger released');
+  leftHand.addEventListener('triggerdown', () => {
+    const intersectedEl = leftHand.components.raycaster.intersectedEls[0];
+    if (intersectedEl && intersectedEl.classList.contains('door')) {
+      intersectedEl.emit('click');
+    }
   });
 
   rightHand.addEventListener('triggerdown', () => {
-    console.log('Right trigger pressed');
-  });
-
-  rightHand.addEventListener('triggerup', () => {
-    console.log('Right trigger released');
+    const intersectedEl = rightHand.components.raycaster.intersectedEls[0];
+    if (intersectedEl && intersectedEl.classList.contains('door')) {
+      intersectedEl.emit('click');
+    }
   });
 
   const doors = document.querySelectorAll('.door');
   doors.forEach(door => {
     door.addEventListener('click', () => {
       console.log('Door clicked');
+      changeScene(targetSceneId);
     });
   });
 

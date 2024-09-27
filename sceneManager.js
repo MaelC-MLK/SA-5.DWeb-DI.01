@@ -34,12 +34,14 @@ export function createSceneElement(sceneId, src) {
   leftHand.setAttribute('id', 'leftHand');
   leftHand.setAttribute('laser-controls', 'hand: left');
   leftHand.setAttribute('super-hands', '');
+  leftHand.setAttribute('raycaster', 'objects: .door');
   sceneElement.appendChild(leftHand);
 
   const rightHand = document.createElement('a-entity');
   rightHand.setAttribute('id', 'rightHand');
   rightHand.setAttribute('laser-controls', 'hand: right');
   rightHand.setAttribute('super-hands', '');
+  rightHand.setAttribute('raycaster', 'objects: .door');
   sceneElement.appendChild(rightHand);
 
   document.getElementById('sceneContainer').appendChild(sceneElement);
