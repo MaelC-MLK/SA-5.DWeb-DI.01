@@ -39,30 +39,35 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   
-  leftHand.addEventListener('triggerdown', () => {
-    const intersectedEl = leftHand.components.raycaster.intersectedEls[0];
-    if (intersectedEl && intersectedEl.classList.contains('door')) {
-      intersectedEl.emit('click');
-    }
-  });
-
-  rightHand.addEventListener('triggerdown', () => {
-    const intersectedEl = rightHand.components.raycaster.intersectedEls[0];
-    if (intersectedEl && intersectedEl.classList.contains('door')) {
-      intersectedEl.emit('click');
-    }
-  });
-
-  const doors = document.querySelectorAll('.door');
-  doors.forEach(door => {
-    door.addEventListener('click', () => {
-      console.log('Door clicked');
-      const targetSceneId = door.getAttribute('data-target-scene');
-      if (targetSceneId) {
-        changeScene(targetSceneId);
-      } else {
-        console.warn('Aucune scène cible définie pour cette porte.');
+  document.addEventListener("DOMContentLoaded", function () {
+    const leftHand = document.getElementById('leftHand');
+    const rightHand = document.getElementById('rightHand');
+  
+    leftHand.addEventListener('triggerdown', () => {
+      const intersectedEl = leftHand.components.raycaster.intersectedEls[0];
+      if (intersectedEl && intersectedEl.classList.contains('door')) {
+        intersectedEl.emit('click');
       }
+    });
+  
+    rightHand.addEventListener('triggerdown', () => {
+      const intersectedEl = rightHand.components.raycaster.intersectedEls[0];
+      if (intersectedEl && intersectedEl.classList.contains('door')) {
+        intersectedEl.emit('click');
+      }
+    });
+  
+    const doors = document.querySelectorAll('.door');
+    doors.forEach(door => {
+      door.addEventListener('click', () => {
+        console.log('Door clicked');
+        const targetSceneId = door.getAttribute('data-target-scene');
+        if (targetSceneId) {
+          changeScene(targetSceneId);
+        } else {
+          console.warn('Aucune scène cible définie pour cette porte.');
+        }
+      });
     });
   });
 
