@@ -51,6 +51,8 @@
       <a-scene id="defaultScene" class="w-full h-full">
         <a-entity camera wasd-controls="enabled: false" look-controls="enabled: true"></a-entity>
         <a-sky src="./asset/attente.jpg"></a-sky>
+        <a-entity id="leftHand" laser-controls="hand: left" super-hands></a-entity>
+        <a-entity id="rightHand" laser-controls="hand: right" super-hands></a-entity>
         <a-text value="Cliquez sur 'Creer une scene' pour commencer" position="0 2 -4" align="center" color="#Fff" width="6"></a-text>
       </a-scene>
     </div>
@@ -107,8 +109,8 @@
       </form>
       <button id="createDoorTagBtn" class="mt-8 w-full font-semibold px-4 text-white py-2 rounded bg-black border-2  duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black">Créer Tag Door</button>
       <br></br>
-      <label for="tagSelector">Tags de la scène :</label>
-      <select id="tagSelector">
+      <label for="tagSelectorDoor">Tags de la scène :</label>
+      <select id="tagSelectorDoor">
         <option value="" disabled selected>Sélectionnez un tag</option>
       </select>
       
@@ -118,11 +120,6 @@
       <form class="w-full flex flex-col">
         <label class="font-semibold" for="photoTagTitle">Titre</label>
         <input type="text" id="photoTagTitle" name="photoTagTitle" class="w-full h-8 py-2 border-b-2 border-black bg-gray-100 focus:outline-0">
-        <label class="font-semibold mt-4" for="photoTagRange">Profondeur</label>
-        <div class="flex items-center w-full">
-          <input type="range" id="photoTagRange" name="photoTagRange" class="border rounded p-2 w-full" min="0" max="300" value="150">
-          <input type="number" id="photoTagRangeValue" class="ml-2 w-16 p-2 border-2 rounded-lg border-black bg-gray-100 focus:outline-0" min="0" max="300" value="150">
-        </div>
         <label class="font-semibold mt-4" for="photoFileInput">Uploader une photo</label>
         <input type="file" id="photoFileInput" name="photoFileInput" class="w-full h-12 py-2 focus:outline-0" accept="image/*">
         
@@ -134,11 +131,6 @@
       <form class="w-full flex flex-col">
         <label class="font-semibold" for="photoTagTitle">Titre</label>
         <input type="text" id="videoTagTitle" name="videoTagTitle" class="w-full h-8 py-2 border-b-2 border-black bg-gray-100 focus:outline-0">
-        <label class="font-semibold mt-4" for="videoTagRange">Profondeur</label>
-        <div class="flex items-center w-full">
-          <input type="range" id="videoTagRange" name="videoTagRange" class="border rounded p-2 w-full" min="0" max="300" value="150">
-          <input type="number" id="videoTagRangeValue" class="ml-2 w-16 p-2 border-2 rounded-lg border-black bg-gray-100 focus:outline-0" min="0" max="300" value="150">
-        </div>
         <label class="font-semibold mt-4" for="videoFileInput">Uploader une vidéo</label>
         <input type="file" id="videoFileInput" name="videoFileInput" class="w-full h-12 py-2 focus:outline-0" accept="video/*">
         <button id="createVideoTagBtn" class="mt-8 w-full font-semibold px-4 text-white py-2 rounded bg-black border-2 duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black">Créer Tag Vidéo 2D</button>

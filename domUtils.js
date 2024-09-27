@@ -21,7 +21,6 @@ export function closeAllMenus() {
     const sceneDropdown = document.getElementById('sceneDropdown');
     const doorSceneSelect = document.getElementById('doorSceneSelect');
     
-    // Réinitialiser les sélecteurs
     sceneDropdown.innerHTML = '<option value="defaultScene">Sélectionner une scène</option>';
     doorSceneSelect.innerHTML = '<option value="">Sélectionnez une scène</option>';
     

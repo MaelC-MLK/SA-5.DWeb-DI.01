@@ -29,36 +29,36 @@ export function createSceneElement(sceneId, src) {
   pointer.setAttribute('follow-camera', '');  
   sceneElement.appendChild(pointer);
 
+  const leftHand = document.createElement('a-entity');
+  leftHand.setAttribute('id', 'leftHand');
+  leftHand.setAttribute('laser-controls', 'hand: left');
+  leftHand.setAttribute('super-hands', '');
+  sceneElement.appendChild(leftHand);
+
+  const rightHand = document.createElement('a-entity');
+  rightHand.setAttribute('id', 'rightHand');
+  rightHand.setAttribute('laser-controls', 'hand: right');
+  rightHand.setAttribute('super-hands', '');
+  sceneElement.appendChild(rightHand);
+
   document.getElementById('sceneContainer').appendChild(sceneElement);
 
   document.getElementById('ExportSceneBtn').disabled = false;
 
   updateSceneDropdown();
-
-  // Forcer une mise à jour de l'affichage
-  requestAnimationFrame(() => {
-    sceneElement.style.display = 'block';
-    window.dispatchEvent(new Event('resize'));
-  });
 }
 
 export function displayScene(sceneId) {
-  const scene = document.getElementById(sceneId); // Sélectionner la nouvelle scène
+  const scene = document.getElementById(sceneId); 
 
   if (!scene) {
     console.error("Scène non trouvée.");
     return;
   }
-
-  // Cacher toutes les scènes existantes
   const allScenes = document.querySelectorAll('a-scene');
   allScenes.forEach(s => s.style.display = 'none');
-
-  // Afficher la nouvelle scène
   scene.style.display = 'block';
-  document.getElementById('sceneDropdown').value = sceneId; // Mettre à jour le sélecteur de scène
-
-  // Forcer une mise à jour de l'affichage
+  document.getElementById('sceneDropdown').value = sceneId; 
   requestAnimationFrame(() => {
     window.dispatchEvent(new Event('resize'));
   });
