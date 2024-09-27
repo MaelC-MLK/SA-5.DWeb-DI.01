@@ -1,4 +1,4 @@
-import { closeAllMenus, syncRangeAndValue } from './domUtils.js';
+import { closeAllMenus, syncRangeAndValue, updateSceneDropdown } from './domUtils.js';
 import { scenes, createSceneElement, displayScene, displayDefaultScene } from './sceneManager.js';
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -60,7 +60,11 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
   });
-  
+
+
+
+
+
   // Gestionnaire d'événements pour supprimer l'image sélectionnée
   document.addEventListener('keydown', function (event) {
     if ((event.key === 'Delete' || event.key === 'Backspace') && selectedDoor && associatedBox) {
@@ -580,5 +584,14 @@ function changeScene(sceneId) {
   
 
 
-displayDefaultScene();
+  // Créer la scène par défaut
+  displayDefaultScene();
+
+  // Créer deux nouvelles scènes
+  createSceneElement('Scene Test 1', './asset/GS__3523.jpg');
+  createSceneElement('Scene Test 2', './asset/GS__3524.jpg');
+
+  // Mettre à jour le sélecteur de scènes
+  updateSceneDropdown();
+
 });

@@ -17,9 +17,10 @@ export function closeAllMenus() {
       range.value = rangeValue.value;
     });
   }
-
   export function updateSceneDropdown() {
-    doorSceneSelect.innerHTML = '<option value="">Sélectionnez une scène</option>';
+    const sceneDropdown = document.getElementById('sceneDropdown');
+    sceneDropdown.innerHTML = '<option value="defaultScene">Sélectionner une scène</option>';
+    
     const allScenes = document.querySelectorAll('a-scene');
     allScenes.forEach(scene => {
       const sceneId = scene.getAttribute('id');
@@ -29,7 +30,7 @@ export function closeAllMenus() {
         option.value = sceneId;
         option.textContent = sceneName;
         option.setAttribute('data-name', sceneName); 
-        doorSceneSelect.appendChild(option);
+        sceneDropdown.appendChild(option);
       }
     });
-}
+  }

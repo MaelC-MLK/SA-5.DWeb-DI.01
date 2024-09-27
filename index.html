@@ -42,7 +42,7 @@
       </div>
       <div class="w-full flex flex-row gap-4">
       <button id="createSceneBtn" class="w-1/2 font-semibold px-4 text-black py-2 rounded bg-white border-2  duration-500 border-black hover:bg-black hover:border-transparent hover:duration-500 hover:bg-grayborder-gray-800 hover:text-white">Créer une scène</button>
-      <button id="ExportSceneBtn" class="w-1/2 font-semibold px-4 text-black py-2 rounded bg-white border-2  duration-500 border-black hover:bg-black hover:border-transparent hover:duration-500 hover:bg-grayborder-gray-800 hover:text-white"" disabled>Exporter l'expérience</button>
+      <button id="ExportSceneBtn" class="w-1/2 font-semibold px-4 text-black py-2 rounded bg-white border-2  duration-500 border-black hover:bg-black hover:border-transparent hover:duration-500 hover:bg-grayborder-gray-800 hover:text-white" disabled>Exporter l'expérience</button>
     </div>
     </div>
 
@@ -50,8 +50,8 @@
     <div id="sceneContainer" class="flex-grow relative">
       <a-scene id="defaultScene" class="w-full h-full">
         <a-entity camera wasd-controls="enabled: false" look-controls="enabled: true"></a-entity>
-        <a-sky color="#FFFFFF"></a-sky>
-        <a-text value="Cliquez sur 'Creer une scene' pour commencer" position="0 2 -4" align="center" color="#000000" width="6"></a-text>
+        <a-sky src="./asset/attente.jpg"></a-sky>
+        <a-text value="Cliquez sur 'Creer une scene' pour commencer" position="0 2 -4" align="center" color="#Fff" width="6"></a-text>
       </a-scene>
     </div>
 
@@ -73,6 +73,7 @@
         <img src="./asset/camera-icon.svg" height="24px" width="24px"/>
       </button>
     </div>
+    
     <div id="textTagFormContainer" class="w-full hidden">
       <h2 class="text-lg font-bold pb-8">Créer un tag Texte</h2>
       <form id="tagForm" class="flex flex-col   ">
@@ -112,7 +113,6 @@
       </select>
       
     </div>
-   
     <div id="photoTagFormContainer" class="w-full hidden">
       <h2 class="text-lg font-bold pb-8">Créer un tag Photo 2D</h2>
       <form class="w-full flex flex-col">

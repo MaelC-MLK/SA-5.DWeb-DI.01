@@ -26,29 +26,38 @@ export function createSceneElement(sceneId, src) {
   pointer.setAttribute('position', '0 1.5 -3');
   pointer.setAttribute('radius', '0.02');
   pointer.setAttribute('color', '#FFFFFF');
-  pointer.setAttribute('id', 'point-central');
   pointer.setAttribute('follow-camera', '');  
   sceneElement.appendChild(pointer);
-
-
 
   document.getElementById('sceneContainer').appendChild(sceneElement);
 
   document.getElementById('ExportSceneBtn').disabled = false;
 
   updateSceneDropdown();
+
+  // Forcer une mise à jour de l'affichage
+  requestAnimationFrame(() => {
+    sceneElement.style.display = 'block';
+    window.dispatchEvent(new Event('resize'));
+  });
 }
 
 export function displayScene(sceneId) {
-  const allScenes = document.querySelectorAll('a-scene');
-  allScenes.forEach(scene => {
-    scene.style.display = 'none';
-  });
+  const scene = document.getElementById(sceneId); // Sélectionner la nouvelle scène
 
-  const selectedScene = document.getElementById(sceneId);
-  if (selectedScene) {
-    selectedScene.style.display = 'block';
+  if (!scene) {
+    console.error("Scène non trouvée.");
+    return;
   }
+
+  // Cacher toutes les scènes existantes
+  const allScenes = document.querySelectorAll('a-scene');
+  allScenes.forEach(s => s.style.display = 'none');
+
+  // Afficher la nouvelle scène
+  scene.style.display = 'block';
+  document.getElementById('sceneDropdown').value = sceneId; // Mettre à jour le sélecteur de scène
+
 }
 
 export function displayDefaultScene() {
