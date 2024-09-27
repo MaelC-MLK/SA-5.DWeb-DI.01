@@ -39,7 +39,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   
-
   leftHand.addEventListener('triggerdown', () => {
     const intersectedEl = leftHand.components.raycaster.intersectedEls[0];
     if (intersectedEl && intersectedEl.classList.contains('door')) {
@@ -58,7 +57,12 @@ document.addEventListener("DOMContentLoaded", function () {
   doors.forEach(door => {
     door.addEventListener('click', () => {
       console.log('Door clicked');
-      changeScene(targetSceneId);
+      const targetSceneId = door.getAttribute('data-target-scene');
+      if (targetSceneId) {
+        changeScene(targetSceneId);
+      } else {
+        console.warn('Aucune scène cible définie pour cette porte.');
+      }
     });
   });
 
@@ -100,24 +104,26 @@ document.addEventListener("DOMContentLoaded", function () {
     ) {
       const selectedSceneId = sceneDropdown.value;
       const scene = document.getElementById(selectedSceneId);
-
-      scene.removeChild(selectedDoor);
-      scene.removeChild(associatedBox);
-
-      tagsByScene[selectedSceneId] = tagsByScene[selectedSceneId].filter(
-        (tag) => tag.id !== selectedDoor.id
-      );
-      console.log(
-        "Tags restants dans la scène : ",
-        tagsByScene[selectedSceneId]
-      );
-
-      updateTagSelectorDoor(selectedSceneId);
-
-      selectedDoor = null;
-      associatedBox = null;
+  
+      if (!selectedDoor.classList.contains('door')) {
+        scene.removeChild(selectedDoor);
+        scene.removeChild(associatedBox);
+  
+        tagsByScene[selectedSceneId] = tagsByScene[selectedSceneId].filter(
+          (tag) => tag.id !== selectedDoor.id
+        );
+        console.log(
+          "Tags restants dans la scène : ",
+          tagsByScene[selectedSceneId]
+        );
+  
+        updateTagSelectorDoor(selectedSceneId);
+  
+        selectedDoor = null;
+        associatedBox = null;
+      }
     }
-
+  
     if (event.key === "Delete" && selectedImage) {
       selectedImage.parentNode.removeChild(selectedImage);
       selectedImage = null;
@@ -328,34 +334,34 @@ document.addEventListener("DOMContentLoaded", function () {
     const selectedSceneId = sceneDropdown.value;
     const scene = document.getElementById(selectedSceneId);
     let messageError = document.getElementById("error");
-
+  
     if (!scene) {
       messageError.innerText = "Erreur : Scène non trouvée.";
       console.error("Scène non trouvée.");
       return;
     }
-
+  
     const doorTagTitle = document.getElementById("doorTagTitle").value; 
     const doorTagRange = document.getElementById("doorTagRange").value;
-
+  
     const cameraId = "camera-" + selectedSceneId;
     const camera = document.getElementById(cameraId);
-
+  
     if (!camera || !camera.object3D) {
       console.error("Caméra non trouvée ou non initialisée.");
       return; 
     }
-
+  
     const cameraDirection = new THREE.Vector3();
     camera.object3D.getWorldDirection(cameraDirection);
-
+  
     const distance = -doorTagRange;
-
+  
     const tagPosition = new THREE.Vector3();
     tagPosition
       .copy(camera.object3D.position)
       .addScaledVector(cameraDirection, distance);
-
+  
     if (!tagsByScene[selectedSceneId]) {
       tagsByScene[selectedSceneId] = [];
     }
@@ -379,7 +385,9 @@ document.addEventListener("DOMContentLoaded", function () {
     newBox.setAttribute("height", "4");
     newBox.setAttribute("depth", "0.5");
     newBox.setAttribute("look-at-camera", "");
-
+    newBox.setAttribute("class", "door");
+    newBox.setAttribute("data-target-scene", targetSceneId);
+  
     newBox.addEventListener("click", function () {
       if (targetSceneId) {
         changeScene(targetSceneId);
@@ -388,10 +396,10 @@ document.addEventListener("DOMContentLoaded", function () {
         console.warn("Aucune scène sélectionnée pour la navigation.");
       }
     });
-
+  
     scene.appendChild(newBox);
     scene.appendChild(newSphere);
-
+  
     const tagInfo = {
       id: tagId,
       name: doorTagTitle || `Tag ${tagId}`, 
@@ -400,14 +408,14 @@ document.addEventListener("DOMContentLoaded", function () {
       targetScene: targetSceneId || "None",
       position: tagPosition,
     };
-
+  
     tagsByScene[selectedSceneId].push(tagInfo);
-
+  
     console.log(tagsByScene);
     console.log(`Tag créé:`, tagInfo);
-
+  
     updateTagSelectorDoor(selectedSceneId);
-
+  
     document.getElementById("doorTagTitle").value = ""; 
     document.getElementById("doorTagRange").value = "15"; 
     document.getElementById("doorTagRangeValue").value = "15"; 
