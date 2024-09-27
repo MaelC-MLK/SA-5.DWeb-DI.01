@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const createInfoBtn = document.getElementById('createTagBtnText');
   let tagsByScene = [];
 
+  let selectedImage = null;
+
+  
 
   ['doorTag', 'photoTag', 'videoTag', 'tag'].forEach(tag => {
     syncRangeAndValue(`${tag}Range`, `${tag}RangeValue`);
@@ -32,6 +35,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // ecouteur selection door
   document.addEventListener('click', function (event) {
+    if (event.target.tagName === "A-IMAGE") {
+      if (selectedImage) {
+        selectedImage.classList.remove("selected");
+      }
+      selectedImage = event.target;
+    }
     if (event.target.tagName === 'A-SPHERE') {
       if (selectedDoor) {
         selectedDoor.classList.remove('selected'); // retire selected si il y en a 
@@ -72,6 +81,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
       selectedDoor = null;
       associatedBox = null;
+    }
+
+    if (event.key === "Delete" && selectedImage) {
+      selectedImage.parentNode.removeChild(selectedImage);
+      selectedImage = null;
     }
   });
 
@@ -304,6 +318,7 @@ document.addEventListener('DOMContentLoaded', function () {
       newSphere.setAttribute('radius', '0.5'); // Rayon de la sphère (peut être modifié)
       newSphere.setAttribute('color', '#EF2D5E'); // Couleur de la sphère (peut être modifié)
       newSphere.setAttribute('dragndrop', '')
+      newSphere.setAttribute('look-at-camera', '')
       
       
     
@@ -481,7 +496,7 @@ tagSelector.addEventListener('change', function () {
 });
 
 
-    function changeScene(sceneId) {
+function changeScene(sceneId) {
       const scene = document.getElementById(sceneId); // Sélectionner la nouvelle scène
     
       if (!scene) {
@@ -499,6 +514,68 @@ tagSelector.addEventListener('change', function () {
     
       // maj du selecteur de tag
       updateTagSelector(sceneId);
+    }
+
+
+    // Tags image 2D
+    document
+    .getElementById("createPhotoTagBtn")
+    .addEventListener("click", function () {
+      createPhotoTag();
+    });
+
+    function resetPhotoTagForm() {
+      document.getElementById("photoTagTitle").value = "";
+      document.getElementById("photoTagRange").value = 5;
+      document.getElementById("photoTagRangeValue").value = 5;
+      document.getElementById("photoFileInput").value = "";
+    }
+  
+    function createPhotoTag() {
+      const selectedSceneId = document.getElementById("sceneDropdown").value;
+      const scene = document.getElementById(selectedSceneId);
+      if (!scene) {
+        console.error("Scene not found.");
+        return;
+      }
+  
+      const title = document.getElementById("photoTagTitle").value;
+      if (!title) {
+        alert("Le titre est obligatoire.");
+        return;
+      }
+  
+      const fileInput = document.getElementById("photoFileInput");
+      const file = fileInput.files[0];
+  
+      if (!file) {
+        console.error("No file selected.");
+        return;
+      }
+  
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const imageUrl = e.target.result;
+  
+        // Créer l'image 2D
+        const image = document.createElement("a-image");
+        const imageId = `image-${Date.now()}`;
+        image.setAttribute("id", imageId);
+        image.setAttribute("src", imageUrl);
+        image.setAttribute("position", "0 1.6 -2");
+        image.setAttribute("width", "2");
+        image.setAttribute("height", "2");
+        image.setAttribute("dragndrop", "");
+        image.setAttribute("look-at-camera", "");
+        scene.appendChild(image);
+        resetPhotoTagForm();
+      };
+      reader.readAsDataURL(file);
+    }
+  
+    function resetPhotoTagForm() {
+      document.getElementById("photoTagTitle").value = "";
+      document.getElementById("photoFileInput").value = "";
     }
   
 
