@@ -25,6 +25,61 @@ document.addEventListener('DOMContentLoaded', function () {
     syncRangeAndValue(`${tag}Range`, `${tag}RangeValue`);
   });
 
+
+  let selectedDoor = null;
+  let associatedBox = null;
+
+  // Gestionnaire d'événements pour sélectionner une image
+  document.addEventListener('click', function (event) {
+    if (event.target.tagName === 'A-SPHERE') {
+      if (selectedDoor) {
+        selectedDoor.classList.remove('selected'); // Retire la classe 'selected' de l'élément précédent
+        if (associatedBox) {
+          associatedBox.classList.remove('selected'); // Retire également la classe 'selected' de la boîte associée précédente
+        }
+      }
+      
+      selectedDoor = event.target; // Définit la sphère cliquée comme selectedDoor
+      selectedDoor.classList.add('selected'); // Ajoute la classe 'selected' à la sphère actuelle
+  
+      const boxId = selectedDoor.getAttribute('id'); // Récupère l'ID de la sphère
+      associatedBox = document.querySelector(`a-box[id="${boxId}"]`); // Sélectionne la boîte ayant le même ID que la sphère
+  
+      console.log("Door selected:", selectedDoor);
+      console.log("Associated box:", associatedBox);
+  
+      // Ajouter une classe pour indiquer la sélection sur la boîte associée
+      if (associatedBox) {
+        associatedBox.classList.add('selected');
+      }
+    }
+  });
+  
+  // Gestionnaire d'événements pour supprimer l'image sélectionnée
+  document.addEventListener('keydown', function (event) {
+    if ((event.key === 'Delete' || event.key === 'Backspace') && selectedDoor && associatedBox) {
+      console.log("Suppression en cours...");
+  
+      const selectedSceneId = sceneDropdown.value; // ID de la scène actuelle
+      const scene = document.getElementById(selectedSceneId); // Élément de la scène
+  
+      // Supprimer la sphère et la boîte de la scène
+      scene.removeChild(selectedDoor);
+      scene.removeChild(associatedBox);
+  
+      // Supprimer le tag de tagsByScene
+      tagsByScene[selectedSceneId] = tagsByScene[selectedSceneId].filter(tag => tag.id !== selectedDoor.id);
+      console.log("Tags restants dans la scène : ", tagsByScene[selectedSceneId]);
+  
+      // Mettre à jour le sélecteur de tags
+      updateTagSelector(selectedSceneId);
+  
+      // Réinitialiser la sélection
+      selectedDoor = null;
+      associatedBox = null;
+    }
+  });
+
   [
     { button: OpenTagMenuText, containerId: 'textTagFormContainer' },
     { button: OpenTagMenuDoor, containerId: 'doorTagFormContainer' },
@@ -250,6 +305,7 @@ document.addEventListener('DOMContentLoaded', function () {
       // Création de la sphère à côté de la box
       const newSphere = document.createElement('a-sphere');
       newSphere.setAttribute('position', tagPosition);
+      newSphere.setAttribute('id', tagId)
       newSphere.setAttribute('radius', '0.5'); // Rayon de la sphère (peut être modifié)
       newSphere.setAttribute('color', '#EF2D5E'); // Couleur de la sphère (peut être modifié)
       newSphere.setAttribute('dragndrop', '')
@@ -266,6 +322,7 @@ document.addEventListener('DOMContentLoaded', function () {
       newBox.setAttribute('width', '2');   
       newBox.setAttribute('height', '4');  
       newBox.setAttribute('depth', '0.5'); 
+      newBox.setAttribute('look-at-camera', ''); 
 
       newBox.addEventListener('click', function () {
         // Récupérer la scène sélectionnée dans le select
@@ -308,6 +365,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 });
+
 
 function updateTagSelector(sceneId) {
   // Sélectionner le menu déroulant par son ID
