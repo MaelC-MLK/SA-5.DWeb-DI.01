@@ -28,12 +28,38 @@ document.addEventListener("DOMContentLoaded", function () {
   const doorSceneSelect = document.getElementById("doorSceneSelect");
   const createDoorBtn = document.getElementById("createDoorTagBtn");
   const createInfoBtn = document.getElementById("createTagBtnText");
+  const leftHand = document.getElementById('leftHand');
+  const rightHand = document.getElementById('rightHand');
   let tagsByScene = [];
 
   let selectedImage = null;
 
   ["doorTag", "tag"].forEach((tag) => {
     syncRangeAndValue(`${tag}Range`, `${tag}RangeValue`);
+  });
+
+  
+  leftHand.addEventListener('triggerdown', () => {
+    console.log('Left trigger pressed');
+  });
+
+  leftHand.addEventListener('triggerup', () => {
+    console.log('Left trigger released');
+  });
+
+  rightHand.addEventListener('triggerdown', () => {
+    console.log('Right trigger pressed');
+  });
+
+  rightHand.addEventListener('triggerup', () => {
+    console.log('Right trigger released');
+  });
+
+  const doors = document.querySelectorAll('.door');
+  doors.forEach(door => {
+    door.addEventListener('click', () => {
+      console.log('Door clicked');
+    });
   });
 
   let selectedDoor = null;

@@ -29,6 +29,7 @@ export function createSceneElement(sceneId, src) {
   pointer.setAttribute('follow-camera', '');  
   sceneElement.appendChild(pointer);
 
+  // Ajouter les entités de contrôleur VR
   const leftHand = document.createElement('a-entity');
   leftHand.setAttribute('id', 'leftHand');
   leftHand.setAttribute('laser-controls', 'hand: left');
