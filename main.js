@@ -354,6 +354,7 @@ document.addEventListener("DOMContentLoaded", function () {
   
     if (!camera || !camera.object3D) {
       console.error("Caméra non trouvée ou non initialisée.");
+      messageError.innerText = "Erreur : Scène non trouvée.";
       return; 
     }
   
@@ -446,6 +447,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const camera = document.getElementById(cameraId);
 
     if (!camera || !camera.object3D) {
+      messageError.innerText = "Erreur : Scène non trouvée.";
       console.error("Caméra non trouvée ou non initialisée.");
       return; 
     }
