@@ -7,7 +7,7 @@ AFRAME.registerComponent('follow-mover', {
       
       this.el.setAttribute('position', { 
         x: spherePosition.x - 1, 
-        y: spherePosition.y - 2, 
+        y: spherePosition.y - 0.6 , 
         z: spherePosition.z 
       });
     }

@@ -83,11 +83,12 @@
         <input type="text" id="tagTitle" name="tagTitle" class="w-full h-8 py-2 border-b-2 border-black bg-gray-100 focus:outline-0">
         <label class="font-semibold mt-4" for="tagDescription">Description:</label>
         <input type="text" id="tagDescription" name="tagDescription" class="w-full h-8 py-2 border-b-2 border-black bg-gray-100 focus:outline-0">
-        <label class="font-semibold mt-4" for="tagRange">Profondeur</label>
-        <div class="flex items-center w-full">
-          <input type="range" id="tagRange" name="tagRange" class="border rounded p-2 w-full" min="0" max="300" value="150">
-          <input type="number" id="tagRangeValue" class="ml-2 w-16 p-2 border-2 rounded-lg border-black bg-gray-100 focus:outline-0" min="0" max="300" value="150">
+        <div class="flex items-center gap-1 mt-4 cursor-pointer">
+          <label class="font-semibold" for="tagRange">Profondeur</label>
+          <img class="w-auto h-auto cursor-pointer" src="./asset/information-icon.png" alt="information">
         </div>
+        
+        
       </form>
       <button id="createTagBtnText" class="mt-8 w-full font-semibold px-4 text-white py-2 rounded bg-black border-2  duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black">Créer Tag Info</button>
     </div>

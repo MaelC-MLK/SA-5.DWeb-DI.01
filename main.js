@@ -1,6 +1,5 @@
 import {
   closeAllMenus,
-  syncRangeAndValue,
   updateSceneDropdown,
 } from "./domUtils.js";
 import {
@@ -33,11 +32,6 @@ document.addEventListener("DOMContentLoaded", function () {
   let tagsByScene = [];
 
   let selectedImage = null;
-
-  ["doorTag", "tag"].forEach((tag) => {
-    syncRangeAndValue(`${tag}Range`, `${tag}RangeValue`);
-  });
-
   
   document.addEventListener("DOMContentLoaded", function () {
     const leftHand = document.getElementById('leftHand');
@@ -454,7 +448,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const cameraDirection = new THREE.Vector3();
     camera.object3D.getWorldDirection(cameraDirection);
-    const distance = -10;
+    const distance = -4;
 
     const tagPosition = new THREE.Vector3();
     tagPosition
@@ -466,22 +460,74 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var newSphere = document.createElement("a-sphere");
     newSphere.setAttribute("position", tagPosition);
-    newSphere.setAttribute("radius", "0.5");
+    newSphere.setAttribute("radius", "0.2");
     newSphere.setAttribute("color", "#EF2D5E");
     newSphere.setAttribute("dragndrop", "");
+    newSphere.setAttribute("look-at-camera", "");
 
-    var newText = document.createElement("a-text");
-    newText.setAttribute("value", infoTagDescription);
-    newText.setAttribute("position", {
-      x: tagPosition.x,
-      y: tagPosition.y + 1.5,
-      z: tagPosition.z,
-    }); 
-    newText.setAttribute("align", "center");
-    newText.setAttribute("scale", "3 3 3");
-    newText.setAttribute("color", "#FFFFFF"); 
-    newText.setAttribute("follow-mover", { target: newSphere });
-    newText.setAttribute("look-at-camera", "");
+    // var newText = document.createElement("a-text");
+    // newText.setAttribute("value", infoTagDescription);
+    // newText.setAttribute("position", {
+    //   x: tagPosition.x,
+    //   y: tagPosition.y + 1.5,
+    //   z: tagPosition.z,
+    // }); 
+    // newText.setAttribute("align", "center");
+    // newText.setAttribute("scale", "3 3 3");
+    // newText.setAttribute("color", "#FFFFFF"); 
+    // newText.setAttribute("follow-mover", { target: newSphere });
+    // newText.setAttribute("look-at-camera", "");
+
+
+    // Création de l'entité principale qui contiendra tout (le conteneur avec les bords arrondis, le titre, et la description)
+  var infoBox = document.createElement("a-entity");
+  infoBox.setAttribute("position", {
+    x: tagPosition.x,
+    y: tagPosition.y + 1.5,
+    z: tagPosition.z,
+  });
+  infoBox.setAttribute("follow-mover", { target: newSphere });
+  infoBox.setAttribute("look-at-camera", "");
+
+  // Création du conteneur principal avec une bordure arrondie simulée
+  var backgroundPlane = document.createElement("a-plane");
+  backgroundPlane.setAttribute("width", "2");
+  backgroundPlane.setAttribute("height", "1.4");
+  
+  backgroundPlane.setAttribute("color", "#000000");
+  backgroundPlane.setAttribute("material", "opacity: 0.8; transparent: true");
+  backgroundPlane.setAttribute("position", "0 0 0.05"); // Position dans le conteneur
+  infoBox.appendChild(backgroundPlane);
+
+  // Création du titre stylisé
+  var titleText = document.createElement("a-text");
+  titleText.setAttribute("value", infoTagTitle);
+  titleText.setAttribute("position", "0 0.4 0.1"); // Position du titre dans le conteneur
+  titleText.setAttribute("width", "1.6");
+  titleText.setAttribute("scale", "1.5 1.5 1.5");
+  titleText.setAttribute("align", "center");
+  titleText.setAttribute("color", "#EF2D5E");
+  titleText.setAttribute("font", "https://cdn.aframe.io/fonts/mozillavr.fnt");
+  infoBox.appendChild(titleText);
+
+  // Création de la description stylisée
+  var descriptionText = document.createElement("a-text");
+  descriptionText.setAttribute("value", infoTagDescription); // Utilise la variable infoTagDescription pour le texte
+  descriptionText.setAttribute("position", "0 0.1 0.1"); // Position de la description
+  descriptionText.setAttribute("scale", "1.2 1.2 1.2");
+  descriptionText.setAttribute("width", "1.6");
+  descriptionText.setAttribute("align", "center");
+  descriptionText.setAttribute("color", "#FFFFFF");
+  descriptionText.setAttribute("font", "https://cdn.aframe.io/fonts/mozillavr.fnt");
+  infoBox.appendChild(descriptionText);
+
+  // Ajouter l'infoBox dans la scène
+  scene.appendChild(infoBox);
+
+
+
+
+
     scene.appendChild(newSphere);
     scene.appendChild(newText);
   });
