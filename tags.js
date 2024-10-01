@@ -89,62 +89,63 @@ class Tag {
   
     create() {
       const scene = document.getElementById(this.sceneId);
+    
+      // Créer la sphère
       const newSphere = this.createElement("a-sphere", {
         position: this.position,
-        radius: "0.2",
+        radius: "0.3",
         color: "#EF2D5E",
         dragndrop: "",
         "look-at-camera": ""
       });
-  
+    
+      // Créer l'infoBox avec un décalage par rapport à la sphère
       const infoBox = document.createElement("a-entity");
-      
- 
       const infoBoxOffset = { x: -2, y: 0.7, z: 0 }; // Décalage basé sur la taille du `backgroundPlane`
       infoBox.setAttribute("position", {
-          x: this.position.x + infoBoxOffset.x,
-          y: this.position.y + infoBoxOffset.y,
-          z: this.position.z + infoBoxOffset.z,
+        x: this.position.x + infoBoxOffset.x,
+        y: this.position.y + infoBoxOffset.y,
+        z: this.position.z + infoBoxOffset.z,
       });
-
+      
       // Ajouter les composants de suivi
       infoBox.setAttribute("follow-mover", { target: newSphere });
       infoBox.setAttribute("look-at-camera", "");
 
-      // Créer le fond noir de la boîte
-      const backgroundPlane = document.createElement("a-plane");
-      backgroundPlane.setAttribute("width", "3");
-      backgroundPlane.setAttribute("height", "1.8");
-      backgroundPlane.setAttribute("color", "#000000");
-      backgroundPlane.setAttribute("material", "opacity: 0.8; transparent: true");
-      backgroundPlane.setAttribute("position", "1 -0.7 0.05"); // Alignement du coin supérieur gauche avec la sphère
-      infoBox.appendChild(backgroundPlane);
+    // Créer le fond noir de la boîte
+    const backgroundPlane = document.createElement("a-plane");
+    backgroundPlane.setAttribute("width", "5"); // Largeur agrandie
+    backgroundPlane.setAttribute("height", "3"); // Hauteur agrandie
+    backgroundPlane.setAttribute("color", "#000000");
+    backgroundPlane.setAttribute("material", "opacity: 0.8; transparent: true");
+    backgroundPlane.setAttribute("position", "2.5 -1.5 0.05"); // Alignement ajusté avec la sphère
+    infoBox.appendChild(backgroundPlane);
 
-      // Ajouter le titre
-      const titleText = document.createElement("a-text");
-      titleText.setAttribute("value", this.title);
-      titleText.setAttribute("position", "1 -0.3 0.1"); // Position du texte dans le conteneur
-      titleText.setAttribute("width", "2.8");
-      titleText.setAttribute("scale", "1.8 1.8 1.8");
-      titleText.setAttribute("align", "center");
-      titleText.setAttribute("color", "#EF2D5E");
-      titleText.setAttribute("font", "https://cdn.aframe.io/fonts/mozillavr.fnt");
-      infoBox.appendChild(titleText);
+    // Ajouter le titre avec une position ajustée et un texte plus grand
+    const titleText = document.createElement("a-text");
+    titleText.setAttribute("value", this.title);
+    titleText.setAttribute("position", "2.5 -0.5 0.1"); // Position ajustée pour le titre
+    titleText.setAttribute("width", "4.5"); // Largeur augmentée
+    titleText.setAttribute("scale", "2.4 2.4 2.4"); // Taille du texte augmentée
+    titleText.setAttribute("align", "center");
+    titleText.setAttribute("color", "#EF2D5E");
+    titleText.setAttribute("font", "https://cdn.aframe.io/fonts/mozillavr.fnt");
+    infoBox.appendChild(titleText);
 
-      // Ajouter la description stylisée
-      const descriptionText = document.createElement("a-text");
-      descriptionText.setAttribute("value", this.description);
-      descriptionText.setAttribute("position", "1 -0.6 0.1"); // Position de la description
-      descriptionText.setAttribute("scale", "1.4 1.4 1.4");
-      descriptionText.setAttribute("width", "1.6");
-      descriptionText.setAttribute("align", "center");
-      descriptionText.setAttribute("color", "#FFFFFF");
-      descriptionText.setAttribute("font", "https://cdn.aframe.io/fonts/mozillavr.fnt");
-      infoBox.appendChild(descriptionText);
+    // Ajouter la description stylisée avec une position ajustée et un texte plus grand
+    const descriptionText = document.createElement("a-text");
+    descriptionText.setAttribute("value", this.description);
+    descriptionText.setAttribute("position", "2.5 -1.8 0.1"); // Position ajustée pour être en dessous du titre
+    descriptionText.setAttribute("scale", "2.0 2.0 2.0"); // Taille du texte augmentée
+    descriptionText.setAttribute("width", "2.4"); // Largeur augmentée pour le texte
+    descriptionText.setAttribute("align", "center");
+    descriptionText.setAttribute("color", "#FFFFFF");
+    infoBox.appendChild(descriptionText);
 
-      // Ajouter la sphère et l'infoBox dans la scène
-      this.appendToScene(scene, [newSphere, infoBox]);
-    }
+    // Ajouter la sphère et l'infoBox dans la scène
+    this.appendToScene(scene, [newSphere, infoBox]);
+  }
+    
 }
   
   class PhotoTag extends Tag {
@@ -168,6 +169,41 @@ class Tag {
       this.appendToScene(scene, [image]);
     }
   }
+  // Classe pour les tags de type vidéo
+  class VideoTag extends Tag {
+    constructor(sceneId, title, position, videoUrl) {
+      super(sceneId, title, position);
+      this.videoUrl = videoUrl; // URL de la vidéo pour le tag vidéo
+    }
   
-  export { Tag, DoorTag, InfoTag, PhotoTag };
+    // Méthode pour créer un tag de type vidéo
+    create() {
+      const scene = document.getElementById(this.sceneId);
+  
+      
+      const camera = scene.camera;
+      const cameraDirection = new THREE.Vector3();
+      camera.getWorldDirection(cameraDirection);
+      const cameraPosition = camera.position.clone();
+      const distance = 2; 
+      const targetPosition = cameraPosition.add(cameraDirection.multiplyScalar(distance));
+  
+  
+      const video = this.createElement("a-video", {
+        id: this.id,
+        src: this.videoUrl,
+        position: `${targetPosition.x} ${targetPosition.y} ${targetPosition.z}`,
+        width: "4",
+        height: "2.25",
+        autoplay: "true", // Ajoutez cet attribut pour lancer automatiquement la vidéo
+        loop: "true", // Ajoutez cet attribut pour boucler la vidéo
+        dragndrop: "", 
+        "look-at-camera": "" 
+      });
+  
+      this.appendToScene(scene, [video]);
+    }
+  }
+
+export { Tag, DoorTag, InfoTag, PhotoTag, VideoTag };
   

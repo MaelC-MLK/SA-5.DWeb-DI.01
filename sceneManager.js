@@ -45,8 +45,6 @@ export function createSceneElement(sceneId, src) {
 
   document.getElementById('sceneContainer').appendChild(sceneElement);
 
-  document.getElementById('ExportSceneBtn').disabled = false;
-
   updateSceneDropdown();
   checkScenesAndToggleSubMenu();
 
