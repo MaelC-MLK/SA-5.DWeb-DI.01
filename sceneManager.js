@@ -78,3 +78,56 @@ export function displayDefaultScene() {
     defaultScene.style.display = 'block';
   }
 }
+
+export function saveAllScenes() {
+  const allScenes = document.querySelectorAll('a-scene');
+  const scenesData = [];
+
+  allScenes.forEach(scene => {
+    const sceneId = scene.getAttribute('id');
+    const skyElement = scene.querySelector('a-sky');
+    const src = skyElement ? skyElement.getAttribute('src') : '';
+
+    const entities = [];
+    scene.querySelectorAll('a-entity, a-image, a-sphere').forEach(entity => {
+      const entityData = {
+        tagName: entity.tagName,
+        attributes: {}
+      };
+      Array.from(entity.attributes).forEach(attr => {
+        entityData.attributes[attr.name] = attr.value;
+      });
+      entities.push(entityData);
+    });
+
+    scenesData.push({
+      id: sceneId,
+      src: src,
+      entities: entities
+    });
+  });
+
+  const scenesJson = JSON.stringify(scenesData);
+  return scenesJson;
+}
+
+
+export function loadScenesFromJson(scenesJson) {
+  const scenesData = JSON.parse(scenesJson);
+
+  scenesData.forEach(sceneData => {
+    const { id, src, entities } = sceneData;
+    createSceneElement(id, src);
+
+    const sceneElement = document.getElementById(id);
+    entities.forEach(entityData => {
+      const entity = document.createElement(entityData.tagName);
+      Object.keys(entityData.attributes).forEach(attrName => {
+        entity.setAttribute(attrName, entityData.attributes[attrName]);
+      });
+      sceneElement.appendChild(entity);
+    });
+  });
+
+  updateSceneDropdown();
+}
