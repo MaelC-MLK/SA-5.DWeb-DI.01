@@ -62,11 +62,6 @@ export function createSceneElement(sceneId, src) {
 // Fonction pour afficher une scène spécifique
 export function displayScene(sceneId) {
   const scene = document.getElementById(sceneId); 
-
-  if (!scene) {
-    console.error("Scène non trouvée.");
-    return;
-  }
   // Cache toutes les scènes
   const allScenes = document.querySelectorAll('a-scene');
   allScenes.forEach(s => s.style.display = 'none');

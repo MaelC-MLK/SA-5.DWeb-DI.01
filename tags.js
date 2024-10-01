@@ -25,13 +25,28 @@ class Tag {
   appendToScene(scene, elements) {
     elements.forEach(element => scene.appendChild(element));
   }
+
+
+  // Méthode pour sélectionner un tag
+  select() {
+    // Retirer la classe 'selected' de tous les tags
+    document.querySelectorAll('.tag').forEach(tag => {
+      tag.classList.remove('selected');
+    });
+
+    // Ajouter la classe 'selected' au tag actuel
+    const tagElement = document.getElementById(this.id);
+    if (tagElement) {
+      tagElement.classList.add('selected');
+    }
+  }
 }
 
 // Classe pour les tags de type porte
 class DoorTag extends Tag {
   constructor(sceneId, title, position, targetSceneId) {
     super(sceneId, title, position);
-    this.targetSceneId = targetSceneId; // ID de la scène cible pour la navigation
+    this.targetSceneId = targetSceneId;
   }
 
   // Méthode pour créer un tag de type porte
@@ -43,46 +58,55 @@ class DoorTag extends Tag {
       radius: "0.5",
       color: "#EF2D5E",
       dragndrop: "",
-      "look-at-camera": ""
+      "look-at-camera": "",
+      "data-tag-id": this.id,
+      class: "tag"
     });
 
     const infoBox = document.createElement("a-entity");
-    
-    const infoBoxOffset = { x: -2, y: 4, z: 0 }; // Décalage basé sur la taille du `backgroundPlane`
+    const infoBoxOffset = { x: -2, y: 4, z: 0 }; 
     infoBox.setAttribute("position", {
-        x: this.position.x + infoBoxOffset.x,
-        y: this.position.y + infoBoxOffset.y,
-        z: this.position.z + infoBoxOffset.z,
+      x: this.position.x + infoBoxOffset.x,
+      y: this.position.y + infoBoxOffset.y,
+      z: this.position.z + infoBoxOffset.z,
     });
 
-    // Ajouter les composants de suivi
     infoBox.setAttribute("follow-mover", { target: newSphere });
     infoBox.setAttribute("look-at-camera", "");
 
     const newBox = this.createElement("a-box", {
       position: "1 -2 0",
       color: "#4CC3D9",
-      id: this.id,
+      id: `${this.id}-box`,
       width: "2",
       height: "4",
       depth: "0.5",
       "look-at-camera": "",
       class: "door",
-      "data-target-scene": this.targetSceneId
+      "data-tag-id": this.id,
+      class: "tag"
     });
     infoBox.appendChild(newBox);
 
-    // Ajout d'un écouteur d'événements pour la boîte
     newBox.addEventListener("click", () => {
       if (this.targetSceneId) {
         changeScene(this.targetSceneId);
-      } else {
-        console.warn("Aucune scène sélectionnée pour la navigation.");
       }
     });
 
-    // Ajouter la sphère et la boîte à la scène
     this.appendToScene(scene, [newSphere, infoBox]);
+  }
+
+  // Méthode pour supprimer un tag de type porte
+  remove() {
+    const tagElement = document.getElementById(this.id);
+    const boxElement = document.getElementById(`${this.id}-box`);
+    if (tagElement) {
+      tagElement.parentNode.removeChild(tagElement);
+    } 
+    if (boxElement) {
+      boxElement.parentNode.removeChild(boxElement);
+    }
   }
 }
 
@@ -97,14 +121,18 @@ class InfoTag extends Tag {
   create() {
     const scene = document.getElementById(this.sceneId);
     const newSphere = this.createElement("a-sphere", {
+      id: `sphere-${this.id}`, // Attribuer un ID unique à la sphère
       position: this.position,
       radius: "0.2",
       color: "#EF2D5E",
       dragndrop: "",
-      "look-at-camera": ""
+      "look-at-camera": "",
+      "data-tag-id": this.id,
+      class: "tag"
     });
 
     const infoBox = document.createElement("a-entity");
+    infoBox.setAttribute("id", `infoBox-${this.id}`); // Attribuer un ID unique à l'infoBox
     
     const infoBoxOffset = { x: -2, y: 0.7, z: 0 }; // Décalage basé sur la taille du `backgroundPlane`
     infoBox.setAttribute("position", {
@@ -150,6 +178,19 @@ class InfoTag extends Tag {
 
     // Ajouter la sphère et l'infoBox dans la scène
     this.appendToScene(scene, [newSphere, infoBox]);
+  }  
+  
+  remove() {
+    const sphereElement = document.getElementById(`sphere-${this.id}`);
+    const infoBoxElement = document.getElementById(`infoBox-${this.id}`);
+    
+    if (sphereElement) {
+      sphereElement.parentNode.removeChild(sphereElement);
+    }
+
+    if (infoBoxElement) {
+      infoBoxElement.parentNode.removeChild(infoBoxElement);
+    } 
   }
 }
 
@@ -172,16 +213,25 @@ class PhotoTag extends Tag {
     const targetPosition = cameraPosition.add(cameraDirection.multiplyScalar(distance));
 
     const image = this.createElement("a-image", {
-      id: this.id,
+      id: `image-${this.id}`, // Attribuer un ID unique à l'image
       src: this.imageUrl,
       position: `${targetPosition.x} ${targetPosition.y} ${targetPosition.z}`,
       width: "2",
       height: "2",
       dragndrop: "", 
-      "look-at-camera": "" 
+      "look-at-camera": "",
+      "data-tag-id": this.id,
+      class: "tag"
     });
 
     this.appendToScene(scene, [image]);
+  }
+
+  remove() {
+    const imageElement = document.getElementById(`image-${this.id}`);
+    if (imageElement) {
+      imageElement.parentNode.removeChild(imageElement);
+    } 
   }
 }
 
@@ -196,7 +246,6 @@ class VideoTag extends Tag {
   create() {
     const scene = document.getElementById(this.sceneId);
 
-    
     const camera = scene.camera;
     const cameraDirection = new THREE.Vector3();
     camera.getWorldDirection(cameraDirection);
@@ -204,20 +253,30 @@ class VideoTag extends Tag {
     const distance = 2; 
     const targetPosition = cameraPosition.add(cameraDirection.multiplyScalar(distance));
 
-
     const video = this.createElement("a-video", {
-      id: this.id,
+      id: `video-${this.id}`, // Attribuer un ID unique à la vidéo
       src: this.videoUrl,
       position: `${targetPosition.x} ${targetPosition.y} ${targetPosition.z}`,
       width: "4",
       height: "2.25",
-      autoplay: "true", // Ajoutez cet attribut pour lancer automatiquement la vidéo
-      loop: "true", // Ajoutez cet attribut pour boucler la vidéo
-      dragndrop: "", 
-      "look-at-camera": "" 
+      autoplay: "true",
+      loop: "true",
+      dragndrop: "",
+      "look-at-camera": "",
+      "data-tag-id": this.id,
+      class: "tag"
     });
 
     this.appendToScene(scene, [video]);
+  }
+
+  // Méthode pour supprimer un tag de type vidéo
+  remove() {
+    const videoElement = document.getElementById(`video-${this.id}`);
+    
+    if (videoElement) {
+      videoElement.parentNode.removeChild(videoElement);
+    } 
   }
 }
 

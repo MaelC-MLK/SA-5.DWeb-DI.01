@@ -33,7 +33,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const customFileInputBtn = document.getElementById("customFileInputBtn");
   const fileName = document.getElementById("fileName");
   const OpenTagMenuText = document.getElementById("OpenTagMenuText");
-  const doorSceneSelect = document.getElementById("doorSceneSelect");
   const createDoorBtn = document.getElementById("createDoorTagBtn");
   const createInfoBtn = document.getElementById("createTagBtnText");
   const menuRight = document.getElementById("menuRight");
@@ -58,7 +57,6 @@ document.addEventListener("DOMContentLoaded", function () {
   let associatedBox = null;
   let selectedImage = null;
   let selectedVideoTag = null;
-
 
   // Ajoute des écouteurs d'événements pour les boutons d'information
   infoToggle.addEventListener("click", function (event) {
@@ -100,12 +98,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const doors = document.querySelectorAll(".door");
   doors.forEach((door) => {
     door.addEventListener("click", () => {
-      console.log("Door clicked");
       const targetSceneId = door.getAttribute("data-target-scene");
       if (targetSceneId) {
         changeScene(targetSceneId);
-      } else {
-        console.warn("Aucune scène cible définie pour cette porte.");
       }
     });
   });
@@ -145,46 +140,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-
-  // Ajoute un écouteur d'événements pour la suppression des éléments sélectionnés
   document.addEventListener("keydown", function (event) {
-    if (
-      (event.key === "Delete" || event.key === "Backspace") &&
-      selectedDoor &&
-      associatedBox
-    ) {
-      const selectedSceneId = sceneDropdown.value;
-      const scene = document.getElementById(selectedSceneId);
-
-      if (!selectedDoor.classList.contains("door")) {
-        scene.removeChild(selectedDoor);
-        scene.removeChild(associatedBox);
-
-        tagsByScene[selectedSceneId] = tagsByScene[selectedSceneId].filter(
-          (tag) => tag.id !== selectedDoor.id
-        );
-        console.log(
-          "Tags restants dans la scène : ",
-          tagsByScene[selectedSceneId]
-        );
-
-        updateTagSelectorDoor(selectedSceneId);
-
-        selectedDoor = null;
-        associatedBox = null;
+    if (event.key === "Delete") {
+      const selectedTag = document.querySelector(".tag.selected");
+      if (selectedTag) {
+        const tagId = selectedTag.getAttribute("data-tag-id");
+        removeTag(tagId);
       }
     }
-
-    if (event.key === "Delete" && selectedImage) {
-      selectedImage.parentNode.removeChild(selectedImage);
-      selectedImage = null;
-    }
-
-    if (event.key === "Delete" && selectedVideoTag) {
-      selectedVideoTag.parentNode.removeChild(selectedVideoTag);
-      selectedVideoTag = null;
-    }
   });
+
   // Ajoute un écouteur d'événements pour le bouton de téléchargement de JSON
   document.getElementById("uploadJsonBtn").addEventListener("click", () => {
     document.getElementById("uploadJsonInput").click();
@@ -332,26 +297,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Ajoute un écouteur d'événements pour le bouton de confirmation de suppression
   confirmDeleteBtn.addEventListener("click", function () {
     const selectedSceneId = sceneDropdown.value;
-    const selectedSceneIndex = scenes.findIndex(
-      (scene) => scene.id === selectedSceneId
-    );
-    if (selectedSceneIndex !== -1) {
-      scenes.splice(selectedSceneIndex, 1);
-      const option = sceneDropdown.querySelector(
-        `option[value="${selectedSceneId}"]`
-      );
-      if (option) {
-        option.remove();
-      }
-      const sceneElement = document.getElementById(selectedSceneId);
-      if (sceneElement) {
-        sceneElement.remove();
-      }
-      sceneDropdown.value = "";
-      editSceneForm.classList.add("hidden");
-      fileName.textContent = "";
-      displayDefaultScene();
-    }
+    deleteScene(selectedSceneId);
     deleteModal.classList.remove("show");
   });
 
@@ -370,20 +316,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Fonction pour mettre à jour le nom de la scène
-  function updateSceneName(sceneId, newName) {
-    const sceneElement = document.getElementById(sceneId);
-    if (sceneElement) {
-      sceneElement.setAttribute("data-name", newName);
-      const option = doorSceneSelect.querySelector(
-        `option[value="${sceneId}"]`
-      );
-      if (option) {
-        option.textContent = newName;
-        option.setAttribute("data-name", newName);
-      }
-    }
-  }
+  // Ajouter des gestionnaires d'événements à tous les tags existants
+  document.querySelectorAll(".tag").forEach((tag) => {
+    tag.addEventListener("click", handleTagSelection);
+  });
+
+  // Ajouter un gestionnaire d'événements pour les nouveaux tags créés dynamiquement
+  document.addEventListener("tagCreated", (event) => {
+    const newTag = event.detail.tagElement;
+    newTag.addEventListener("click", handleTagSelection);
+  });
 
   // Ajoute un écouteur d'événements pour la mise à jour du nom de la scène
   document
@@ -398,132 +340,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // TAGS
 
+  // Écouteurs d'événements pour les boutons de création de tags
   createVideoTagBtn.addEventListener("click", (e) => {
     e.preventDefault();
     createVideoTag();
   });
 
-  // Ajoute un écouteur d'événement pour le bouton de création de porte
-  createDoorBtn.addEventListener("click", function () {
-    const selectedSceneId = sceneDropdown.value;
-    const scene = document.getElementById(selectedSceneId);
-    let messageError = document.getElementById("error");
-
-    if (!scene) {
-      messageError.innerText = "Erreur : Scène non trouvée.";
-      console.error("Scène non trouvée.");
-      return;
-    }
-
-    const doorTagTitle = document.getElementById("doorTagTitle").value;
-    const cameraId = "camera-" + selectedSceneId;
-    const camera = document.getElementById(cameraId);
-
-    if (!camera || !camera.object3D) {
-      console.error("Caméra non trouvée ou non initialisée.");
-      return;
-    }
-
-    const cameraDirection = new THREE.Vector3();
-    camera.object3D.getWorldDirection(cameraDirection);
-    const distance = -15;
-    const tagPosition = new THREE.Vector3()
-      .copy(camera.object3D.position)
-      .addScaledVector(cameraDirection, distance);
-    const doorSceneSelect = document.getElementById("doorSceneSelect");
-    const targetSceneId = doorSceneSelect.value;
-
-    const doorTag = new DoorTag(
-      selectedSceneId,
-      doorTagTitle,
-      tagPosition,
-      targetSceneId
-    );
-    doorTag.create();
-    resetDoorTagForm();
-
-    document.getElementById("doorTagTitle").value = "";
-    doorSceneSelect.value = "";
-    messageError.innerText = "";
+  createDoorBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    createDoorTag();
   });
 
-  // Ajoute un écouteur d'événement pour le bouton de création d'information
-  createInfoBtn.addEventListener("click", function () {
-    const selectedSceneId = sceneDropdown.value;
-    const scene = document.getElementById(selectedSceneId);
-    let messageError = document.getElementById("error");
-
-    if (!scene) {
-      messageError.innerText = "Erreur : Scène non trouvée.";
-      console.error("Scène non trouvée.");
-      return;
-    }
-
-    const infoTagTitle = document.getElementById("tagTitle").value;
-    const infoTagDescription = document.getElementById("tagDescription").value;
-    const cameraId = "camera-" + selectedSceneId;
-    const camera = document.getElementById(cameraId);
-
-    if (!camera || !camera.object3D) {
-      console.error("Caméra non trouvée ou non initialisée.");
-      return;
-    }
-
-    const cameraDirection = new THREE.Vector3();
-    camera.object3D.getWorldDirection(cameraDirection);
-    const distance = -10;
-    const tagPosition = new THREE.Vector3()
-      .copy(camera.object3D.position)
-      .addScaledVector(cameraDirection, distance);
-
-    const infoTag = new InfoTag(
-      selectedSceneId,
-      infoTagTitle,
-      tagPosition,
-      infoTagDescription
-    );
-    infoTag.create();
-    resetInfoTagForm();
+  createInfoBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    createInfoTag();
   });
 
-  // Ajoute un écouteur d'événement pour le bouton de création de photo
   document
     .getElementById("createPhotoTagBtn")
-    .addEventListener("click", function () {
-      const selectedSceneId = document.getElementById("sceneDropdown").value;
-      const scene = document.getElementById(selectedSceneId);
-      if (!scene) {
-        console.error("Scene not found.");
-        return;
-      }
-
-      const title = document.getElementById("photoTagTitle").value;
-      if (!title) {
-        alert("Le titre est obligatoire.");
-        return;
-      }
-
-      const fileInput = document.getElementById("photoFileInput");
-      const file = fileInput.files[0];
-
-      if (!file) {
-        console.error("No file selected.");
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const imageUrl = e.target.result;
-        const photoTag = new PhotoTag(
-          selectedSceneId,
-          title,
-          "0 1.6 -2",
-          imageUrl
-        );
-        photoTag.create();
-        resetPhotoTagForm();
-      };
-      reader.readAsDataURL(file);
+    .addEventListener("click", (e) => {
+      e.preventDefault();
+      createPhotoTag();
     });
 
   // Ajoute un écouteur d'événement pour le sélecteur de tags de porte
@@ -538,7 +375,6 @@ document.addEventListener("DOMContentLoaded", function () {
           document.getElementById("tagIdInput").value = tagInfo;
           document.getElementById("doorTagName").value = name;
           document.getElementById("doorTagRange").value = depth;
-          console.log(`Tag sélectionné : ${tagInfo}`);
         }
       }
     }
@@ -548,40 +384,290 @@ document.addEventListener("DOMContentLoaded", function () {
   updateSceneDropdown();
 });
 
-// Fonction pour changer de scène
-export function changeScene(sceneId) {
-  const scene = document.getElementById(sceneId);
+// Fonction pour créer un tag vidéo
+function createVideoTag() {
+  const title = document.getElementById("videoTagTitle").value;
+  const fileInput = document.getElementById("videoFileInput");
+  const file = fileInput.files[0];
 
-  if (!scene) {
-    console.error("Scène non trouvée.");
+  if (!title) {
+    messageError.innerText = "Erreur : Le titre est obligatoire.";
     return;
   }
-  const allScenes = document.querySelectorAll("a-scene");
-  allScenes.forEach((s) => (s.style.display = "none"));
-  scene.style.display = "block";
-  document.getElementById("sceneDropdown").value = sceneId;
-  updateTagSelectorDoor(sceneId);
-  requestAnimationFrame(() => {
-    window.dispatchEvent(new Event("resize"));
-  });
-}
 
+  if (!file) {
+    messageError.innerText = "Erreur : Veuillez sélectionner une vidéo.";
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function (event) {
+    const videoUrl = event.target.result;
+    const position = { x: 0, y: 1.5, z: -3 };
+
+    const videoTag = new VideoTag(selectedSceneId, title, position, videoUrl);
+    videoTag.create();
+
+    // Ajouter le tag à tagsByScene
+    if (!tagsByScene[selectedSceneId]) {
+      tagsByScene[selectedSceneId] = [];
+    }
+    tagsByScene[selectedSceneId].push(videoTag);
+
+    resetVideoTagForm();
+  };
+
+  reader.readAsDataURL(file);
+}
+// Fonction pour créer un tag de porte
+function createDoorTag() {
+  const selectedSceneId = sceneDropdown.value;
+  const scene = document.getElementById(selectedSceneId);
+  let messageError = document.getElementById("error");
+
+  if (!scene) {
+    messageError.innerText = "Erreur : Scène non trouvée.";
+    return;
+  }
+
+  const doorTagTitle = document.getElementById("doorTagTitle").value;
+  const doorSceneSelect = document.getElementById("doorSceneSelect");
+  const targetSceneId = doorSceneSelect.value;
+
+  // Vérifier que le titre est rempli
+  if (!doorTagTitle) {
+    messageError.innerText = "Erreur : Le titre est obligatoire.";
+    return;
+  }
+
+  // Vérifier que la scène cible est sélectionnée
+  if (!targetSceneId) {
+    messageError.innerText = "Erreur : La scène cible est obligatoire.";
+    return;
+  }
+
+  // Vérifier que la scène cible n'est pas la même que la scène actuelle
+  if (selectedSceneId === targetSceneId) {
+    messageError.innerText =
+      "Erreur : La scène cible ne peut pas être la même que la scène actuelle.";
+    return;
+  }
+
+  const cameraId = "camera-" + selectedSceneId;
+  const camera = document.getElementById(cameraId);
+
+  const cameraDirection = new THREE.Vector3();
+  camera.object3D.getWorldDirection(cameraDirection);
+  const distance = -15;
+  const tagPosition = new THREE.Vector3()
+    .copy(camera.object3D.position)
+    .addScaledVector(cameraDirection, distance);
+
+  const doorTag = new DoorTag(
+    selectedSceneId,
+    doorTagTitle,
+    tagPosition,
+    targetSceneId
+  );
+  doorTag.create();
+
+  // Ajouter le tag à tagsByScene
+  if (!tagsByScene[selectedSceneId]) {
+    tagsByScene[selectedSceneId] = [];
+  }
+  tagsByScene[selectedSceneId].push(doorTag);
+
+  resetDoorTagForm();
+  messageError.innerText = ""; // Réinitialiser le message d'erreur
+}
+// Fonction pour créer un tag d'information
+function createInfoTag() {
+  const selectedSceneId = sceneDropdown.value;
+  const scene = document.getElementById(selectedSceneId);
+  let messageError = document.getElementById("error");
+
+  if (!scene) {
+    messageError.innerText = "Erreur : Scène non trouvée.";
+    return;
+  }
+
+  const infoTagTitle = document.getElementById("tagTitle").value;
+  const infoTagDescription = document.getElementById("tagDescription").value;
+
+  if (!infoTagTitle) {
+    messageError.innerText = "Erreur : Le titre est obligatoire.";
+    return;
+  }
+
+  if (!infoTagDescription) {
+    messageError.innerText = "Erreur : La description est obligatoire.";
+    return;
+  }
+
+  if (infoTagTitle.length > 18) {
+    messageError.innerText =
+      "Erreur : Le titre ne doit pas dépasser 18 caractères.";
+    return;
+  }
+
+  if (infoTagDescription.length > 300) {
+    messageError.innerText =
+      "Erreur : La description ne doit pas dépasser 300 caractères.";
+    return;
+  }
+
+  const cameraId = "camera-" + selectedSceneId;
+  const camera = document.getElementById(cameraId);
+
+  const cameraDirection = new THREE.Vector3();
+  camera.object3D.getWorldDirection(cameraDirection);
+  const distance = -10;
+  const tagPosition = new THREE.Vector3()
+    .copy(camera.object3D.position)
+    .addScaledVector(cameraDirection, distance);
+
+  const infoTag = new InfoTag(
+    selectedSceneId,
+    infoTagTitle,
+    tagPosition,
+    infoTagDescription
+  );
+  infoTag.create();
+
+  if (!tagsByScene[selectedSceneId]) {
+    tagsByScene[selectedSceneId] = [];
+  }
+  tagsByScene[selectedSceneId].push(infoTag);
+
+  resetInfoTagForm();
+  messageError.innerText = "";
+}
+// Fonction pour créer un tag photo
+function createPhotoTag() {
+  const selectedSceneId = document.getElementById("sceneDropdown").value;
+  const scene = document.getElementById(selectedSceneId);
+
+
+  const title = document.getElementById("photoTagTitle").value;
+  if (!title) {
+    messageError.innerText = "Erreur : Le titre est obligatoire.";
+    return;
+  }
+
+  const fileInput = document.getElementById("photoFileInput");
+  const file = fileInput.files[0];
+
+  if (!file) {
+    messageError.innerText = "Erreur : Veuillez sélectionner une image.";
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const imageUrl = e.target.result;
+
+    const photoTag = new PhotoTag(selectedSceneId, title, "0 1.6 -2", imageUrl);
+    photoTag.create();
+
+    if (!tagsByScene[selectedSceneId]) {
+      tagsByScene[selectedSceneId] = [];
+    }
+    tagsByScene[selectedSceneId].push(photoTag);
+
+    resetPhotoTagForm();
+  };
+
+  reader.readAsDataURL(file);
+}
+// Fonction pour réinitialiser le formulaire de tag vidéo
+function resetVideoTagForm() {
+  document.getElementById("videoTagTitle").value = "";
+  document.getElementById("videoFileInput").value = "";
+}
 // Fonction pour réinitialiser le formulaire de tag photo
 function resetPhotoTagForm() {
   document.getElementById("photoTagTitle").value = "";
   document.getElementById("photoFileInput").value = "";
 }
-
 // Fonction pour réinitialiser le formulaire de tag d'information
 function resetInfoTagForm() {
   document.getElementById("tagTitle").value = "";
   document.getElementById("tagDescription").value = "";
 }
-
 // Fonction pour réinitialiser le formulaire de tag de porte
 function resetDoorTagForm() {
   document.getElementById("doorTagTitle").value = "";
   document.getElementById("doorSceneSelect").value = "";
+}
+// Fonction pour supprimer une scène
+function deleteScene(sceneId) {
+  const selectedSceneIndex = scenes.findIndex((scene) => scene.id === sceneId);
+  if (selectedSceneIndex !== -1) {
+    // Rediriger les tags de porte qui mènent à cette scène vers la scène defaultScene
+    Object.keys(tagsByScene).forEach((sceneKey) => {
+      tagsByScene[sceneKey].forEach((tag) => {
+        if (tag.targetSceneId === sceneId) {
+          tag.targetSceneId = "defaultScene"; // Rediriger vers la scène defaultScene
+        }
+      });
+    });
+
+    scenes.splice(selectedSceneIndex, 1);
+    const option = sceneDropdown.querySelector(`option[value="${sceneId}"]`);
+    if (option) {
+      option.remove();
+    }
+    const sceneElement = document.getElementById(sceneId);
+    if (sceneElement) {
+      sceneElement.remove();
+    }
+    sceneDropdown.value = "";
+    editSceneForm.classList.add("hidden");
+    fileName.textContent = "";
+    displayDefaultScene();
+  }
+}
+// Fonction pour gérer la sélection des tags
+function handleTagSelection(event) {
+  // Retirer la classe 'selected' de tous les tags
+  document.querySelectorAll(".tag").forEach((tag) => {
+    tag.classList.remove("selected");
+  });
+
+  // Ajouter la classe 'selected' au tag cliqué
+  const clickedTag = event.currentTarget;
+  clickedTag.classList.add("selected");
+}
+// Fonction pour mettre à jour le nom de la scène
+function updateSceneName(sceneId, newName) {
+  const sceneElement = document.getElementById(sceneId);
+  if (sceneElement) {
+    sceneElement.setAttribute("data-name", newName);
+    const option = doorSceneSelect.querySelector(`option[value="${sceneId}"]`);
+    if (option) {
+      option.textContent = newName;
+      option.setAttribute("data-name", newName);
+    }
+  }
+}
+// Fonction pour supprimer un tag
+function removeTag(tagId) {
+  const tagElement = document.querySelector(`[data-tag-id="${tagId}"]`);
+  if (tagElement) {
+    const tagInstance = getTagInstanceById(tagId);
+    if (tagInstance) {
+      tagInstance.remove();
+    }
+  }
+}
+// Fonction pour obtenir l'instance de tag par ID
+function getTagInstanceById(tagId) {
+  for (const sceneTags of Object.values(tagsByScene)) {
+    const tagInstance = sceneTags.find((tag) => tag.id === tagId);
+    if (tagInstance) {
+      return tagInstance;
+    }
+  }
 }
 
 // Fonction pour mettre à jour le sélecteur de tags de porte
@@ -619,30 +705,15 @@ export function checkScenesAndToggleSubMenu() {
   }
 }
 
-// Fonction pour créer un tag vidéo
-function createVideoTag() {
-  const title = document.getElementById("videoTagTitle").value;
-  const fileInput = document.getElementById("videoFileInput");
-  const file = fileInput.files[0];
-  const sceneId = document.getElementById("sceneDropdown").value;
-
-  if (!title || !file || !sceneId) {
-    alert("Veuillez remplir tous les champs.");
-    return;
-  }
-
-  const videoUrl = URL.createObjectURL(file);
-  const position = { x: 0, y: 1.5, z: -3 }; // Position par défaut, à ajuster si nécessaire
-
-  const videoTag = new VideoTag(sceneId, title, position, videoUrl);
-  videoTag.create();
-
-  // Réinitialiser le formulaire après la création du tag
-  resetVideoTagForm();
-}
-
-// Fonction pour réinitialiser le formulaire de tag vidéo
-function resetVideoTagForm() {
-  document.getElementById("videoTagTitle").value = "";
-  document.getElementById("videoFileInput").value = "";
+// Fonction pour changer de scène
+export function changeScene(sceneId) {
+  const scene = document.getElementById(sceneId);
+  const allScenes = document.querySelectorAll("a-scene");
+  allScenes.forEach((s) => (s.style.display = "none"));
+  scene.style.display = "block";
+  document.getElementById("sceneDropdown").value = sceneId;
+  updateTagSelectorDoor(sceneId);
+  requestAnimationFrame(() => {
+    window.dispatchEvent(new Event("resize"));
+  });
 }
