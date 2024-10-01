@@ -185,10 +185,11 @@
             name="tagDescription"
             class="w-full h-8 py-2 border-b-2 border-black bg-gray-100 focus:outline-0"
           />
-          <div class="flex items-center gap-1 mt-4 cursor-pointer">
+          <div class="flex items-center gap-1 mt-4" id="info-toggle">
             <label class="font-semibold" for="tagRange">Profondeur</label>
-            <img class="w-auto h-auto cursor-pointer" src="./asset/information-icon.png" alt="information">
+            <img class="w-auto h-auto cursor-pointer information-icon" src="./asset/information-icon.png" alt="information" href="">
           </div>
+          
         </form>
         <button
           id="createTagBtnText"
@@ -207,9 +208,10 @@
             name="doorTagTitle"
             class="w-full h-8 py-2 border-b-2 border-black bg-gray-100 focus:outline-0"
           />
-          <label class="font-semibold mt-4" for="doorTagRange"
-            >Profondeur</label
-          >
+          <div class="flex items-center gap-1 mt-4" id="info-toggle-door">
+            <label class="font-semibold" for="tagRange">Profondeur</label>
+            <img  class="w-auto h-auto cursor-pointer information-icon" src="./asset/information-icon.png" alt="information" href="">
+          </div>
           <label class="font-semibold mt-1" for="doorSceneSelect"
             >Vers la scène :</label
           >
@@ -252,11 +254,15 @@
           <label class="font-semibold mt-4" for="photoFileInput"
             >Uploader une photo</label
           >
+          <div class="flex items-center gap-1 mt-4" id="info-toggle-photo">
+            <label class="font-semibold" for="tagRange">Profondeur</label>
+            <img  class="w-auto h-auto cursor-pointer information-icon" src="./asset/information-icon.png" alt="information" href="">
+          </div>
           <input
             type="file"
             id="photoFileInput"
             name="photoFileInput"
-            class="w-full h-12 py-2 focus:outline-0"
+            class="w-full h-12 py-2 focus:outline-0 mt-4"
             accept="image/*"
           />
         </form>
@@ -321,5 +327,17 @@
         </div>
       </div>
     </div>
+
+    <div id="popup" class="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 hidden">
+      <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
+        <button id="close-popup" class="absolute top-2 right-2 text-gray-600 hover:text-gray-900">
+          &times;
+        </button>
+        <div class="flex flex-col jusify-center items-center text-center">
+          <img class="mx-auto mb-4" src="./asset/scroll-icon.png" alt="scroll icon">
+          <p class="text-gray-700 font-lg">Pour ajuster la profondeur de votre élement, utilisez le scroll de la souris.</p>
+        </div>
+      </div>
+    </div>          
   </body>
 </html>

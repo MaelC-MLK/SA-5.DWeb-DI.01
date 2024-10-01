@@ -528,3 +528,34 @@ export function updateTagSelectorDoor(sceneId) {
     tagSelectorDoor.appendChild(noTagsOption);
   }
 }
+
+//affichage de l'info scroll profondeur
+const infoToggle = document.getElementById('info-toggle');
+const infoToggleDoor = document.getElementById('info-toggle-door');
+const infoTogglePhoto = document.getElementById('info-toggle-photo');
+const popup = document.getElementById('popup');
+const closePopup = document.getElementById('close-popup');
+
+
+infoToggle.addEventListener('click', function(event) {
+  event.preventDefault(); 
+  popup.classList.toggle('hidden');
+});
+
+infoToggleDoor.addEventListener('click', function(event) {
+  event.preventDefault(); 
+  popup.classList.toggle('hidden');
+});
+
+infoTogglePhoto.addEventListener('click', function(event) {
+  event.preventDefault(); 
+  popup.classList.toggle('hidden');
+});
+
+
+
+
+closePopup.addEventListener('click', function(event) {
+  event.preventDefault(); // Empêche le rechargement de la page
+  popup.classList.add('hidden');
+});
