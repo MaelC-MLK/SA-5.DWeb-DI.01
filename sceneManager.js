@@ -10,6 +10,15 @@ export function createSceneElement(sceneId, src) {
   sceneElement.setAttribute('cursor', 'rayOrigin: mouse');
   sceneElement.style.display = 'none';
 
+  const assets = document.createElement('a-assets');
+  
+  const imageAsset = document.createElement('img');
+  imageAsset.setAttribute('id', 'icon-grab');
+  imageAsset.setAttribute('src', 'asset/grab-icon.png'); 
+  imageAsset.setAttribute('width', '2'); 
+  assets.appendChild(imageAsset);
+  sceneElement.appendChild(assets);
+
   const cameraEntity = document.createElement('a-entity');
   cameraEntity.setAttribute('camera', '');
   cameraEntity.setAttribute('wasd-controls', 'enabled: false');

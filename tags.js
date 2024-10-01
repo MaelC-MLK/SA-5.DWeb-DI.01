@@ -34,12 +34,23 @@ class Tag {
       const newSphere = this.createElement("a-sphere", {
         position: this.position,
         id: this.id,
-        radius: "0.5",
+        radius: "0.3",
         color: "#EF2D5E",
         dragndrop: "",
         "look-at-camera": ""
       });
-  
+
+      const newSphereIcon = this.createElement("a-plane");
+      newSphereIcon.setAttribute("position", { x: 0, y: 0, z: 0.35 });
+      newSphereIcon.setAttribute("width", "0.3");
+      newSphereIcon.setAttribute("height", "0.3");
+      newSphereIcon.setAttribute("src", "#icon-grab");
+      newSphereIcon.setAttribute("look-at-camera", ""); 
+      newSphereIcon.setAttribute("material", "shader: flat; transparent: true;");
+
+
+      newSphere.appendChild(newSphereIcon);
+
       const infoBox = document.createElement("a-entity");
       
  
@@ -98,6 +109,18 @@ class Tag {
         dragndrop: "",
         "look-at-camera": ""
       });
+
+      const newSphereIcon = this.createElement("a-plane");
+      newSphereIcon.setAttribute("position", { x: 0, y: 0, z: 0.35 });
+      newSphereIcon.setAttribute("width", "0.3");
+      newSphereIcon.setAttribute("height", "0.3");
+      newSphereIcon.setAttribute("src", "#icon-grab");
+      newSphereIcon.setAttribute("look-at-camera", ""); 
+      newSphereIcon.setAttribute("material", "shader: flat; transparent: true;");
+      
+
+      newSphere.appendChild(newSphereIcon);
+    
     
       // Créer l'infoBox avec un décalage par rapport à la sphère
       const infoBox = document.createElement("a-entity");
