@@ -1,5 +1,12 @@
 import { closeAllMenus, updateSceneDropdown } from "./domUtils.js";
-import { Tag, DoorTag, InfoTag, PhotoTag, tagsByScene } from "./tags.js";
+import {
+  Tag,
+  DoorTag,
+  InfoTag,
+  PhotoTag,
+  tagsByScene,
+  VideoTag,
+} from "./tags.js";
 import {
   scenes,
   createSceneElement,
@@ -9,7 +16,9 @@ import {
   loadScenesFromJson,
 } from "./sceneManager.js";
 
+// Exécute le code une fois que le DOM est complètement chargé
 document.addEventListener("DOMContentLoaded", function () {
+  // Récupère les éléments du DOM
   const sceneDropdown = document.getElementById("sceneDropdown");
   const fileInput = document.getElementById("fileInput");
   const createSceneBtn = document.getElementById("createSceneBtn");
@@ -35,7 +44,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const infoTogglePhoto = document.getElementById("info-toggle-photo");
   const popup = document.getElementById("popup");
   const closePopup = document.getElementById("close-popup");
+  const createVideoTagBtn = document.getElementById("createVideoTagBtn");
 
+  // Tableau pour stocker les boutons de tag et leurs conteneurs associés
   let tagButtons = [
     { button: OpenTagMenuText, containerId: "textTagFormContainer" },
     { button: OpenTagMenuDoor, containerId: "doorTagFormContainer" },
@@ -46,7 +57,10 @@ document.addEventListener("DOMContentLoaded", function () {
   let selectedDoor = null;
   let associatedBox = null;
   let selectedImage = null;
+  let selectedVideoTag = null;
 
+
+  // Ajoute des écouteurs d'événements pour les boutons d'information
   infoToggle.addEventListener("click", function (event) {
     event.preventDefault();
     popup.classList.toggle("hidden");
@@ -67,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
     popup.classList.add("hidden");
   });
 
+  // Ajoute des écouteurs d'événements pour les mains gauche et droite
   leftHand.addEventListener("triggerdown", () => {
     const intersectedEl = leftHand.components.raycaster.intersectedEls[0];
     if (intersectedEl && intersectedEl.classList.contains("door")) {
@@ -81,6 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // Ajoute des écouteurs d'événements pour les portes
   const doors = document.querySelectorAll(".door");
   doors.forEach((door) => {
     door.addEventListener("click", () => {
@@ -94,6 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  // Ajoute un écouteur d'événements pour la sélection des images et des portes
   document.addEventListener("click", function (event) {
     if (event.target.tagName === "A-IMAGE") {
       if (selectedImage) {
@@ -119,8 +136,17 @@ document.addEventListener("DOMContentLoaded", function () {
         associatedBox.classList.add("selected");
       }
     }
+    if (event.target.tagName === "A-VIDEO") {
+      if (selectedVideoTag) {
+        selectedVideoTag.classList.remove("selected");
+      }
+      selectedVideoTag = event.target;
+      selectedVideoTag.classList.add("selected");
+    }
   });
 
+
+  // Ajoute un écouteur d'événements pour la suppression des éléments sélectionnés
   document.addEventListener("keydown", function (event) {
     if (
       (event.key === "Delete" || event.key === "Backspace") &&
@@ -153,12 +179,18 @@ document.addEventListener("DOMContentLoaded", function () {
       selectedImage.parentNode.removeChild(selectedImage);
       selectedImage = null;
     }
-  });
 
+    if (event.key === "Delete" && selectedVideoTag) {
+      selectedVideoTag.parentNode.removeChild(selectedVideoTag);
+      selectedVideoTag = null;
+    }
+  });
+  // Ajoute un écouteur d'événements pour le bouton de téléchargement de JSON
   document.getElementById("uploadJsonBtn").addEventListener("click", () => {
     document.getElementById("uploadJsonInput").click();
   });
 
+  // Ajoute un écouteur d'événements pour le téléchargement de JSON
   document
     .getElementById("uploadJsonInput")
     .addEventListener("change", (event) => {
@@ -173,6 +205,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
+  // Ajoute un écouteur d'événements pour le bouton de sauvegarde de l'expérience
   document.getElementById("saveExperienceBtn").addEventListener("click", () => {
     const scenesJson = saveAllScenes();
     const blob = new Blob([scenesJson], { type: "application/json" });
@@ -184,6 +217,7 @@ document.addEventListener("DOMContentLoaded", function () {
     URL.revokeObjectURL(url);
   });
 
+  // Ajoute des écouteurs d'événements pour les boutons de tag
   tagButtons.forEach((menu) => {
     menu.button.addEventListener("click", function () {
       closeAllMenus();
@@ -198,10 +232,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  // Ajoute un écouteur d'événements pour le bouton de création de scène
   createSceneBtn.addEventListener("click", function () {
     fileInput.click();
   });
 
+  // Ajoute un écouteur d'événements pour le téléchargement de fichier de scène
   fileInput.addEventListener("change", function (event) {
     const file = event.target.files[0];
     if (file) {
@@ -231,6 +267,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // Ajoute un écouteur d'événements pour le changement de scène
   sceneDropdown.addEventListener("change", function () {
     const selectedSceneId = sceneDropdown.value;
     if (selectedSceneId) {
@@ -250,6 +287,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // Ajoute un écouteur d'événements pour le bouton de sauvegarde de scène
   saveSceneBtn.addEventListener("click", function () {
     const selectedSceneId = sceneDropdown.value;
     const selectedScene = scenes.find((scene) => scene.id === selectedSceneId);
@@ -281,14 +319,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // Ajoute un écouteur d'événements pour le bouton de suppression de scène
   deleteSceneBtn.addEventListener("click", function () {
     deleteModal.classList.add("show");
   });
 
+  // Ajoute un écouteur d'événements pour le bouton d'annulation de suppression
   cancelDeleteBtn.addEventListener("click", function () {
     deleteModal.classList.remove("show");
   });
 
+  // Ajoute un écouteur d'événements pour le bouton de confirmation de suppression
   confirmDeleteBtn.addEventListener("click", function () {
     const selectedSceneId = sceneDropdown.value;
     const selectedSceneIndex = scenes.findIndex(
@@ -314,10 +355,12 @@ document.addEventListener("DOMContentLoaded", function () {
     deleteModal.classList.remove("show");
   });
 
+  // Ajoute un écouteur d'événements pour le bouton de sélection de fichier personnalisé
   customFileInputBtn.addEventListener("click", function () {
     editFileInput.click();
   });
 
+  // Ajoute un écouteur d'événements pour le changement de fichier d'édition
   editFileInput.addEventListener("change", function (event) {
     const file = event.target.files[0];
     if (file) {
@@ -327,38 +370,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  document
-    .getElementById("ExportSceneBtn")
-    .addEventListener("click", function () {
-      const scenes = document.querySelectorAll("a-scene:not(#defaultScene)");
-
-      // Créer un nouveau document HTML
-      let exportContent =
-        '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Exported Scenes</title>';
-      exportContent +=
-        '<script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>';
-      exportContent +=
-        "<style>a-scene { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; transform: scaleX(-1); }</style></head><body>";
-
-      scenes.forEach((scene) => {
-        // Ajouter les contrôles de caméra
-        const cameraEntity = scene.querySelector("[camera]");
-        if (cameraEntity) {
-          cameraEntity.setAttribute("wasd-controls", "enabled: false");
-          cameraEntity.setAttribute("look-controls", "enabled: true");
-        }
-        exportContent += scene.outerHTML;
-      });
-
-      exportContent += "</body></html>";
-
-      // Créer un blob et ouvrir l'URL dans une nouvelle fenêtre
-      const blob = new Blob([exportContent], { type: "text/html" });
-      const url = URL.createObjectURL(blob);
-      window.open(url, "_blank");
-      URL.revokeObjectURL(url);
-    });
-
+  // Fonction pour mettre à jour le nom de la scène
   function updateSceneName(sceneId, newName) {
     const sceneElement = document.getElementById(sceneId);
     if (sceneElement) {
@@ -373,6 +385,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  // Ajoute un écouteur d'événements pour la mise à jour du nom de la scène
   document
     .getElementById("sceneNameInput")
     .addEventListener("input", function (event) {
@@ -385,6 +398,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // TAGS
 
+  createVideoTagBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    createVideoTag();
+  });
+
+  // Ajoute un écouteur d'événement pour le bouton de création de porte
   createDoorBtn.addEventListener("click", function () {
     const selectedSceneId = sceneDropdown.value;
     const scene = document.getElementById(selectedSceneId);
@@ -421,12 +440,14 @@ document.addEventListener("DOMContentLoaded", function () {
       targetSceneId
     );
     doorTag.create();
+    resetDoorTagForm();
 
     document.getElementById("doorTagTitle").value = "";
     doorSceneSelect.value = "";
     messageError.innerText = "";
   });
 
+  // Ajoute un écouteur d'événement pour le bouton de création d'information
   createInfoBtn.addEventListener("click", function () {
     const selectedSceneId = sceneDropdown.value;
     const scene = document.getElementById(selectedSceneId);
@@ -462,8 +483,10 @@ document.addEventListener("DOMContentLoaded", function () {
       infoTagDescription
     );
     infoTag.create();
+    resetInfoTagForm();
   });
 
+  // Ajoute un écouteur d'événement pour le bouton de création de photo
   document
     .getElementById("createPhotoTagBtn")
     .addEventListener("click", function () {
@@ -503,6 +526,7 @@ document.addEventListener("DOMContentLoaded", function () {
       reader.readAsDataURL(file);
     });
 
+  // Ajoute un écouteur d'événement pour le sélecteur de tags de porte
   const tagSelectorDoor = document.getElementById("tagSelectorDoor");
   tagSelectorDoor.addEventListener("change", function () {
     const selectedTagId = tagSelectorDoor.value;
@@ -521,11 +545,10 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   displayDefaultScene();
-  // createSceneElement("Scene test 1", "./asset/GS__3523.jpg");
-  // createSceneElement("Scene test 2", "./asset/GS__3524.jpg");
   updateSceneDropdown();
 });
 
+// Fonction pour changer de scène
 export function changeScene(sceneId) {
   const scene = document.getElementById(sceneId);
 
@@ -542,11 +565,26 @@ export function changeScene(sceneId) {
     window.dispatchEvent(new Event("resize"));
   });
 }
-export function resetPhotoTagForm() {
+
+// Fonction pour réinitialiser le formulaire de tag photo
+function resetPhotoTagForm() {
   document.getElementById("photoTagTitle").value = "";
   document.getElementById("photoFileInput").value = "";
 }
 
+// Fonction pour réinitialiser le formulaire de tag d'information
+function resetInfoTagForm() {
+  document.getElementById("tagTitle").value = "";
+  document.getElementById("tagDescription").value = "";
+}
+
+// Fonction pour réinitialiser le formulaire de tag de porte
+function resetDoorTagForm() {
+  document.getElementById("doorTagTitle").value = "";
+  document.getElementById("doorSceneSelect").value = "";
+}
+
+// Fonction pour mettre à jour le sélecteur de tags de porte
 export function updateTagSelectorDoor(sceneId) {
   const tagSelectorDoor = document.getElementById("tagSelectorDoor");
   tagSelectorDoor.innerHTML =
@@ -567,6 +605,7 @@ export function updateTagSelectorDoor(sceneId) {
   }
 }
 
+// Fonction pour vérifier les scènes et afficher ou masquer le sous-menu
 export function checkScenesAndToggleSubMenu() {
   const allScenes = document.querySelectorAll("a-scene");
   const subMenuCreateTag = document.getElementById("subMenuCreateTag");
@@ -578,4 +617,32 @@ export function checkScenesAndToggleSubMenu() {
     subMenuCreateTag.classList.add("hidden");
     exportSaveBtn.classList.add("hidden");
   }
+}
+
+// Fonction pour créer un tag vidéo
+function createVideoTag() {
+  const title = document.getElementById("videoTagTitle").value;
+  const fileInput = document.getElementById("videoFileInput");
+  const file = fileInput.files[0];
+  const sceneId = document.getElementById("sceneDropdown").value;
+
+  if (!title || !file || !sceneId) {
+    alert("Veuillez remplir tous les champs.");
+    return;
+  }
+
+  const videoUrl = URL.createObjectURL(file);
+  const position = { x: 0, y: 1.5, z: -3 }; // Position par défaut, à ajuster si nécessaire
+
+  const videoTag = new VideoTag(sceneId, title, position, videoUrl);
+  videoTag.create();
+
+  // Réinitialiser le formulaire après la création du tag
+  resetVideoTagForm();
+}
+
+// Fonction pour réinitialiser le formulaire de tag vidéo
+function resetVideoTagForm() {
+  document.getElementById("videoTagTitle").value = "";
+  document.getElementById("videoFileInput").value = "";
 }

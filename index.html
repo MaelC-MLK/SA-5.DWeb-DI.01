@@ -32,7 +32,7 @@
 
       <div id="editSceneForm" class="flex flex-col gap-4 w-full rounded hidden">
         <div class="flex flex-col gap-1 mb-4">
-          <p class="font-semibold">Nom de votre scène</p>
+          <p class="font-semibold">Changer le nom de la scène</p>
           <input
             type="text"
             id="sceneNameInput"
@@ -87,23 +87,16 @@
         id="uploadJsonBtn"
         class="w-1/2 font-semibold px-4 text-black py-2 rounded bg-white border-2 duration-500 border-black hover:bg-black hover:border-transparent hover:duration-500 hover:bg-grayborder-gray-800 hover:text-white"
       >
-        Charger les scènes
+        Charger l'expérience
       </button>
       </div>
       <div id="exportSaveBtn" class="w-full flex flex-row gap-3 hidden">
       <button
         id="saveExperienceBtn"
-        class="w-1/2 font-semibold px-4 text-black py-2 rounded bg-white border-2 duration-500 border-black hover:bg-black hover:border-transparent hover:duration-500 hover:bg-grayborder-gray-800 hover:text-white"
+        class="w-full font-semibold px-4 text-black py-2 rounded bg-white border-2 duration-500 border-black hover:bg-black hover:border-transparent hover:duration-500 hover:bg-grayborder-gray-800 hover:text-white"
       >
         Sauvegarder l'expérience
       </button>
-      <button
-      id="ExportSceneBtn"
-      class="w-1/2 font-semibold px-4 text-black py-2 rounded bg-white border-2 duration-500 border-black hover:bg-black hover:border-transparent hover:duration-500 hover:bg-grayborder-gray-800 hover:text-white"
-      disabled
-    >
-      Exporter l'expérience
-    </button>
       </div>
       <div id="subMenuCreateTag" class="w-full flex flex-col gap-4 items-start hidden">
       <p class="text-xl font-bold mt-8">Créer un Tag</p>
@@ -188,7 +181,7 @@
             name="tagDescription"
             class="w-full h-8 py-2 border-b-2 border-black bg-gray-100 focus:outline-0"
           />
-          <div class="flex items-center gap-1 mt-4" id="info-toggle">
+          <div class="flex items-center gap-3 mt-4" id="info-toggle">
             <label class="font-semibold" for="tagRange">Profondeur</label>
             <img  class="w-auto h-auto cursor-pointer information-icon" src="./asset/information-icon.png" alt="information" href="">
           </div>
@@ -210,12 +203,8 @@
             name="doorTagTitle"
             class="w-full h-8 py-2 border-b-2 border-black bg-gray-100 focus:outline-0"
           />
-          <div class="flex items-center gap-1 mt-4" id="info-toggle-door">
-            <label class="font-semibold" for="tagRange">Profondeur</label>
-            <img  class="w-auto h-auto cursor-pointer information-icon" src="./asset/information-icon.png" alt="information" href="">
-          </div>
-          >
-          <label class="font-semibold mt-1" for="doorSceneSelect"
+
+          <label class="font-semibold mt-4" for="doorSceneSelect"
             >Vers la scène :</label
           >
           <select
@@ -225,6 +214,10 @@
           >
             <option value="">Sélectionnez une scène</option>
           </select>
+          <div class="flex items-center gap-3 mt-4" id="info-toggle-door">
+            <label class="font-semibold" for="tagRange">Profondeur</label>
+            <img  class="w-auto h-auto cursor-pointer information-icon" src="./asset/information-icon.png" alt="information" href="">
+          </div>
         </form>
         <button
           id="createDoorTagBtn"
@@ -254,10 +247,6 @@
             name="photoTagTitle"
             class="w-full h-8 py-2 border-b-2 border-black bg-gray-100 focus:outline-0"
           />
-          <div class="flex items-center gap-1 mt-4" id="info-toggle-photo">
-            <label class="font-semibold" for="tagRange">Profondeur</label>
-            <img  class="w-auto h-auto cursor-pointer information-icon" src="./asset/information-icon.png" alt="information" href="">
-          </div>
           <label class="font-semibold mt-4" for="photoFileInput"
             >Uploader une photo</label
           >
@@ -268,6 +257,10 @@
             class="w-full h-12 py-2 focus:outline-0"
             accept="image/*"
           />
+          <div class="flex items-center gap-3 mt-4" id="info-toggle-photo">
+            <label class="font-semibold" for="tagRange">Profondeur</label>
+            <img  class="w-auto h-auto cursor-pointer information-icon" src="./asset/information-icon.png" alt="information" href="">
+          </div>
         </form>
         <button
           id="createPhotoTagBtn"
