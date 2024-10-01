@@ -62,7 +62,6 @@ AFRAME.registerComponent("track-cursor", {
         this.updateDirection();
         this.updateTarget();
         this.el.object3D.position.copy(this.target);
-        // console.log(this.el.getAttribute('position'))
       }
     }
   });
