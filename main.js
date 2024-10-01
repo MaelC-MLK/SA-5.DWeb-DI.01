@@ -1,12 +1,5 @@
-import { closeAllMenus, 
-  updateSceneDropdown } 
-  from "./domUtils.js";
-import { Tag, 
-  DoorTag, 
-  InfoTag, 
-  PhotoTag,
-  tagsByScene } 
-  from "./tags.js";
+import { closeAllMenus, updateSceneDropdown } from "./domUtils.js";
+import { Tag, DoorTag, InfoTag, PhotoTag, tagsByScene } from "./tags.js";
 import {
   scenes,
   createSceneElement,
@@ -34,46 +27,72 @@ document.addEventListener("DOMContentLoaded", function () {
   const doorSceneSelect = document.getElementById("doorSceneSelect");
   const createDoorBtn = document.getElementById("createDoorTagBtn");
   const createInfoBtn = document.getElementById("createTagBtnText");
+  const menuRight = document.getElementById("menuRight");
   const leftHand = document.getElementById("leftHand");
   const rightHand = document.getElementById("rightHand");
+  const infoToggle = document.getElementById("info-toggle");
+  const infoToggleDoor = document.getElementById("info-toggle-door");
+  const infoTogglePhoto = document.getElementById("info-toggle-photo");
+  const popup = document.getElementById("popup");
+  const closePopup = document.getElementById("close-popup");
+
+  let tagButtons = [
+    { button: OpenTagMenuText, containerId: "textTagFormContainer" },
+    { button: OpenTagMenuDoor, containerId: "doorTagFormContainer" },
+    { button: OpenTagMenuPhoto, containerId: "photoTagFormContainer" },
+    { button: OpenTagMenuVideo, containerId: "videoTagFormContainer" },
+  ];
   let tagsByScene = [];
-
-  let selectedImage = null;
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const leftHand = document.getElementById("leftHand");
-    const rightHand = document.getElementById("rightHand");
-
-    leftHand.addEventListener("triggerdown", () => {
-      const intersectedEl = leftHand.components.raycaster.intersectedEls[0];
-      if (intersectedEl && intersectedEl.classList.contains("door")) {
-        intersectedEl.emit("click");
-      }
-    });
-
-    rightHand.addEventListener("triggerdown", () => {
-      const intersectedEl = rightHand.components.raycaster.intersectedEls[0];
-      if (intersectedEl && intersectedEl.classList.contains("door")) {
-        intersectedEl.emit("click");
-      }
-    });
-
-    const doors = document.querySelectorAll(".door");
-    doors.forEach((door) => {
-      door.addEventListener("click", () => {
-        console.log("Door clicked");
-        const targetSceneId = door.getAttribute("data-target-scene");
-        if (targetSceneId) {
-          changeScene(targetSceneId);
-        } else {
-          console.warn("Aucune scène cible définie pour cette porte.");
-        }
-      });
-    });
-  });
-
   let selectedDoor = null;
   let associatedBox = null;
+  let selectedImage = null;
+
+  infoToggle.addEventListener("click", function (event) {
+    event.preventDefault();
+    popup.classList.toggle("hidden");
+  });
+
+  infoToggleDoor.addEventListener("click", function (event) {
+    event.preventDefault();
+    popup.classList.toggle("hidden");
+  });
+
+  infoTogglePhoto.addEventListener("click", function (event) {
+    event.preventDefault();
+    popup.classList.toggle("hidden");
+  });
+
+  closePopup.addEventListener("click", function (event) {
+    event.preventDefault();
+    popup.classList.add("hidden");
+  });
+
+  leftHand.addEventListener("triggerdown", () => {
+    const intersectedEl = leftHand.components.raycaster.intersectedEls[0];
+    if (intersectedEl && intersectedEl.classList.contains("door")) {
+      intersectedEl.emit("click");
+    }
+  });
+
+  rightHand.addEventListener("triggerdown", () => {
+    const intersectedEl = rightHand.components.raycaster.intersectedEls[0];
+    if (intersectedEl && intersectedEl.classList.contains("door")) {
+      intersectedEl.emit("click");
+    }
+  });
+
+  const doors = document.querySelectorAll(".door");
+  doors.forEach((door) => {
+    door.addEventListener("click", () => {
+      console.log("Door clicked");
+      const targetSceneId = door.getAttribute("data-target-scene");
+      if (targetSceneId) {
+        changeScene(targetSceneId);
+      } else {
+        console.warn("Aucune scène cible définie pour cette porte.");
+      }
+    });
+  });
 
   document.addEventListener("click", function (event) {
     if (event.target.tagName === "A-IMAGE") {
@@ -165,16 +184,17 @@ document.addEventListener("DOMContentLoaded", function () {
     URL.revokeObjectURL(url);
   });
 
-  [
-    { button: OpenTagMenuText, containerId: "textTagFormContainer" },
-    { button: OpenTagMenuDoor, containerId: "doorTagFormContainer" },
-    { button: OpenTagMenuPhoto, containerId: "photoTagFormContainer" },
-    { button: OpenTagMenuVideo, containerId: "videoTagFormContainer" },
-  ].forEach((menu) => {
+  tagButtons.forEach((menu) => {
     menu.button.addEventListener("click", function () {
       closeAllMenus();
       const formContainer = document.getElementById(menu.containerId);
       formContainer.classList.toggle("hidden");
+    });
+  });
+
+  tagButtons.forEach(({ button }) => {
+    button.addEventListener("click", function () {
+      menuRight.classList.remove("hidden");
     });
   });
 
@@ -363,106 +383,126 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-  // TAGS DOOR & INFO
+  // TAGS
 
   createDoorBtn.addEventListener("click", function () {
     const selectedSceneId = sceneDropdown.value;
     const scene = document.getElementById(selectedSceneId);
     let messageError = document.getElementById("error");
-  
+
     if (!scene) {
       messageError.innerText = "Erreur : Scène non trouvée.";
       console.error("Scène non trouvée.");
       return;
     }
-  
+
     const doorTagTitle = document.getElementById("doorTagTitle").value;
     const cameraId = "camera-" + selectedSceneId;
     const camera = document.getElementById(cameraId);
-  
+
     if (!camera || !camera.object3D) {
       console.error("Caméra non trouvée ou non initialisée.");
       return;
     }
-  
+
     const cameraDirection = new THREE.Vector3();
     camera.object3D.getWorldDirection(cameraDirection);
     const distance = -15;
-    const tagPosition = new THREE.Vector3().copy(camera.object3D.position).addScaledVector(cameraDirection, distance);
+    const tagPosition = new THREE.Vector3()
+      .copy(camera.object3D.position)
+      .addScaledVector(cameraDirection, distance);
     const doorSceneSelect = document.getElementById("doorSceneSelect");
     const targetSceneId = doorSceneSelect.value;
-  
-    const doorTag = new DoorTag(selectedSceneId, doorTagTitle, tagPosition, targetSceneId);
+
+    const doorTag = new DoorTag(
+      selectedSceneId,
+      doorTagTitle,
+      tagPosition,
+      targetSceneId
+    );
     doorTag.create();
-  
+
     document.getElementById("doorTagTitle").value = "";
     doorSceneSelect.value = "";
     messageError.innerText = "";
   });
-  
+
   createInfoBtn.addEventListener("click", function () {
     const selectedSceneId = sceneDropdown.value;
     const scene = document.getElementById(selectedSceneId);
     let messageError = document.getElementById("error");
-  
+
     if (!scene) {
       messageError.innerText = "Erreur : Scène non trouvée.";
       console.error("Scène non trouvée.");
       return;
     }
-  
+
     const infoTagTitle = document.getElementById("tagTitle").value;
     const infoTagDescription = document.getElementById("tagDescription").value;
     const cameraId = "camera-" + selectedSceneId;
     const camera = document.getElementById(cameraId);
-  
+
     if (!camera || !camera.object3D) {
       console.error("Caméra non trouvée ou non initialisée.");
       return;
     }
-  
+
     const cameraDirection = new THREE.Vector3();
     camera.object3D.getWorldDirection(cameraDirection);
-    const distance = -6;
-    const tagPosition = new THREE.Vector3().copy(camera.object3D.position).addScaledVector(cameraDirection, distance);
-  
-    const infoTag = new InfoTag(selectedSceneId, infoTagTitle, tagPosition, infoTagDescription);
+    const distance = -10;
+    const tagPosition = new THREE.Vector3()
+      .copy(camera.object3D.position)
+      .addScaledVector(cameraDirection, distance);
+
+    const infoTag = new InfoTag(
+      selectedSceneId,
+      infoTagTitle,
+      tagPosition,
+      infoTagDescription
+    );
     infoTag.create();
   });
-  
-  document.getElementById("createPhotoTagBtn").addEventListener("click", function () {
-    const selectedSceneId = document.getElementById("sceneDropdown").value;
-    const scene = document.getElementById(selectedSceneId);
-    if (!scene) {
-      console.error("Scene not found.");
-      return;
-    }
-  
-    const title = document.getElementById("photoTagTitle").value;
-    if (!title) {
-      alert("Le titre est obligatoire.");
-      return;
-    }
-  
-    const fileInput = document.getElementById("photoFileInput");
-    const file = fileInput.files[0];
-  
-    if (!file) {
-      console.error("No file selected.");
-      return;
-    }
-  
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const imageUrl = e.target.result;
-      const photoTag = new PhotoTag(selectedSceneId, title, "0 1.6 -2", imageUrl);
-      photoTag.create();
-      resetPhotoTagForm();
-    };
-    reader.readAsDataURL(file);
-  });
-  
-  
+
+  document
+    .getElementById("createPhotoTagBtn")
+    .addEventListener("click", function () {
+      const selectedSceneId = document.getElementById("sceneDropdown").value;
+      const scene = document.getElementById(selectedSceneId);
+      if (!scene) {
+        console.error("Scene not found.");
+        return;
+      }
+
+      const title = document.getElementById("photoTagTitle").value;
+      if (!title) {
+        alert("Le titre est obligatoire.");
+        return;
+      }
+
+      const fileInput = document.getElementById("photoFileInput");
+      const file = fileInput.files[0];
+
+      if (!file) {
+        console.error("No file selected.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const imageUrl = e.target.result;
+        const photoTag = new PhotoTag(
+          selectedSceneId,
+          title,
+          "0 1.6 -2",
+          imageUrl
+        );
+        photoTag.create();
+        resetPhotoTagForm();
+      };
+      reader.readAsDataURL(file);
+    });
+
   const tagSelectorDoor = document.getElementById("tagSelectorDoor");
   tagSelectorDoor.addEventListener("change", function () {
     const selectedTagId = tagSelectorDoor.value;
@@ -479,14 +519,12 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
-  
 
   displayDefaultScene();
   // createSceneElement("Scene test 1", "./asset/GS__3523.jpg");
   // createSceneElement("Scene test 2", "./asset/GS__3524.jpg");
   updateSceneDropdown();
 });
-
 
 export function changeScene(sceneId) {
   const scene = document.getElementById(sceneId);
@@ -509,10 +547,10 @@ export function resetPhotoTagForm() {
   document.getElementById("photoFileInput").value = "";
 }
 
-
 export function updateTagSelectorDoor(sceneId) {
   const tagSelectorDoor = document.getElementById("tagSelectorDoor");
-  tagSelectorDoor.innerHTML = '<option value="" disabled selected>Sélectionnez un tag</option>';
+  tagSelectorDoor.innerHTML =
+    '<option value="" disabled selected>Sélectionnez un tag</option>';
   if (tagsByScene[sceneId] && tagsByScene[sceneId].length > 0) {
     tagsByScene[sceneId].forEach((tag) => {
       const option = document.createElement("option");
@@ -529,33 +567,15 @@ export function updateTagSelectorDoor(sceneId) {
   }
 }
 
-//affichage de l'info scroll profondeur
-const infoToggle = document.getElementById('info-toggle');
-const infoToggleDoor = document.getElementById('info-toggle-door');
-const infoTogglePhoto = document.getElementById('info-toggle-photo');
-const popup = document.getElementById('popup');
-const closePopup = document.getElementById('close-popup');
-
-
-infoToggle.addEventListener('click', function(event) {
-  event.preventDefault(); 
-  popup.classList.toggle('hidden');
-});
-
-infoToggleDoor.addEventListener('click', function(event) {
-  event.preventDefault(); 
-  popup.classList.toggle('hidden');
-});
-
-infoTogglePhoto.addEventListener('click', function(event) {
-  event.preventDefault(); 
-  popup.classList.toggle('hidden');
-});
-
-
-
-
-closePopup.addEventListener('click', function(event) {
-  event.preventDefault(); // Empêche le rechargement de la page
-  popup.classList.add('hidden');
-});
+export function checkScenesAndToggleSubMenu() {
+  const allScenes = document.querySelectorAll("a-scene");
+  const subMenuCreateTag = document.getElementById("subMenuCreateTag");
+  const exportSaveBtn = document.getElementById("exportSaveBtn");
+  if (allScenes.length > 0) {
+    subMenuCreateTag.classList.remove("hidden");
+    exportSaveBtn.classList.remove("hidden");
+  } else {
+    subMenuCreateTag.classList.add("hidden");
+    exportSaveBtn.classList.add("hidden");
+  }
+}

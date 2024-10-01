@@ -40,31 +40,47 @@ class Tag {
         "look-at-camera": ""
       });
   
-      const newBox = this.createElement("a-box", {
-        position: this.position,
-        color: "#4CC3D9",
-        id: this.id,
-        "follow-mover": { target: newSphere },
-        width: "2",
-        height: "4",
-        depth: "0.5",
-        "look-at-camera": "",
-        class: "door",
-        "data-target-scene": this.targetSceneId
+      const infoBox = document.createElement("a-entity");
+      
+ 
+      const infoBoxOffset = { x: -2, y: 4, z: 0 }; // Décalage basé sur la taille du `backgroundPlane`
+      infoBox.setAttribute("position", {
+          x: this.position.x + infoBoxOffset.x,
+          y: this.position.y + infoBoxOffset.y,
+          z: this.position.z + infoBoxOffset.z,
       });
-  
-      newBox.addEventListener("click", () => {
-        if (this.targetSceneId) {
-          changeScene(this.targetSceneId);
-        } else {
-          console.warn("Aucune scène sélectionnée pour la navigation.");
-        }
-      });
-  
-      this.appendToScene(scene, [newBox, newSphere]);
-    }
+
+      // Ajouter les composants de suivi
+      infoBox.setAttribute("follow-mover", { target: newSphere });
+      infoBox.setAttribute("look-at-camera", "");
+
+    
+    const newBox = this.createElement("a-box", {
+      position: "1 -2 0",
+      color: "#4CC3D9",
+      id: this.id,
+      width: "2",
+      height: "4",
+      depth: "0.5",
+      "look-at-camera": "",
+      class: "door",
+      "data-target-scene": this.targetSceneId
+    });
+    infoBox.appendChild(newBox);
+
+    // Ajout d'un écouteur d'événements pour la boîte
+    newBox.addEventListener("click", () => {
+      if (this.targetSceneId) {
+        changeScene(this.targetSceneId);
+      } else {
+        console.warn("Aucune scène sélectionnée pour la navigation.");
+      }
+    });
+
+    // Ajouter la sphère et la boîte à la scène
+    this.appendToScene(scene, [newSphere, infoBox ]);
   }
-  
+}
   class InfoTag extends Tag {
     constructor(sceneId, title, position, description) {
       super(sceneId, title, position);
@@ -82,47 +98,52 @@ class Tag {
       });
   
       const infoBox = document.createElement("a-entity");
-        infoBox.setAttribute("position", {
-            x: this.position.x - 1,
-            y: this.position.y,
-            z: this.position.z,
-        });
-        infoBox.setAttribute("follow-mover", { target: newSphere });
-        infoBox.setAttribute("look-at-camera", "");
+      
+ 
+      const infoBoxOffset = { x: -2, y: 0.7, z: 0 }; // Décalage basé sur la taille du `backgroundPlane`
+      infoBox.setAttribute("position", {
+          x: this.position.x + infoBoxOffset.x,
+          y: this.position.y + infoBoxOffset.y,
+          z: this.position.z + infoBoxOffset.z,
+      });
 
-        // créer le bg noir
-        const backgroundPlane = document.createElement("a-plane");
-        backgroundPlane.setAttribute("width", "2");
-        backgroundPlane.setAttribute("height", "1.4");
-        backgroundPlane.setAttribute("color", "#000000");
-        backgroundPlane.setAttribute("material", "opacity: 0.8; transparent: true");
-        backgroundPlane.setAttribute("position", "0 0 0.05");
-        infoBox.appendChild(backgroundPlane);
+      // Ajouter les composants de suivi
+      infoBox.setAttribute("follow-mover", { target: newSphere });
+      infoBox.setAttribute("look-at-camera", "");
 
-        // titre 
-        const titleText = document.createElement("a-text");
-        titleText.setAttribute("value", this.title); // Utilise le titre de l'objet
-        titleText.setAttribute("position", "0 0.4 0.1"); // Position du titre dans le conteneur
-        titleText.setAttribute("width", "1.8");
-        titleText.setAttribute("scale", "1.8 1.8 1.8");
-        titleText.setAttribute("align", "center");
-        titleText.setAttribute("color", "#EF2D5E");
-        titleText.setAttribute("font", "https://cdn.aframe.io/fonts/mozillavr.fnt");
-        infoBox.appendChild(titleText);
+      // Créer le fond noir de la boîte
+      const backgroundPlane = document.createElement("a-plane");
+      backgroundPlane.setAttribute("width", "3");
+      backgroundPlane.setAttribute("height", "1.8");
+      backgroundPlane.setAttribute("color", "#000000");
+      backgroundPlane.setAttribute("material", "opacity: 0.8; transparent: true");
+      backgroundPlane.setAttribute("position", "1 -0.7 0.05"); // Alignement du coin supérieur gauche avec la sphère
+      infoBox.appendChild(backgroundPlane);
 
-        // Création de la description stylisée
-        const descriptionText = document.createElement("a-text");
-        descriptionText.setAttribute("value", this.description); // Utilise la description de l'objet
-        descriptionText.setAttribute("position", "0 0.1 0.1"); // Position de la description
-        descriptionText.setAttribute("scale", "1.4 1.4 1.4");
-        descriptionText.setAttribute("width", "1.6");
-        descriptionText.setAttribute("align", "center");
-        descriptionText.setAttribute("color", "#FFFFFF");
-        descriptionText.setAttribute("font", "https://cdn.aframe.io/fonts/mozillavr.fnt");
-        infoBox.appendChild(descriptionText);
+      // Ajouter le titre
+      const titleText = document.createElement("a-text");
+      titleText.setAttribute("value", this.title);
+      titleText.setAttribute("position", "1 -0.3 0.1"); // Position du texte dans le conteneur
+      titleText.setAttribute("width", "2.8");
+      titleText.setAttribute("scale", "1.8 1.8 1.8");
+      titleText.setAttribute("align", "center");
+      titleText.setAttribute("color", "#EF2D5E");
+      titleText.setAttribute("font", "https://cdn.aframe.io/fonts/mozillavr.fnt");
+      infoBox.appendChild(titleText);
 
-        // Ajouter la sphère et l'infoBox dans la scène
-        this.appendToScene(scene, [newSphere, infoBox]);
+      // Ajouter la description stylisée
+      const descriptionText = document.createElement("a-text");
+      descriptionText.setAttribute("value", this.description);
+      descriptionText.setAttribute("position", "1 -0.6 0.1"); // Position de la description
+      descriptionText.setAttribute("scale", "1.4 1.4 1.4");
+      descriptionText.setAttribute("width", "1.6");
+      descriptionText.setAttribute("align", "center");
+      descriptionText.setAttribute("color", "#FFFFFF");
+      descriptionText.setAttribute("font", "https://cdn.aframe.io/fonts/mozillavr.fnt");
+      infoBox.appendChild(descriptionText);
+
+      // Ajouter la sphère et l'infoBox dans la scène
+      this.appendToScene(scene, [newSphere, infoBox]);
     }
 }
   

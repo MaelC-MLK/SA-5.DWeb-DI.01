@@ -6,8 +6,8 @@ AFRAME.registerComponent('follow-mover', {
       var spherePosition = this.data.target.getAttribute('position');
       
       this.el.setAttribute('position', { 
-        x: spherePosition.x - 1, 
-        y: spherePosition.y - 0.6 , 
+        x: spherePosition.x, 
+        y: spherePosition.y, 
         z: spherePosition.z,
       });
     }

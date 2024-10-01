@@ -524,6 +524,7 @@ Make sure disabled buttons don't get the pointer cursor.
    This can trigger a poorly considered lint error in some tools but is included by design.
 */
 
+img,
 svg,
 video,
 canvas,
@@ -541,7 +542,7 @@ object {
 Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
 */
 
-
+img,
 video {
   max-width: 100%;
   height: auto;
@@ -678,8 +679,16 @@ video {
   right: 0px;
 }
 
+.right-2 {
+  right: 0.5rem;
+}
+
 .top-0 {
   top: 0px;
+}
+
+.top-2 {
+  top: 0.5rem;
 }
 
 .isolate {
@@ -740,6 +749,11 @@ video {
 
 .m-8 {
   margin: 2rem;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .mb-4 {
@@ -873,6 +887,10 @@ video {
   height: 2rem;
 }
 
+.h-auto {
+  height: auto;
+}
+
 .h-full {
   height: 100%;
 }
@@ -885,16 +903,12 @@ video {
   width: 50%;
 }
 
-.w-16 {
-  width: 4rem;
-}
-
 .w-44 {
   width: 11rem;
 }
 
-.w-80 {
-  width: 20rem;
+.w-\[22rem\] {
+  width: 22rem;
 }
 
 .w-\[this-is\\\\\] {
@@ -909,8 +923,16 @@ video {
   width: weird-and-invalid;
 }
 
+.w-auto {
+  width: auto;
+}
+
 .w-full {
   width: 100%;
+}
+
+.max-w-md {
+  max-width: 28rem;
 }
 
 .flex-shrink {
@@ -971,6 +993,10 @@ video {
 
 .transform-none {
   transform: none;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 .touch-auto {
@@ -1938,6 +1964,11 @@ video {
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
 
+.bg-gray-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(17 24 39 / var(--tw-bg-opacity));
+}
+
 .bg-transparent {
   background-color: transparent;
 }
@@ -2061,10 +2092,6 @@ video {
      object-fit: scale-down;
 }
 
-.p-2 {
-  padding: 0.5rem;
-}
-
 .p-6 {
   padding: 1.5rem;
 }
@@ -2091,11 +2118,6 @@ video {
 .px-5 {
   padding-left: 1.25rem;
   padding-right: 1.25rem;
-}
-
-.px-8 {
-  padding-left: 2rem;
-  padding-right: 2rem;
 }
 
 .py-2 {
@@ -2271,6 +2293,11 @@ video {
 .text-gray-500 {
   --tw-text-opacity: 1;
   color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+
+.text-gray-600 {
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
 }
 
 .text-gray-700 {
@@ -2699,6 +2726,44 @@ video {
   cursor: pointer;
 }
 
+/* Styles de base pour le pop-up */
+
+#popup {
+  transition: opacity 0.3s ease-in-out;
+  z-index: 50;
+  /* S'assurer que le pop-up est au-dessus */
+}
+
+#popup.hidden {
+  display: none;
+}
+
+#popup.bg-opacity-50 {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#popup .bg-white {
+  max-width: 400px;
+  width: 90%;
+}
+
+.information-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+#close-popup {
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+#close-popup:hover {
+  color: #ff0000;
+}
+
 @media (min-width: 640px) {
   .sm\:container {
     width: 100%;
@@ -2778,6 +2843,11 @@ video {
   color: rgb(0 0 0 / var(--tw-text-opacity));
 }
 
+.hover\:text-gray-900:hover {
+  --tw-text-opacity: 1;
+  color: rgb(17 24 39 / var(--tw-text-opacity));
+}
+
 .hover\:text-white:hover {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
@@ -2826,46 +2896,3 @@ video {
     }
   }
 }
-
-
-/* Styles de base pour le pop-up */
-#popup {
-  transition: opacity 0.3s ease-in-out;
-  z-index: 50; /* S'assurer que le pop-up est au-dessus */
-}
-
-/* Masquer par défaut */
-#popup.hidden {
-  display: none;
-}
-
-/* Style du fond opaque */
-#popup.bg-opacity-50 {
-  background-color: rgba(0, 0, 0, 0.5); /* Opacité de 50% */
-}
-
-/* Centrage du pop-up */
-#popup .bg-white {
-  max-width: 400px; /* Largeur maximale du pop-up */
-  width: 90%; /* Largeur responsive */
-}
-
-.information-icon {
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-/* Style pour le bouton de fermeture */
-#close-popup {
-  font-size: 24px;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-#close-popup:hover {
-  color: #ff0000;
-}
-
-

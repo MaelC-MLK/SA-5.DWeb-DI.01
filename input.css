@@ -27,3 +27,42 @@
 .door {
   cursor: pointer;
 }
+
+/* Styles de base pour le pop-up */
+#popup {
+  transition: opacity 0.3s ease-in-out;
+  z-index: 50; /* S'assurer que le pop-up est au-dessus */
+}
+
+
+#popup.hidden {
+  display: none;
+}
+
+#popup.bg-opacity-50 {
+  background-color: rgba(0, 0, 0, 0.5); 
+}
+
+
+#popup .bg-white {
+  max-width: 400px;
+  width: 90%;
+}
+
+.information-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+
+#close-popup {
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+#close-popup:hover {
+  color: #ff0000;
+}
