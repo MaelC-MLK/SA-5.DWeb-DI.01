@@ -1,5 +1,5 @@
 import { updateSceneDropdown } from './domUtils.js';
-
+import { checkScenesAndToggleSubMenu } from './main.js';
 
 export const scenes = [];
 
@@ -29,7 +29,6 @@ export function createSceneElement(sceneId, src) {
   pointer.setAttribute('follow-camera', '');  
   sceneElement.appendChild(pointer);
 
-  // Ajouter les entités de contrôleur VR
   const leftHand = document.createElement('a-entity');
   leftHand.setAttribute('id', 'leftHand');
   leftHand.setAttribute('laser-controls', 'hand: left');
@@ -49,6 +48,8 @@ export function createSceneElement(sceneId, src) {
   document.getElementById('ExportSceneBtn').disabled = false;
 
   updateSceneDropdown();
+  checkScenesAndToggleSubMenu();
+
 }
 
 export function displayScene(sceneId) {
@@ -111,7 +112,6 @@ export function saveAllScenes() {
   return scenesJson;
 }
 
-
 export function loadScenesFromJson(scenesJson) {
   const scenesData = JSON.parse(scenesJson);
 
@@ -130,4 +130,5 @@ export function loadScenesFromJson(scenesJson) {
   });
 
   updateSceneDropdown();
+  checkScenesAndToggleSubMenu();
 }
