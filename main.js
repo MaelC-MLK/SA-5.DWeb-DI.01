@@ -384,6 +384,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Fonction pour créer un tag vidéo
 function createVideoTag() {
+  const selectedSceneId = document.getElementById("sceneDropdown").value; // Ajoutez cette ligne
   const title = document.getElementById("videoTagTitle").value;
   const fileInput = document.getElementById("videoFileInput");
   const file = fileInput.files[0];
