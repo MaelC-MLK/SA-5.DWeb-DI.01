@@ -226,7 +226,7 @@ class InfoTag extends Tag {
   remove() {
     const sphereElement = document.getElementById(`sphere-${this.id}`);
     const infoBoxElement = document.getElementById(`infoBox-${this.id}`);
-    
+
     if (sphereElement) {
       sphereElement.parentNode.removeChild(sphereElement);
     }
