@@ -384,10 +384,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Fonction pour créer un tag vidéo
 function createVideoTag() {
-  const selectedSceneId = document.getElementById("sceneDropdown").value; // Ajoutez cette ligne
+  const selectedSceneId = document.getElementById("sceneDropdown").value;
   const title = document.getElementById("videoTagTitle").value;
   const fileInput = document.getElementById("videoFileInput");
   const file = fileInput.files[0];
+  const messageError = document.getElementById("error");
 
   if (!title) {
     messageError.innerText = "Erreur : Le titre est obligatoire.";
@@ -414,6 +415,7 @@ function createVideoTag() {
     tagsByScene[selectedSceneId].push(videoTag);
 
     resetVideoTagForm();
+    messageError.innerText = "";
   };
 
   reader.readAsDataURL(file);
@@ -545,7 +547,7 @@ function createInfoTag() {
 function createPhotoTag() {
   const selectedSceneId = document.getElementById("sceneDropdown").value;
   const scene = document.getElementById(selectedSceneId);
-
+  const messageError = document.getElementById("error");
 
   const title = document.getElementById("photoTagTitle").value;
   if (!title) {
@@ -565,7 +567,20 @@ function createPhotoTag() {
   reader.onload = function (e) {
     const imageUrl = e.target.result;
 
-    const photoTag = new PhotoTag(selectedSceneId, title, "0 1.6 -2", imageUrl);
+    const cameraId = `camera-${selectedSceneId}`;
+    const camera = document.getElementById(cameraId);
+    if (!camera) {
+      console.error(`Camera with ID ${cameraId} not found`);
+      return;
+    }
+
+    const cameraDirection = new THREE.Vector3();
+    camera.object3D.getWorldDirection(cameraDirection);
+    const cameraPosition = camera.object3D.position.clone();
+    const distance = 2; 
+    const targetPosition = cameraPosition.add(cameraDirection.multiplyScalar(distance));
+
+    const photoTag = new PhotoTag(selectedSceneId, title, targetPosition, imageUrl);
     photoTag.create();
 
     if (!tagsByScene[selectedSceneId]) {
@@ -574,6 +589,7 @@ function createPhotoTag() {
     tagsByScene[selectedSceneId].push(photoTag);
 
     resetPhotoTagForm();
+    messageError.innerText = "";
   };
 
   reader.readAsDataURL(file);

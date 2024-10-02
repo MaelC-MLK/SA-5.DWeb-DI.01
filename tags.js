@@ -227,6 +227,10 @@ class PhotoTag extends Tag {
   // Méthode pour créer un tag de type photo
   create() {
     const scene = document.getElementById(this.sceneId);
+    if (!scene) {
+      console.error(`Scene with ID ${this.sceneId} not found`);
+      return;
+    }
 
     const camera = scene.camera;
     const cameraDirection = new THREE.Vector3();
@@ -268,6 +272,12 @@ class VideoTag extends Tag {
   // Méthode pour créer un tag de type vidéo
   create() {
     const scene = document.getElementById(this.sceneId);
+    if (!scene) {
+      console.error(`Scene with ID ${this.sceneId} not found`);
+      return;
+    }
+
+    console.log(`Creating video tag in scene ${this.sceneId}`);
 
     const camera = scene.camera;
     const cameraDirection = new THREE.Vector3();
@@ -275,6 +285,8 @@ class VideoTag extends Tag {
     const cameraPosition = camera.position.clone();
     const distance = 2; 
     const targetPosition = cameraPosition.add(cameraDirection.multiplyScalar(distance));
+
+    console.log(`Target position for video: ${targetPosition.x}, ${targetPosition.y}, ${targetPosition.z}`);
 
     const video = this.createElement("a-video", {
       id: `video-${this.id}`, // Attribuer un ID unique à la vidéo
@@ -290,6 +302,7 @@ class VideoTag extends Tag {
       class: "tag"
     });
 
+    console.log(`Appending video to scene ${this.sceneId}`);
     this.appendToScene(scene, [video]);
   }
 
@@ -302,5 +315,4 @@ class VideoTag extends Tag {
     } 
   }
 }
-
 export { Tag, DoorTag, InfoTag, PhotoTag, VideoTag };

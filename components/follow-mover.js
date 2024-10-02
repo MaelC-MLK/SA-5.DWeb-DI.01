@@ -3,11 +3,20 @@ AFRAME.registerComponent('follow-mover', {
     target: { type: 'selector' }
   },
   tick: function () {
-    var spherePosition = this.data.target.getAttribute('position');
+    var targetEl = this.data.target;
+    if (!targetEl) {
+      return;
+    }
+    
+    var spherePosition = targetEl.getAttribute('position');
+    if (!spherePosition) {
+      return;
+    }
+    
     
     this.el.setAttribute('position', { 
-      x: spherePosition.x , 
-      y: spherePosition.y  , 
+      x: spherePosition.x, 
+      y: spherePosition.y, 
       z: spherePosition.z,
     });
   }

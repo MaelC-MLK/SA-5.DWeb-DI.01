@@ -1,11 +1,12 @@
 import { updateSceneDropdown } from './domUtils.js';
 import { checkScenesAndToggleSubMenu } from './main.js';
+import { tagsByScene, InfoTag, PhotoTag, VideoTag, DoorTag } from './tags.js'; 
 
-// Tableau pour stocker les scènes
 export const scenes = [];
 
 // Fonction pour créer un élément de scène
 export function createSceneElement(sceneId, src) {
+
   // Crée un élément de scène A-Frame
   const sceneElement = document.createElement('a-scene');
   sceneElement.setAttribute('id', sceneId);
@@ -61,7 +62,10 @@ export function createSceneElement(sceneId, src) {
   sceneElement.appendChild(rightHand);
 
   // Ajoute la scène au conteneur de scènes
-  document.getElementById('sceneContainer').appendChild(sceneElement);
+  const sceneContainer = document.getElementById('sceneContainer');
+  if (sceneContainer) {
+    sceneContainer.appendChild(sceneElement);
+  } 
 
   // Met à jour le menu déroulant des scènes et vérifie les scènes pour afficher le sous-menu
   updateSceneDropdown();
@@ -96,7 +100,6 @@ export function displayDefaultScene() {
   }
 }
 
-// Fonction pour sauvegarder toutes les scènes en JSON
 export function saveAllScenes() {
   const allScenes = document.querySelectorAll('a-scene');
   const scenesData = [];
@@ -118,10 +121,19 @@ export function saveAllScenes() {
       entities.push(entityData);
     });
 
+    const tags = tagsByScene[sceneId] || [];
+
     scenesData.push({
       id: sceneId,
       src: src,
-      entities: entities
+      entities: entities,
+      tags: tags.map(tag => ({
+        id: tag.id,
+        title: tag.title,
+        position: tag.position,
+        type: tag.constructor.name,
+        additionalData: tag.additionalData // Inclure des données supplémentaires spécifiques au type de tag
+      }))
     });
   });
 
@@ -134,7 +146,7 @@ export function loadScenesFromJson(scenesJson) {
   const scenesData = JSON.parse(scenesJson);
 
   scenesData.forEach(sceneData => {
-    const { id, src, entities } = sceneData;
+    const { id, src, entities, tags } = sceneData;
     createSceneElement(id, src);
 
     const sceneElement = document.getElementById(id);
@@ -145,8 +157,34 @@ export function loadScenesFromJson(scenesJson) {
       });
       sceneElement.appendChild(entity);
     });
+
+    tagsByScene[id] = [];
+    tags.forEach(tagData => {
+      let tagInstance;
+      switch (tagData.type) {
+        case 'DoorTag':
+          tagInstance = new DoorTag(id, tagData.title, tagData.position, tagData.targetSceneId);
+          break;
+        case 'InfoTag':
+          tagInstance = new InfoTag(id, tagData.title, tagData.position, tagData.description);
+          break;
+        case 'PhotoTag':
+          tagInstance = new PhotoTag(id, tagData.title, tagData.position, tagData.imageUrl);
+          break;
+        case 'VideoTag':
+          tagInstance = new VideoTag(id, tagData.title, tagData.position, tagData.videoUrl);
+          break;
+        default:
+          console.warn(`Unknown tag type: ${tagData.type}`);
+      }
+      if (tagInstance) {
+        tagInstance.id = tagData.id; // Restaurer l'ID du tag
+        tagInstance.create();
+        tagsByScene[id].push(tagInstance);
+      }
+    });
   });
 
-  updateSceneDropdown();
+  updateTagSelectorDoor();
   checkScenesAndToggleSubMenu();
 }
