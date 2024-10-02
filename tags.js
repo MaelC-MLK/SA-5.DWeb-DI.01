@@ -92,48 +92,53 @@ class Tag {
     this.appendToScene(scene, [newSphere, infoBox ]);
   }
 }
-  class InfoTag extends Tag {
-    constructor(sceneId, title, position, description) {
-      super(sceneId, title, position);
-      this.description = description;
-    }
-  
-    create() {
-      const scene = document.getElementById(this.sceneId);
-    
-      // Créer la sphère
-      const newSphere = this.createElement("a-sphere", {
-        position: this.position,
-        radius: "0.3",
-        color: "#EF2D5E",
-        dragndrop: "",
-        "look-at-camera": ""
-      });
+class InfoTag extends Tag {
+  constructor(sceneId, title, position, description) {
+    super(sceneId, title, position);
+    this.description = description;
+  }
 
-      const newSphereIcon = this.createElement("a-plane");
-      newSphereIcon.setAttribute("position", { x: 0, y: 0, z: 0.35 });
-      newSphereIcon.setAttribute("width", "0.3");
-      newSphereIcon.setAttribute("height", "0.3");
-      newSphereIcon.setAttribute("src", "#icon-grab");
-      newSphereIcon.setAttribute("look-at-camera", ""); 
-      newSphereIcon.setAttribute("material", "shader: flat; transparent: true;");
-      
+  create() {
+    const scene = document.getElementById(this.sceneId);
+    
+    // Créer la sphère
+    const newSphere = this.createElement("a-sphere", {
+      position: this.position,
+      radius: "0.3",
+      color: "#EF2D5E",
+      dragndrop: "",
+      "look-at-camera": ""
+    });
 
-      newSphere.appendChild(newSphereIcon);
+    const newSphereIcon = this.createElement("a-plane");
+    newSphereIcon.setAttribute("position", { x: 0, y: 0, z: 0.35 });
+    newSphereIcon.setAttribute("width", "0.3");
+    newSphereIcon.setAttribute("height", "0.3");
+    newSphereIcon.setAttribute("src", "#icon-grab");
+    newSphereIcon.setAttribute("look-at-camera", "");
+    newSphereIcon.setAttribute("material", "shader: flat; transparent: true;");
     
+    // Créer la boîte de réduction
+    const reductionBox = this.createElement("a-box", {
+      position: { x: 0.4, y: 0.4, z: 0},
+      depth: "0.5",
+      height: "0.5",
+      width: "0.5",
+      color: "#EF2D5E"
+    });
+
+    // Créer l'infoBox avec un décalage par rapport à la sphère
+    const infoBox = document.createElement("a-entity");
+    const infoBoxOffset = { x: -2, y: 0.7, z: 0 }; // Décalage basé sur la taille du `backgroundPlane`
+    infoBox.setAttribute("position", {
+      x: this.position.x + infoBoxOffset.x,
+      y: this.position.y + infoBoxOffset.y,
+      z: this.position.z + infoBoxOffset.z,
+    });
     
-      // Créer l'infoBox avec un décalage par rapport à la sphère
-      const infoBox = document.createElement("a-entity");
-      const infoBoxOffset = { x: -2, y: 0.7, z: 0 }; // Décalage basé sur la taille du `backgroundPlane`
-      infoBox.setAttribute("position", {
-        x: this.position.x + infoBoxOffset.x,
-        y: this.position.y + infoBoxOffset.y,
-        z: this.position.z + infoBoxOffset.z,
-      });
-      
-      // Ajouter les composants de suivi
-      infoBox.setAttribute("follow-mover", { target: newSphere });
-      infoBox.setAttribute("look-at-camera", "");
+    // Ajouter les composants de suivi
+    infoBox.setAttribute("follow-mover", { target: newSphere });
+    infoBox.setAttribute("look-at-camera", "");
 
     // Créer le fond noir de la boîte
     const backgroundPlane = document.createElement("a-plane");
@@ -165,11 +170,21 @@ class Tag {
     descriptionText.setAttribute("color", "#FFFFFF");
     infoBox.appendChild(descriptionText);
 
+    reductionBox.setAttribute("resize-on-click", {
+      target: backgroundPlane,
+      defaultWidth: 5, // Largeur d'origine
+      defaultHeight: 3, // Hauteur d'origine
+      reducedWidth: 1,  // Largeur réduite
+      reducedHeight: 0.2 // Hauteur réduite
+    });
+
     // Ajouter la sphère et l'infoBox dans la scène
     this.appendToScene(scene, [newSphere, infoBox]);
+    newSphere.appendChild(reductionBox); // Ajouter `reductionBox` à la sphère
+    newSphere.appendChild(newSphereIcon); // Ajouter l'icône de la sphère
   }
-    
 }
+
   
   class PhotoTag extends Tag {
     constructor(sceneId, title, position, imageUrl) {
