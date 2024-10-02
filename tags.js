@@ -63,17 +63,6 @@ class DoorTag extends Tag {
       class: "tag"
     });
 
-    const newSphereIcon = this.createElement("a-plane");
-      newSphereIcon.setAttribute("position", { x: 0, y: 0, z: 0.5 });
-      newSphereIcon.setAttribute("width", "0.3");
-      newSphereIcon.setAttribute("height", "0.3");
-      newSphereIcon.setAttribute("src", "#icon-grab");
-      newSphereIcon.setAttribute("look-at-camera", ""); 
-      newSphereIcon.setAttribute("material", "shader: flat; transparent: true;");
-
-
-      newSphere.appendChild(newSphereIcon);
-
     const infoBox = document.createElement("a-entity");
     const infoBoxOffset = { x: -2, y: 4, z: 0 }; 
     infoBox.setAttribute("position", {
@@ -141,14 +130,6 @@ class InfoTag extends Tag {
       "data-tag-id": this.id,
       class: "tag"
     });
-
-    const newSphereIcon = this.createElement("a-plane");
-    newSphereIcon.setAttribute("position", { x: 0, y: 0, z: 0.4 });
-    newSphereIcon.setAttribute("width", "0.3");
-    newSphereIcon.setAttribute("height", "0.3");
-    newSphereIcon.setAttribute("src", "#icon-grab");
-    newSphereIcon.setAttribute("look-at-camera", "");
-    newSphereIcon.setAttribute("material", "shader: flat; transparent: true;");
     
     // Créer la boîte de réduction
     const reductionBox = this.createElement("a-box", {
@@ -220,7 +201,6 @@ class InfoTag extends Tag {
     // Ajouter la sphère et l'infoBox dans la scène
     this.appendToScene(scene, [newSphere, infoBox]);
     newSphere.appendChild(reductionBox); // Ajouter `reductionBox` à la sphère
-    newSphere.appendChild(newSphereIcon);
   }  
   
   remove() {
