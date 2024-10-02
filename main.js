@@ -45,6 +45,26 @@ document.addEventListener("DOMContentLoaded", function () {
   const closePopup = document.getElementById("close-popup");
   const createVideoTagBtn = document.getElementById("createVideoTagBtn");
 
+  const selectTagInfo = document.getElementById("allTag");
+  
+  function remplirSelectTags(selectedSceneId) {
+  // Vider le sélecteur avant d'ajouter les nouvelles options
+  selectTagInfo.innerHTML = ""; 
+
+  console.log("im here 2");
+  console.log(tagsByScene);
+  // Vérifier si la scène sélectionnée a des tags
+  if (tagsByScene[selectedSceneId]) {
+    tagsByScene[selectedSceneId].forEach(tag => {
+      const option = document.createElement("option");
+      option.value = tag.id; // Valeur de l'option
+      option.textContent = tag.name; // Texte affiché
+      selectTagInfo.appendChild(option); // Ajouter l'option au sélecteur
+      console.log("im here 3");
+    });
+  }
+}
+
   // Tableau pour stocker les boutons de tag et leurs conteneurs associés
   let tagButtons = [
     { button: OpenTagMenuText, containerId: "textTagFormContainer" },
@@ -57,6 +77,12 @@ document.addEventListener("DOMContentLoaded", function () {
   let associatedBox = null;
   let selectedImage = null;
   let selectedVideoTag = null;
+
+
+  
+
+// Appeler la fonction pour remplir le sélecteur
+  
 
   // Ajoute des écouteurs d'événements pour les boutons d'information
   infoToggle.addEventListener("click", function (event) {
@@ -352,6 +378,8 @@ document.addEventListener("DOMContentLoaded", function () {
   createInfoBtn.addEventListener("click", (e) => {
     e.preventDefault();
     createInfoTag();
+    console.log("im here")
+    remplirSelectTags();
   });
 
   document
@@ -478,11 +506,15 @@ function createDoorTag() {
   resetDoorTagForm();
   messageError.innerText = ""; // Réinitialiser le message d'erreur
 }
+
+
+
 // Fonction pour créer un tag d'information
 function createInfoTag() {
   const selectedSceneId = sceneDropdown.value;
   const scene = document.getElementById(selectedSceneId);
   let messageError = document.getElementById("error");
+  
 
   if (!scene) {
     messageError.innerText = "Erreur : Scène non trouvée.";
@@ -537,9 +569,14 @@ function createInfoTag() {
   }
   tagsByScene[selectedSceneId].push(infoTag);
 
+  console.log(tagsByScene);
+
+  
   resetInfoTagForm();
   messageError.innerText = "";
 }
+
+
 // Fonction pour créer un tag photo
 function createPhotoTag() {
   const selectedSceneId = document.getElementById("sceneDropdown").value;
@@ -720,3 +757,6 @@ export function changeScene(sceneId) {
     window.dispatchEvent(new Event("resize"));
   });
 }
+
+
+

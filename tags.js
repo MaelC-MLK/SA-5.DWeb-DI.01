@@ -206,7 +206,7 @@ class InfoTag extends Tag {
     descriptionText.setAttribute("color", "#FFFFFF");
     infoBox.appendChild(descriptionText);
 
-    reductionBox.setAttribute("resize-on-click", {
+   reductionBox.setAttribute("resize-on-click", {
       target: backgroundPlane,
       textTitle: titleText,
       textDescription: descriptionText,
@@ -219,6 +219,7 @@ class InfoTag extends Tag {
       defaultDescriptionScale: { x: 2.0, y: 2.0, z: 2.0 }, // Échelle d'origine de la description
       reducedDescriptionScale: { x: 0, y: 0, z:0 } // Échelle réduite de la description
     });
+    
 
     // Ajouter la sphère et l'infoBox dans la scène
     this.appendToScene(scene, [newSphere, infoBox]);
