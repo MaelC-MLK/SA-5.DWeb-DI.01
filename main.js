@@ -213,7 +213,6 @@ document.addEventListener("DOMContentLoaded", function () {
           id: sceneId,
           name: `Scène ${scenes.length + 1}`,
           src: e.target.result,
-          fileName: file.name,
         });
 
         const option = document.createElement("option");
@@ -226,7 +225,6 @@ document.addEventListener("DOMContentLoaded", function () {
         displayScene(sceneId);
         editSceneForm.classList.remove("hidden");
         sceneNameInput.value = `Scène ${scenes.length}`;
-        fileName.textContent = file.name;
       };
       reader.readAsDataURL(file);
     }
@@ -458,7 +456,7 @@ function createDoorTag() {
 
   const cameraDirection = new THREE.Vector3();
   camera.object3D.getWorldDirection(cameraDirection);
-  const distance = -15;
+  const distance = -10;
   const tagPosition = new THREE.Vector3()
     .copy(camera.object3D.position)
     .addScaledVector(cameraDirection, distance);
@@ -521,7 +519,7 @@ function createInfoTag() {
 
   const cameraDirection = new THREE.Vector3();
   camera.object3D.getWorldDirection(cameraDirection);
-  const distance = -10;
+  const distance = -8;
   const tagPosition = new THREE.Vector3()
     .copy(camera.object3D.position)
     .addScaledVector(cameraDirection, distance);
@@ -623,8 +621,9 @@ function deleteScene(sceneId) {
     }
     sceneDropdown.value = "";
     editSceneForm.classList.add("hidden");
-    fileName.textContent = "";
     displayDefaultScene();
+    updateSceneDropdown();
+    checkScenesAndToggleSubMenu();
   }
 }
 // Fonction pour gérer la sélection des tags
@@ -696,12 +695,16 @@ export function checkScenesAndToggleSubMenu() {
   const allScenes = document.querySelectorAll("a-scene");
   const subMenuCreateTag = document.getElementById("subMenuCreateTag");
   const exportSaveBtn = document.getElementById("exportSaveBtn");
-  if (allScenes.length > 0) {
+  const deleteSceneBtn = document.getElementById("deleteSceneBtn");
+
+  if (allScenes.length > 1) { // Vérifie s'il y a plus d'une scène
     subMenuCreateTag.classList.remove("hidden");
     exportSaveBtn.classList.remove("hidden");
+    deleteSceneBtn.disabled = false; // Active le bouton
   } else {
     subMenuCreateTag.classList.add("hidden");
     exportSaveBtn.classList.add("hidden");
+    deleteSceneBtn.disabled = true; // Désactive le bouton
   }
 }
 
