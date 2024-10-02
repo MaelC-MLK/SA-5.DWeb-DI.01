@@ -142,13 +142,6 @@ class InfoTag extends Tag {
       class: "tag"
     });
 
-    const newSphereIcon = this.createElement("a-plane");
-    newSphereIcon.setAttribute("position", { x: 0, y: 0, z: 0.4 });
-    newSphereIcon.setAttribute("width", "0.3");
-    newSphereIcon.setAttribute("height", "0.3");
-    newSphereIcon.setAttribute("src", "#icon-grab");
-    newSphereIcon.setAttribute("look-at-camera", "");
-    newSphereIcon.setAttribute("material", "shader: flat; transparent: true;");
     
     // Créer la boîte de réduction
     const reductionBox = this.createElement("a-box", {
@@ -157,6 +150,16 @@ class InfoTag extends Tag {
       height: "0.5",
       width: "0.5",
       color: "#EF2D5E"
+    });
+
+    const iReductionBox = this.createElement("a-text", {
+      position: { x: 0.38, y: 0.55, z: 0.5},
+      value: "i",
+      color: "#ffffff",
+      align: "center", // Alignement au centre
+      width: 4, // Largeur définie pour ajuster la taille
+      scale: "2.1 2.1 2.1",
+      font : "https://cdn.aframe.io/fonts/mozillavr.fnt"
     });
 
     const infoBox = document.createElement("a-entity");
@@ -220,7 +223,8 @@ class InfoTag extends Tag {
     // Ajouter la sphère et l'infoBox dans la scène
     this.appendToScene(scene, [newSphere, infoBox]);
     newSphere.appendChild(reductionBox); // Ajouter `reductionBox` à la sphère
-    newSphere.appendChild(newSphereIcon);
+    newSphere.appendChild(iReductionBox);
+
   }  
   
   remove() {
@@ -234,7 +238,8 @@ class InfoTag extends Tag {
     if (infoBoxElement) {
       infoBoxElement.parentNode.removeChild(infoBoxElement);
     } 
-  }
+    
+}
 }
 
 // Classe pour les tags de type photo
