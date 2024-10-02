@@ -456,7 +456,7 @@ function createDoorTag() {
 
   const cameraDirection = new THREE.Vector3();
   camera.object3D.getWorldDirection(cameraDirection);
-  const distance = -15;
+  const distance = -10;
   const tagPosition = new THREE.Vector3()
     .copy(camera.object3D.position)
     .addScaledVector(cameraDirection, distance);
@@ -519,7 +519,7 @@ function createInfoTag() {
 
   const cameraDirection = new THREE.Vector3();
   camera.object3D.getWorldDirection(cameraDirection);
-  const distance = -10;
+  const distance = -8;
   const tagPosition = new THREE.Vector3()
     .copy(camera.object3D.position)
     .addScaledVector(cameraDirection, distance);
