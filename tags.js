@@ -55,13 +55,24 @@ class DoorTag extends Tag {
     const newSphere = this.createElement("a-sphere", {
       position: this.position,
       id: this.id,
-      radius: "0.5",
+      radius: "0.35",
       color: "#EF2D5E",
       dragndrop: "",
       "look-at-camera": "",
       "data-tag-id": this.id,
       class: "tag"
     });
+
+    const newSphereIcon = this.createElement("a-plane");
+      newSphereIcon.setAttribute("position", { x: 0, y: 0, z: 0.5 });
+      newSphereIcon.setAttribute("width", "0.3");
+      newSphereIcon.setAttribute("height", "0.3");
+      newSphereIcon.setAttribute("src", "#icon-grab");
+      newSphereIcon.setAttribute("look-at-camera", ""); 
+      newSphereIcon.setAttribute("material", "shader: flat; transparent: true;");
+
+
+      newSphere.appendChild(newSphereIcon);
 
     const infoBox = document.createElement("a-entity");
     const infoBoxOffset = { x: -2, y: 4, z: 0 }; 
@@ -123,12 +134,29 @@ class InfoTag extends Tag {
     const newSphere = this.createElement("a-sphere", {
       id: `sphere-${this.id}`, // Attribuer un ID unique à la sphère
       position: this.position,
-      radius: "0.2",
+      radius: "0.35",
       color: "#EF2D5E",
       dragndrop: "",
       "look-at-camera": "",
       "data-tag-id": this.id,
       class: "tag"
+    });
+
+    const newSphereIcon = this.createElement("a-plane");
+    newSphereIcon.setAttribute("position", { x: 0, y: 0, z: 0.4 });
+    newSphereIcon.setAttribute("width", "0.3");
+    newSphereIcon.setAttribute("height", "0.3");
+    newSphereIcon.setAttribute("src", "#icon-grab");
+    newSphereIcon.setAttribute("look-at-camera", "");
+    newSphereIcon.setAttribute("material", "shader: flat; transparent: true;");
+    
+    // Créer la boîte de réduction
+    const reductionBox = this.createElement("a-box", {
+      position: { x: 0.4, y: 0.4, z: 0},
+      depth: "0.5",
+      height: "0.5",
+      width: "0.5",
+      color: "#EF2D5E"
     });
 
     const infoBox = document.createElement("a-entity");
@@ -147,37 +175,52 @@ class InfoTag extends Tag {
 
     // Créer le fond noir de la boîte
     const backgroundPlane = document.createElement("a-plane");
-    backgroundPlane.setAttribute("width", "3");
-    backgroundPlane.setAttribute("height", "1.8");
+    backgroundPlane.setAttribute("width", "5"); // Largeur agrandie
+    backgroundPlane.setAttribute("height", "3"); // Hauteur agrandie
     backgroundPlane.setAttribute("color", "#000000");
     backgroundPlane.setAttribute("material", "opacity: 0.8; transparent: true");
-    backgroundPlane.setAttribute("position", "1 -0.7 0.05"); 
+    backgroundPlane.setAttribute("position", "2.5 -1.5 0.05"); // Alignement ajusté avec la sphère
     infoBox.appendChild(backgroundPlane);
 
-    // Ajouter le titre
+    // Ajouter le titre avec une position ajustée et un texte plus grand
     const titleText = document.createElement("a-text");
     titleText.setAttribute("value", this.title);
-    titleText.setAttribute("position", "1 -0.3 0.1"); // Position du texte dans le conteneur
-    titleText.setAttribute("width", "2.8");
-    titleText.setAttribute("scale", "1.8 1.8 1.8");
+    titleText.setAttribute("position", "2.5 -0.5 0.1"); // Position ajustée pour le titre
+    titleText.setAttribute("width", "4.5"); // Largeur augmentée
+    titleText.setAttribute("scale", "2.4 2.4 2.4"); // Taille du texte augmentée
     titleText.setAttribute("align", "center");
     titleText.setAttribute("color", "#EF2D5E");
     titleText.setAttribute("font", "https://cdn.aframe.io/fonts/mozillavr.fnt");
     infoBox.appendChild(titleText);
 
-    // Ajouter la description stylisée
+    // Ajouter la description stylisée avec une position ajustée et un texte plus grand
     const descriptionText = document.createElement("a-text");
     descriptionText.setAttribute("value", this.description);
-    descriptionText.setAttribute("position", "1 -0.6 0.1"); // Position de la description
-    descriptionText.setAttribute("scale", "1.4 1.4 1.4");
-    descriptionText.setAttribute("width", "1.6");
+    descriptionText.setAttribute("position", "2.5 -1.8 0.1"); // Position ajustée pour être en dessous du titre
+    descriptionText.setAttribute("scale", "2.0 2.0 2.0"); // Taille du texte augmentée
+    descriptionText.setAttribute("width", "2.4"); // Largeur augmentée pour le texte
     descriptionText.setAttribute("align", "center");
     descriptionText.setAttribute("color", "#FFFFFF");
-    descriptionText.setAttribute("font", "https://cdn.aframe.io/fonts/mozillavr.fnt");
     infoBox.appendChild(descriptionText);
+
+    reductionBox.setAttribute("resize-on-click", {
+      target: backgroundPlane,
+      textTitle: titleText,
+      textDescription: descriptionText,
+      defaultWidth: 5, // Largeur d'origine du `backgroundPlane`
+      defaultHeight: 3, // Hauteur d'origine du `backgroundPlane`
+      reducedWidth: 0,  // Largeur réduite
+      reducedHeight: 0, // Hauteur réduite
+      defaultTitleScale: { x: 2.4, y: 2.4, z: 2.4 }, // Échelle d'origine du titre
+      reducedTitleScale: { x: 0, y: 0, z: 0 }, // Échelle réduite du titre
+      defaultDescriptionScale: { x: 2.0, y: 2.0, z: 2.0 }, // Échelle d'origine de la description
+      reducedDescriptionScale: { x: 0, y: 0, z:0 } // Échelle réduite de la description
+    });
 
     // Ajouter la sphère et l'infoBox dans la scène
     this.appendToScene(scene, [newSphere, infoBox]);
+    newSphere.appendChild(reductionBox); // Ajouter `reductionBox` à la sphère
+    newSphere.appendChild(newSphereIcon);
   }  
   
   remove() {

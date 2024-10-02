@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
     <script type="module" src="main.js" defer></script>
     <script src="components/follow-camera.js" defer></script>
+    <script src="components/reduction-info.js" defer></script>
     <script src="components/dragndrop.js" defer></script>
     <script src="components/follow-info.js" defer></script>
     <script src="components/follow-mover.js" defer></script>
@@ -22,13 +23,14 @@
       <p class="text-xl font-bold">Scènes</p>
 
       <input type="file" id="fileInput" class="hidden" accept="image/*" />
-
-      <select
-        id="sceneDropdown"
-        class="w-full h-12 py-2 border-b-2 border-black bg-gray-100 focus:outline-0"
-      >
-        <option value="">Sélectionner une scène</option>
-      </select>
+      <div class="flex flex-row gap-4 w-full">
+        <select id="sceneDropdown" class="w-full h-12 py-2 border-b-2 border-black bg-gray-100 focus:outline-0">
+          <option value="">Sélectionnez une scène</option>
+        </select>
+        <button id="deleteSceneBtn" disabled>
+          <img src="./asset/trash.svg" alt="Delete Scene">
+        </button>
+      </div>
 
       <div id="editSceneForm" class="flex flex-col gap-4 w-full rounded hidden">
         <div class="flex flex-col gap-1 mb-4">
@@ -40,8 +42,7 @@
             placeholder="Scène 1"
           />
         </div>
-
-        <div class="file-input-wrapper">
+        <div class="flex flex-row gap-3">
           <input
             type="file"
             id="editFileInput"
@@ -50,29 +51,16 @@
           />
           <button
             id="customFileInputBtn"
-            class="w-44 font-semibold px-4 text-white py-2 rounded bg-black border-2 duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black"
+            class="w-1/2  font-semibold px-4 text-white py-2 rounded bg-black border-2 duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black"
           >
             Changer l'image 360°
           </button>
-          <span
-            id="fileName"
-            class="ml-2 text-gray-700 font-semibold text-center"
-          ></span>
-        </div>
-
-        <div class="w-full flex flex-row gap-3">
           <button
-            id="saveSceneBtn"
-            class="w-1/2 font-semibold px-4 text-white py-2 rounded bg-black border-2 duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black"
-          >
-            Enregistrer
-          </button>
-          <button
-            id="deleteSceneBtn"
-            class="w-1/2 font-semibold px-4 text-white py-2 rounded bg-black border-2 duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black"
-          >
-            Supprimer
-          </button>
+          id="saveSceneBtn"
+          class="w-1/2  font-semibold px-4 text-white py-2 rounded bg-black border-2 duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black"
+        >
+          Enregistrer modifications
+        </button>
         </div>
       </div>
       <div class="w-full flex flex-row gap-3">
@@ -147,6 +135,9 @@
           laser-controls="hand: right"
           super-hands
         ></a-entity>
+        <a-assets>
+          <img id="myImage" src="/asset/grab-icon.png" />
+        </a-assets>
         <a-text
           value="Cliquez sur 'Creer une scene' pour commencer"
           position="0 2 -4"
@@ -212,7 +203,7 @@
           <select
             id="doorSceneSelect"
             name="doorSceneSelect"
-            class="w-full h-12 py-2 border-b-2 border-black bg-gray-100 focus:outline-00"
+            class="w-full h-12 py-2 border-b-2 border-black bg-gray-100 focus:outline-0"
           >
             <option value="">Sélectionnez une scène</option>
           </select>
