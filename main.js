@@ -763,6 +763,8 @@ function remplirSelectTags() {
 document.getElementById("allTag").addEventListener("change", (event) => {
   const selectedTagId = event.target.value; // Récupérer l'ID du tag sélectionné
   const selectedSceneId = document.getElementById("sceneDropdown").value; // Récupérer l'ID de la scène sélectionnée
+  const saveButton = document.getElementById("saveTag");
+  const createTagButton = document.getElementById("createTagBtnText")
 
   console.log(selectedTagId);
   console.log(tagsByScene);
@@ -776,6 +778,9 @@ document.getElementById("allTag").addEventListener("change", (event) => {
       console.log(selectedTag);
       document.getElementById("tagTitle").value = selectedTag.title || ""; // Remplir le champ Titre
       document.getElementById("tagDescription").value = selectedTag.description || ""; // Remplir le champ Description
+      saveButton.classList.remove("hidden"); // Par exemple, si la classe "hidden" cache le bouton
+      saveButton.classList.add("block");
+      createTagButton.classList.add("hidden");
     }
   }
 });
@@ -784,6 +789,10 @@ document.getElementById("allTag").addEventListener("change", (event) => {
 document.getElementById("saveTag").addEventListener("click", () => {
   const selectedTagId = document.getElementById("allTag").value; // Récupérer l'ID du tag sélectionné
   const selectedSceneId = document.getElementById("sceneDropdown").value; // Récupérer l'ID de la scène sélectionnée
+
+  const createTagButton = document.getElementById("createTagBtnText");
+  const saveButton = document.getElementById("saveTag");
+
 
   // Si un tag est sélectionné et que la scène est correcte
   if (selectedTagId && tagsByScene[selectedSceneId]) {
@@ -817,6 +826,8 @@ document.getElementById("saveTag").addEventListener("click", () => {
           }
 
           resetInfoTagForm();
+          createTagButton.classList.remove('hidden');
+          saveButton.classList.add('hidden');
         }
       } else {
         console.error(`L'entité A-Frame avec l'ID "infoBox-${selectedTagId}" n'a pas été trouvée.`);
