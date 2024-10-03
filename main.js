@@ -45,25 +45,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const closePopup = document.getElementById("close-popup");
   const createVideoTagBtn = document.getElementById("createVideoTagBtn");
 
-  const selectTagInfo = document.getElementById("allTag");
   
-  function remplirSelectTags(selectedSceneId) {
-  // Vider le sélecteur avant d'ajouter les nouvelles options
-  selectTagInfo.innerHTML = ""; 
-
-  console.log("im here 2");
-  console.log(tagsByScene);
-  // Vérifier si la scène sélectionnée a des tags
-  if (tagsByScene[selectedSceneId]) {
-    tagsByScene[selectedSceneId].forEach(tag => {
-      const option = document.createElement("option");
-      option.value = tag.id; // Valeur de l'option
-      option.textContent = tag.name; // Texte affiché
-      selectTagInfo.appendChild(option); // Ajouter l'option au sélecteur
-      console.log("im here 3");
-    });
-  }
-}
+ 
 
   // Tableau pour stocker les boutons de tag et leurs conteneurs associés
   let tagButtons = [
@@ -378,8 +361,6 @@ document.addEventListener("DOMContentLoaded", function () {
   createInfoBtn.addEventListener("click", (e) => {
     e.preventDefault();
     createInfoTag();
-    console.log("im here")
-    remplirSelectTags();
   });
 
   document
@@ -390,21 +371,23 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
   // Ajoute un écouteur d'événement pour le sélecteur de tags de porte
-  const tagSelectorDoor = document.getElementById("tagSelectorDoor");
-  tagSelectorDoor.addEventListener("change", function () {
-    const selectedTagId = tagSelectorDoor.value;
-    const selectedSceneId = sceneDropdown.value;
-    if (selectedTagId && tagsByScene[selectedSceneId]) {
-      for (let i = 0; i < tagsByScene[selectedSceneId].length; i++) {
-        if (tagsByScene[selectedSceneId][i] === selectedTagId) {
-          const tagInfo = tagsByScene[selectedSceneId][i];
-          document.getElementById("tagIdInput").value = tagInfo;
-          document.getElementById("doorTagName").value = name;
-          document.getElementById("doorTagRange").value = depth;
-        }
-      }
-    }
-  });
+  // const tagSelectorDoor = document.getElementById("tagSelectorDoor");
+  // tagSelectorDoor.addEventListener("change", function () {
+  //   const selectedTagId = tagSelectorDoor.value;
+  //   const selectedSceneId = sceneDropdown.value;
+  //   if (selectedTagId && tagsByScene[selectedSceneId]) {
+  //     for (let i = 0; i < tagsByScene[selectedSceneId].length; i++) {
+  //       if (tagsByScene[selectedSceneId][i] === selectedTagId) {
+  //         const tagInfo = tagsByScene[selectedSceneId][i];
+  //         document.getElementById("tagIdInput").value = tagInfo;
+  //         document.getElementById("doorTagName").value = name;
+  //         document.getElementById("doorTagRange").value = depth;
+  //       }
+  //     }
+  //   }
+  // });
+
+  // Écouter les changements sur le sélecteur allTag
 
   displayDefaultScene();
   updateSceneDropdown();
@@ -569,9 +552,7 @@ function createInfoTag() {
   }
   tagsByScene[selectedSceneId].push(infoTag);
 
-  console.log(tagsByScene);
-
-  
+  remplirSelectTags();
   resetInfoTagForm();
   messageError.innerText = "";
 }
@@ -757,6 +738,97 @@ export function changeScene(sceneId) {
     window.dispatchEvent(new Event("resize"));
   });
 }
+
+
+  
+function remplirSelectTags() {
+  const selectTagInfo = document.getElementById("allTag");
+  selectTagInfo.innerHTML = '<option value="" disabled selected>Selectionnez votre tag</option>';
+
+  const selectedSceneId = document.getElementById("sceneDropdown").value;
+
+  
+  // Vérifier si la scène sélectionnée a des tags
+  if (tagsByScene[selectedSceneId]) {
+    tagsByScene[selectedSceneId].forEach(tag => {
+      const option = document.createElement("option");
+      option.value = tag.id; // Valeur de l'option
+      option.textContent = tag.title; // Texte affiché
+      selectTagInfo.appendChild(option); // Ajouter l'option au sélecteur
+    });
+  }
+}
+
+
+document.getElementById("allTag").addEventListener("change", (event) => {
+  const selectedTagId = event.target.value; // Récupérer l'ID du tag sélectionné
+  const selectedSceneId = document.getElementById("sceneDropdown").value; // Récupérer l'ID de la scène sélectionnée
+
+  console.log(selectedTagId);
+  console.log(tagsByScene);
+  // Trouver le tag correspondant dans tagsByScene
+  console.log(tagsByScene[selectedSceneId])
+  if (tagsByScene[selectedSceneId]) {
+    const selectedTag = tagsByScene[selectedSceneId].find(tag => tag.id === selectedTagId);
+
+    // Si le tag est trouvé, remplir le formulaire avec les infos du tag
+    if (selectedTag) {
+      console.log(selectedTag);
+      document.getElementById("tagTitle").value = selectedTag.title || ""; // Remplir le champ Titre
+      document.getElementById("tagDescription").value = selectedTag.description || ""; // Remplir le champ Description
+    }
+  }
+});
+
+
+document.getElementById("saveTag").addEventListener("click", () => {
+  const selectedTagId = document.getElementById("allTag").value; // Récupérer l'ID du tag sélectionné
+  const selectedSceneId = document.getElementById("sceneDropdown").value; // Récupérer l'ID de la scène sélectionnée
+
+  // Si un tag est sélectionné et que la scène est correcte
+  if (selectedTagId && tagsByScene[selectedSceneId]) {
+    // Trouver le tag à modifier dans le tableau
+    const tagIndex = tagsByScene[selectedSceneId].findIndex(tag => tag.id === selectedTagId);
+
+    if (tagIndex !== -1) {
+      // Mettre à jour les informations du tag
+      tagsByScene[selectedSceneId][tagIndex].title = document.getElementById("tagTitle").value;
+      tagsByScene[selectedSceneId][tagIndex].description = document.getElementById("tagDescription").value;
+
+      console.log("Tag mis à jour :", tagsByScene[selectedSceneId][tagIndex]);
+
+      // Mettre à jour le sélecteur pour refléter les changements
+      remplirSelectTags();
+
+      // Sélectionner l'entité A-Frame correspondante (ex : <a-entity id="infoBox-1727941881069">)
+      const infoBoxEntity = document.getElementById(`infoBox-${selectedTagId}`);
+
+      if (infoBoxEntity) {
+        // Mettre à jour les valeurs des éléments <a-text> à l'intérieur de l'infoBox
+        const textElements = infoBoxEntity.querySelectorAll("a-text");
+
+        if (textElements.length > 0) {
+          // Mettre à jour le premier <a-text> avec le titre
+          textElements[0].setAttribute("value", document.getElementById("tagTitle").value);
+
+          // Mettre à jour le deuxième <a-text> (ou autre) avec la description
+          if (textElements.length > 1) {
+            textElements[1].setAttribute("value", document.getElementById("tagDescription").value);
+          }
+
+          resetInfoTagForm();
+        }
+      } else {
+        console.error(`L'entité A-Frame avec l'ID "infoBox-${selectedTagId}" n'a pas été trouvée.`);
+      }
+
+    } else {
+      console.error("Le tag sélectionné n'a pas été trouvé.");
+    }
+  } else {
+    alert("Veuillez sélectionner un tag à modifier.");
+  }
+});
 
 
 

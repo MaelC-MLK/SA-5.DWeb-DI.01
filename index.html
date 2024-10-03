@@ -155,7 +155,9 @@
       <p id="error"></p>
       <div id="textTagFormContainer" class="w-full hidden">
         <h2 class="text-lg font-bold pb-8">Créer un tag Texte</h2>
-        <select name="allTag" id="allTag">Selectionnez votre tag</select>
+        <select name="allTag" id="allTag">
+          <option value="" disabled selected>Selectionnez votre tag</option>
+        </select>
         <form id="tagForm" class="flex flex-col">
           <label class="font-semibold" for="tagTitle">Titre (Max 18)</label>
           <input
@@ -186,6 +188,8 @@
         >
           Créer Tag Info
         </button>
+
+        <button type="button" id="saveTag" class="mt-8 w-full font-semibold px-4 text-white py-2 rounded bg-black border-2 duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black">Sauvegarder les modifications</button>
       </div> 
       <div id="doorTagFormContainer" class="w-full hidden">
         <h2 class="text-lg font-bold pb-8">Créer un tag Door</h2>
