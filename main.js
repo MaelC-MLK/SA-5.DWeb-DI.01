@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
     { button: OpenTagMenuPhoto, containerId: "photoTagFormContainer" },
     { button: OpenTagMenuVideo, containerId: "videoTagFormContainer" },
   ];
-  let tagsByScene = [];
+  // let tagsByScene = [];
   let selectedDoor = null;
   let associatedBox = null;
   let selectedImage = null;
@@ -116,12 +116,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Ajoute un écouteur d'événements pour la sélection des images et des portes
   document.addEventListener("click", function (event) {
-    if (event.target.tagName === "A-IMAGE") {
-      if (selectedImage) {
-        selectedImage.classList.remove("selected");
-      }
-      selectedImage = event.target;
-    }
     if (event.target.tagName === "A-SPHERE") {
       if (selectedDoor) {
         selectedDoor.classList.remove("selected");
@@ -129,12 +123,11 @@ document.addEventListener("DOMContentLoaded", function () {
           associatedBox.classList.remove("selected");
         }
       }
-
       selectedDoor = event.target;
       selectedDoor.classList.add("selected");
 
       const boxId = selectedDoor.getAttribute("id");
-      associatedBox = document.querySelector(`a-box[id="${boxId}"]`);
+      associatedBox = document.querySelector(a-box[id="${boxId}"]);
 
       if (associatedBox) {
         associatedBox.classList.add("selected");
@@ -146,6 +139,13 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       selectedVideoTag = event.target;
       selectedVideoTag.classList.add("selected");
+    }
+    if (event.target.tagName === "A-IMAGE") {
+      if (selectedImage) {
+        selectedImage.classList.remove("selected");
+      }
+      selectedImage = event.target;
+      selectedImage.classList.add("selected");
     }
   });
 
@@ -245,6 +245,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (selectedSceneId) {
       displayScene(selectedSceneId);
       updateTagSelectorDoor(selectedSceneId);
+      remplirSelectTags();
       const selectedScene = scenes.find(
         (scene) => scene.id === selectedSceneId
       );
@@ -387,6 +388,151 @@ document.addEventListener("DOMContentLoaded", function () {
   //   }
   // });
 
+  document.getElementById("allTag").addEventListener("change", (event) => {
+    const selectedTagId = event.target.value; // Récupérer l'ID du tag sélectionné
+    const selectedSceneId = document.getElementById("sceneDropdown").value; // Récupérer l'ID de la scène sélectionnée
+    const saveButton = document.getElementById("saveTag");
+    const createTagButton = document.getElementById("createTagBtnText");
+    const rotationTag = document.getElementById("infoRotation");
+    const textCreate = document.getElementById("textCreateTagText");
+    const textUpdate = document.getElementById("textUpdateTagText")
+  
+    
+    if (tagsByScene[selectedSceneId]) {
+      const selectedTag = tagsByScene[selectedSceneId].find(tag => tag.id === selectedTagId);
+  
+      // Si le tag est trouvé, remplir le formulaire avec les infos du tag
+      if (selectedTag) {
+        document.getElementById("tagTitle").value = selectedTag.title || ""; // Remplir le champ Titre
+        document.getElementById("tagDescription").value = selectedTag.description || ""; // Remplir le champ Description
+        saveButton.classList.remove("hidden"); // Par exemple, si la classe "hidden" cache le bouton
+        saveButton.classList.add("block");
+        rotationTag.classList.remove('hidden');
+        createTagButton.classList.add("hidden");
+        textUpdate.classList.remove('hidden');
+        textCreate.classList.add('hidden');
+      }
+    }
+  });
+  
+
+  
+  document.getElementById("saveTag").addEventListener("click", () => {
+    const selectedTagId = document.getElementById("allTag").value; // Récupérer l'ID du tag sélectionné
+    const selectedSceneId = document.getElementById("sceneDropdown").value; // Récupérer l'ID de la scène sélectionnée
+  
+    const createTagButton = document.getElementById("createTagBtnText");
+    const saveButton = document.getElementById("saveTag");
+    const rotationTag = document.getElementById("infoRotation");
+    const textCreate = document.getElementById("textCreateTagText");
+    const textUpdate = document.getElementById("textUpdateTagText")
+  
+    // Si un tag est sélectionné et que la scène est correcte
+    if (selectedTagId && tagsByScene[selectedSceneId]) {
+      // Trouver le tag à modifier dans le tableau
+      const tagIndex = tagsByScene[selectedSceneId].findIndex(tag => tag.id === selectedTagId);
+  
+      if (tagIndex !== -1) {
+        // Mettre à jour les informations du tag
+        tagsByScene[selectedSceneId][tagIndex].title = document.getElementById("tagTitle").value;
+        tagsByScene[selectedSceneId][tagIndex].description = document.getElementById("tagDescription").value;
+  
+        // Récupérer la valeur de rotation
+        const rotationValue = document.getElementById("Rotation").value;
+  
+        // Mettre à jour la rotation dans les données du tag si nécessaire
+        tagsByScene[selectedSceneId][tagIndex].rotation = `0 ${rotationValue} 0`;
+  
+        console.log("Tag mis à jour :", tagsByScene[selectedSceneId][tagIndex]);
+  
+        // Mettre à jour le sélecteur pour refléter les changements
+        remplirSelectTags();
+  
+        // Sélectionner l'entité A-Frame correspondante 
+        const infoBoxEntity = document.getElementById(`infoBox-${selectedTagId}`);
+  
+        if (infoBoxEntity) {
+          // Mettre à jour les valeurs des éléments <a-text> à l'intérieur de l'infoBox
+          const textElements = infoBoxEntity.querySelectorAll("a-text");
+  
+          const backgroundPlane = infoBoxEntity.querySelector("a-plane");
+          backgroundPlane.setAttribute('rotation', `0 ${rotationValue} 0`);
+        
+  
+          if (textElements.length > 0) {
+            // Mettre à jour le premier <a-text> avec le titre
+            textElements[0].setAttribute("value", document.getElementById("tagTitle").value);
+            textElements[0].setAttribute('rotation', `0 ${rotationValue} 0`);
+  
+            // Mettre à jour le deuxième <a-text> (ou autre) avec la description
+            if (textElements.length > 1) {
+              textElements[1].setAttribute("value", document.getElementById("tagDescription").value);
+              textElements[1].setAttribute('rotation', `0 ${rotationValue} 0`)
+            }
+          }
+  
+          const sphereInfo = document.getElementById(`sphere-${selectedTagId}`);
+          console.log(sphereInfo)
+          sphereInfo.setAttribute('rotation', `0 ${rotationValue} 0`);
+  
+  
+          resetInfoTagForm();
+          createTagButton.classList.remove('hidden');
+          saveButton.classList.add('hidden');
+          rotationTag.classList.add('hidden');
+          textUpdate.classList.add('hidden');
+          textCreate.classList.remove('hidden');
+        } else {
+          console.error(`L'entité A-Frame avec l'ID "infoBox-${selectedTagId}" n'a pas été trouvée.`);
+        }
+  
+      } else {
+        console.error("Le tag sélectionné n'a pas été trouvé.");
+      }
+    } else {
+      alert("Veuillez sélectionner un tag à modifier.");
+    }
+  });
+  
+  
+  document.getElementById("rotationY").addEventListener("input", function(event) {
+  const rotationValue = event.target.value; // Récupérer la valeur du range
+  const selectedTagId = document.getElementById("allTag").value; // Récupérer l'ID du tag sélectionné
+  const selectedSceneId = document.getElementById("sceneDropdown").value; // Récupérer l'ID de la scène sélectionnée
+
+  // Trouver l'entité associée à ce tag
+  const selectedTag = tagsByScene[selectedSceneId]?.find(tag => tag.id === selectedTagId);
+  if (selectedTag) {
+
+    const entityId = `infoBox-${selectedTagId}`; // ID de l'infoBox
+    const entity = document.getElementById(entityId); // Récupérer l'entité correspondante
+
+
+
+    if (entity) {
+      // Appliquer la rotation sur le fond et les textes associés
+      const textElements = entity.querySelectorAll("a-text");
+      const backgroundPlane = entity.querySelector("a-plane");
+
+      // Appliquer la rotation sur le fond
+      if (backgroundPlane) {
+        backgroundPlane.setAttribute('rotation', `0 ${rotationValue} 0`);
+      }
+
+      // Appliquer la rotation sur les textes
+      textElements.forEach(text => {
+        text.setAttribute('rotation', `0 ${rotationValue} 0`);
+      });
+    }
+  }
+});
+
+
+  
+  
+  document.getElementById("sceneDropdown").addEventListener("change", () => {
+    remplirSelectTags();
+  })
   // Écouter les changements sur le sélecteur allTag
 
   displayDefaultScene();
@@ -398,6 +544,8 @@ function createVideoTag() {
   const title = document.getElementById("videoTagTitle").value;
   const fileInput = document.getElementById("videoFileInput");
   const file = fileInput.files[0];
+
+  let messageError = document.getElementById("error");
 
   if (!title) {
     messageError.innerText = "Erreur : Le titre est obligatoire.";
@@ -565,6 +713,8 @@ function createPhotoTag() {
   const selectedSceneId = document.getElementById("sceneDropdown").value;
   const scene = document.getElementById(selectedSceneId);
 
+
+  let messageError = document.getElementById("error");
 
   const title = document.getElementById("photoTagTitle").value;
   if (!title) {
@@ -743,7 +893,7 @@ export function changeScene(sceneId) {
 
 
   
-function remplirSelectTags() {
+export function remplirSelectTags() {
   const selectTagInfo = document.getElementById("allTag");
   selectTagInfo.innerHTML = '<option value="" disabled selected>Selectionnez votre tag</option>';
 
@@ -762,139 +912,3 @@ function remplirSelectTags() {
 }
 
 
-document.getElementById("allTag").addEventListener("change", (event) => {
-  const selectedTagId = event.target.value; // Récupérer l'ID du tag sélectionné
-  const selectedSceneId = document.getElementById("sceneDropdown").value; // Récupérer l'ID de la scène sélectionnée
-  const saveButton = document.getElementById("saveTag");
-  const createTagButton = document.getElementById("createTagBtnText");
-  const rotationTag = document.getElementById("infoRotation");
-
-  console.log(selectedTagId);
-  console.log(tagsByScene);
-  // Trouver le tag correspondant dans tagsByScene
-  console.log(tagsByScene[selectedSceneId])
-  if (tagsByScene[selectedSceneId]) {
-    const selectedTag = tagsByScene[selectedSceneId].find(tag => tag.id === selectedTagId);
-
-    // Si le tag est trouvé, remplir le formulaire avec les infos du tag
-    if (selectedTag) {
-      console.log(selectedTag);
-      document.getElementById("tagTitle").value = selectedTag.title || ""; // Remplir le champ Titre
-      document.getElementById("tagDescription").value = selectedTag.description || ""; // Remplir le champ Description
-      saveButton.classList.remove("hidden"); // Par exemple, si la classe "hidden" cache le bouton
-      saveButton.classList.add("block");
-      rotationTag.classList.remove('hidden');
-      createTagButton.classList.add("hidden");
-    }
-  }
-});
-
-
-
-
-
-document.getElementById("saveTag").addEventListener("click", () => {
-  const selectedTagId = document.getElementById("allTag").value; // Récupérer l'ID du tag sélectionné
-  const selectedSceneId = document.getElementById("sceneDropdown").value; // Récupérer l'ID de la scène sélectionnée
-
-  const createTagButton = document.getElementById("createTagBtnText");
-  const saveButton = document.getElementById("saveTag");
-  const rotationTag = document.getElementById("infoRotation");
-
-  // Si un tag est sélectionné et que la scène est correcte
-  if (selectedTagId && tagsByScene[selectedSceneId]) {
-    // Trouver le tag à modifier dans le tableau
-    const tagIndex = tagsByScene[selectedSceneId].findIndex(tag => tag.id === selectedTagId);
-
-    if (tagIndex !== -1) {
-      // Mettre à jour les informations du tag
-      tagsByScene[selectedSceneId][tagIndex].title = document.getElementById("tagTitle").value;
-      tagsByScene[selectedSceneId][tagIndex].description = document.getElementById("tagDescription").value;
-
-      // Récupérer la valeur de rotation
-      const rotationValue = document.getElementById("Rotation").value;
-
-      // Mettre à jour la rotation dans les données du tag si nécessaire
-      tagsByScene[selectedSceneId][tagIndex].rotation = `0 ${rotationValue} 0`;
-
-      console.log("Tag mis à jour :", tagsByScene[selectedSceneId][tagIndex]);
-
-      // Mettre à jour le sélecteur pour refléter les changements
-      remplirSelectTags();
-
-      // Sélectionner l'entité A-Frame correspondante (ex : <a-entity id="infoBox-1727941881069">)
-      const infoBoxEntity = document.getElementById(`infoBox-${selectedTagId}`);
-
-      if (infoBoxEntity) {
-        // Mettre à jour les valeurs des éléments <a-text> à l'intérieur de l'infoBox
-        const textElements = infoBoxEntity.querySelectorAll("a-text");
-
-        const backgroundPlane = infoBoxEntity.querySelector("a-plane");
-        backgroundPlane.setAttribute('rotation', `0 ${rotationValue} 0`);
-
-
-        if (textElements.length > 0) {
-          // Mettre à jour le premier <a-text> avec le titre
-          textElements[0].setAttribute("value", document.getElementById("tagTitle").value);
-          textElements[0].setAttribute('rotation', `0 ${rotationValue} 0`);
-
-          // Mettre à jour le deuxième <a-text> (ou autre) avec la description
-          if (textElements.length > 1) {
-            textElements[1].setAttribute("value", document.getElementById("tagDescription").value);
-            textElements[1].setAttribute('rotation', `0 ${rotationValue} 0`)
-          }
-        }
-
-        // Mettre à jour la rotation de l'entité
-         // Ajuste les axes selon tes besoins
-
-        resetInfoTagForm();
-        createTagButton.classList.remove('hidden');
-        saveButton.classList.add('hidden');
-        rotationTag.classList.add('hidden');
-      } else {
-        console.error(`L'entité A-Frame avec l'ID "infoBox-${selectedTagId}" n'a pas été trouvée.`);
-      }
-
-    } else {
-      console.error("Le tag sélectionné n'a pas été trouvé.");
-    }
-  } else {
-    alert("Veuillez sélectionner un tag à modifier.");
-  }
-});
-
-
-document.getElementById("Rotation").addEventListener("input", (event) => {
-  const rotationValue = event.target.value; // Récupérer la valeur du range
-  const selectedTagId = document.getElementById("allTag").value; // Récupérer l'ID du tag sélectionné
-  const selectedSceneId = document.getElementById("sceneDropdown").value; // Récupérer l'ID de la scène sélectionnée
-
-  // Trouver l'entité associée à ce tag
-  const selectedTag = tagsByScene[selectedSceneId]?.find(tag => tag.id === selectedTagId);
-  if (selectedTag) {
-    const entityId = `infoBox-${selectedTagId}`; // Modifier l'ID en fonction de ta structure
-    const entity = document.getElementById(entityId); // Récupérer l'entité correspondante
-
-    if (entity) {
-      // Appliquer la rotation uniquement sur les textes et le fond
-      const textElements = entity.querySelectorAll("a-text");
-      const backgroundPlane = entity.querySelector("a-plane");
-
-      // Appliquer la rotation sur le fond
-      if (backgroundPlane) {
-        backgroundPlane.setAttribute('rotation', `0 ${rotationValue} 0`);
-      }
-
-      // Appliquer la rotation sur les textes
-      textElements.forEach(text => {
-        text.setAttribute('rotation', `0 ${rotationValue} 0`);
-      });
-    }
-  }
-});
-
-
-document.getElementById("sceneDropdown").addEventListener("change", () => {
-  remplirSelectTags();
-})

@@ -140,7 +140,7 @@ class InfoTag extends Tag {
       dragndrop: "",
       "look-at-camera": "",
       "data-tag-id": this.id,
-      class: "tag"
+      class: "tag",
     });
 
     

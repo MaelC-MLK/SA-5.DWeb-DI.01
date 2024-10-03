@@ -1,5 +1,7 @@
 import { updateSceneDropdown } from './domUtils.js';
 import { checkScenesAndToggleSubMenu } from './main.js';
+import { remplirSelectTags } from './main.js';
+
 
 // Tableau pour stocker les scènes
 export const scenes = [];
@@ -65,6 +67,7 @@ export function createSceneElement(sceneId, src) {
 
   // Met à jour le menu déroulant des scènes et vérifie les scènes pour afficher le sous-menu
   updateSceneDropdown();
+  remplirSelectTags();
   checkScenesAndToggleSubMenu();
 }
 

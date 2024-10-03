@@ -6,6 +6,7 @@
     <link href="./dist/output.css" rel="stylesheet" />
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.min.js"></script>
     <script type="module" src="main.js" defer></script>
     <script src="components/follow-camera.js" defer></script>
     <script src="components/reduction-info.js" defer></script>
@@ -154,10 +155,8 @@
     >
       <p id="error"></p>
       <div id="textTagFormContainer" class="w-full hidden">
-        <h2 class="text-lg font-bold pb-8">Créer un tag Texte</h2>
-        <select name="allTag" id="allTag">
-          <option value="" disabled selected>Selectionnez votre tag</option>
-        </select>
+        <h2 id="textCreateTagText" class="text-lg font-bold pb-8">Créer un tag Texte</h2>
+        <h2 id="textUpdateTagText" class="text-lg font-bold pb-8 hidden">Modifier mon tag Texte</h2>
         <form id="tagForm" class="flex flex-col">
           <label class="font-semibold" for="tagTitle">Titre (Max 18)</label>
           <input
@@ -183,7 +182,7 @@
           </div>
           <div class="flex items-center gap-3 mt-4 hidden" id="infoRotation">
             <label class="font-semibold" for="tagRange">Rotation</label>
-            <input type="range" id="Rotation" name="Rotation" min="-90" max="90" />
+            <input type="range" id="rotationY" name="Rotation" min="-90" max="90" />
           </div>
         </form>
         <button
@@ -194,6 +193,10 @@
         </button>
 
         <button type="button" id="saveTag" class="mt-8 w-full font-semibold px-4 text-white py-2 rounded bg-black border-2 duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black hidden">Sauvegarder les modifications</button>
+
+        <select class="mt-4 w-full h-12 py-2 border-b-2 border-black bg-gray-100 focus:outline-0" name="allTag" id="allTag"></select>
+          <option value="" disabled selected></option>
+        </select>
       </div> 
       <div id="doorTagFormContainer" class="w-full hidden">
         <h2 class="text-lg font-bold pb-8">Créer un tag Door</h2>
