@@ -843,3 +843,7 @@ document.getElementById("saveTag").addEventListener("click", () => {
 
 
 
+document.getElementById("sceneDropdown").addEventListener("change", (event) => {
+  console.log("heyheyhey")
+  remplirSelectTags();
+})
