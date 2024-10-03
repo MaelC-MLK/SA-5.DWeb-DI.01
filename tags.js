@@ -123,9 +123,10 @@ class DoorTag extends Tag {
 
 // Classe pour les tags de type information
 class InfoTag extends Tag {
-  constructor(sceneId, title, position, description) {
+  constructor(sceneId, title, position, description, rotation) {
     super(sceneId, title, position);
     this.description = description; // Description du tag
+    this.rotation = rotation;
   }
 
   // Méthode pour créer un tag de type information
@@ -163,7 +164,8 @@ class InfoTag extends Tag {
     });
 
     const infoBox = document.createElement("a-entity");
-    infoBox.setAttribute("id", `infoBox-${this.id}`); // Attribuer un ID unique à l'infoBox
+    infoBox.setAttribute("id", `infoBox-${this.id}`);
+
     
     const infoBoxOffset = { x: -2, y: 0.7, z: 0 }; // Décalage basé sur la taille du `backgroundPlane`
     infoBox.setAttribute("position", {
@@ -183,6 +185,7 @@ class InfoTag extends Tag {
     backgroundPlane.setAttribute("color", "#000000");
     backgroundPlane.setAttribute("material", "opacity: 0.8; transparent: true");
     backgroundPlane.setAttribute("position", "2.5 -1.5 0.05"); // Alignement ajusté avec la sphère
+    backgroundPlane.setAttribute("rotation", this.rotation); // Alignement ajusté avec la sphère
     infoBox.appendChild(backgroundPlane);
 
     // Ajouter le titre avec une position ajustée et un texte plus grand
@@ -193,6 +196,7 @@ class InfoTag extends Tag {
     titleText.setAttribute("scale", "2.4 2.4 2.4"); // Taille du texte augmentée
     titleText.setAttribute("align", "center");
     titleText.setAttribute("color", "#EF2D5E");
+    titleText.setAttribute("rotation", this.rotation);
     titleText.setAttribute("font", "https://cdn.aframe.io/fonts/mozillavr.fnt");
     infoBox.appendChild(titleText);
 
@@ -203,6 +207,7 @@ class InfoTag extends Tag {
     descriptionText.setAttribute("scale", "2.0 2.0 2.0"); // Taille du texte augmentée
     descriptionText.setAttribute("width", "2.4"); // Largeur augmentée pour le texte
     descriptionText.setAttribute("align", "center");
+    descriptionText.setAttribute("rotation", this.rotation); // Alignement ajusté avec la sphère
     descriptionText.setAttribute("color", "#FFFFFF");
     infoBox.appendChild(descriptionText);
 
