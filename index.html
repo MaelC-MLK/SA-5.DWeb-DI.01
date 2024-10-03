@@ -56,6 +56,10 @@
           >
             Changer l'image 360°
           </button>
+          <span
+          id="fileName"
+          class="hidden"
+        ></span>
           <button
           id="saveSceneBtn"
           class="w-1/2  font-semibold px-4 text-white py-2 rounded bg-black border-2 duration-500 border-transparent hover:bg-white hover:border-black hover:duration-500 hover:bg-grayborder-gray-800 hover:text-black"
@@ -86,6 +90,7 @@
       >
         Sauvegarder l'expérience
       </button>
+      
       </div>
       <div id="subMenuCreateTag" class="w-full flex flex-col gap-4 items-start hidden">
       <p class="text-xl font-bold mt-8">Créer un Tag</p>
@@ -114,6 +119,9 @@
         >
           <img src="./asset/camera-icon.svg" height="24px" width="24px" />
         </button>
+      </div>
+      <div id="tagsContainer">
+        <p>Mes tags :</p>
       </div>
     </div>
     </div>
@@ -182,7 +190,7 @@
           </div>
           <div class="flex items-center gap-3 mt-4 hidden" id="infoRotation">
             <label class="font-semibold" for="tagRange">Rotation</label>
-            <input type="range" id="rotationY" name="Rotation" min="-90" max="90" />
+            <input type="range" id="rotationY" name="Rotation" min="-90" max="90" value="0"/>
           </div>
         </form>
         <button

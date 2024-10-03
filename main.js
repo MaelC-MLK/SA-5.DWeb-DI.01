@@ -61,11 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let selectedImage = null;
   let selectedVideoTag = null;
 
-
-  
-
-// Appeler la fonction pour remplir le sélecteur
-  
+  viewAllTags();
 
   // Ajoute des écouteurs d'événements pour les boutons d'information
   infoToggle.addEventListener("click", function (event) {
@@ -127,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
       selectedDoor.classList.add("selected");
 
       const boxId = selectedDoor.getAttribute("id");
-      associatedBox = document.querySelector(a-box[id="${boxId}"]);
+      associatedBox = document.querySelector(`a-box[id="${boxId}"]`);
 
       if (associatedBox) {
         associatedBox.classList.add("selected");
@@ -246,6 +242,7 @@ document.addEventListener("DOMContentLoaded", function () {
       displayScene(selectedSceneId);
       updateTagSelectorDoor(selectedSceneId);
       remplirSelectTags();
+      viewAllTags();
       const selectedScene = scenes.find(
         (scene) => scene.id === selectedSceneId
       );
@@ -438,7 +435,7 @@ document.addEventListener("DOMContentLoaded", function () {
         tagsByScene[selectedSceneId][tagIndex].description = document.getElementById("tagDescription").value;
   
         // Récupérer la valeur de rotation
-        const rotationValue = document.getElementById("Rotation").value;
+        const rotationValue = document.getElementById("rotationY").value;
   
         // Mettre à jour la rotation dans les données du tag si nécessaire
         tagsByScene[selectedSceneId][tagIndex].rotation = `0 ${rotationValue} 0`;
@@ -525,9 +522,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
   }
-});
-
-
+  });
   
   
   document.getElementById("sceneDropdown").addEventListener("change", () => {
@@ -571,6 +566,8 @@ function createVideoTag() {
     }
     tagsByScene[selectedSceneId].push(videoTag);
 
+
+    viewAllTags();
     resetVideoTagForm();
   };
 
@@ -635,6 +632,7 @@ function createDoorTag() {
   tagsByScene[selectedSceneId].push(doorTag);
 
   resetDoorTagForm();
+  viewAllTags();
   messageError.innerText = ""; // Réinitialiser le message d'erreur
 }
 
@@ -704,6 +702,7 @@ function createInfoTag() {
 
   remplirSelectTags();
   resetInfoTagForm();
+  viewAllTags();
   messageError.innerText = "";
 }
 
@@ -743,6 +742,7 @@ function createPhotoTag() {
     tagsByScene[selectedSceneId].push(photoTag);
 
     resetPhotoTagForm();
+    viewAllTags();
   };
 
   reader.readAsDataURL(file);
@@ -907,6 +907,25 @@ export function remplirSelectTags() {
       option.value = tag.id; // Valeur de l'option
       option.textContent = tag.title; // Texte affiché
       selectTagInfo.appendChild(option); // Ajouter l'option au sélecteur
+    });
+  }
+}
+
+
+export function viewAllTags() {
+  const tagsContainer = document.getElementById("tagsContainer"); // Le div où afficher les tags
+  const selectedSceneId = document.getElementById("sceneDropdown").value; // Récupérer l'ID de la scène sélectionnée
+
+  // Vider le contenu existant pour réafficher la liste
+  tagsContainer.innerHTML = "<p>Mes tags :</p>";
+
+  // Vérifier si la scène sélectionnée a des tags
+  if (tagsByScene[selectedSceneId]) {
+    tagsByScene[selectedSceneId].forEach(tag => {
+      // Créer un élément <p> pour chaque tag et afficher ses informations
+      const tagElement = document.createElement("p");
+      tagElement.textContent = `Tag ID : ${tag.id} - Titre : ${tag.title} - Position : ${tag.position.x}, ${tag.position.y}, ${tag.position.z}`;
+      tagsContainer.appendChild(tagElement);
     });
   }
 }
