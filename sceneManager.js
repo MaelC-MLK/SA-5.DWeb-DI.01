@@ -35,7 +35,7 @@ export function createSceneElement(sceneId, src) {
   // Crée un élément ciel et l'ajoute à la scène
   const skyElement = document.createElement('a-sky');
   skyElement.setAttribute('src', src);
-  skyElement.style.transform = 'scaleX(-1)';
+  skyElement.style.transform = 'scaleX(-1)');
   sceneElement.appendChild(skyElement);
 
   // Crée un pointeur et l'ajoute à la scène
@@ -52,6 +52,7 @@ export function createSceneElement(sceneId, src) {
   leftHand.setAttribute('laser-controls', 'hand: left');
   leftHand.setAttribute('super-hands', '');
   leftHand.setAttribute('raycaster', 'objects: .door');
+  leftHand.setAttribute('oculus-touch-controls', 'hand: left');
   sceneElement.appendChild(leftHand);
 
   // Crée une entité pour la main droite et l'ajoute à la scène
@@ -60,6 +61,7 @@ export function createSceneElement(sceneId, src) {
   rightHand.setAttribute('laser-controls', 'hand: right');
   rightHand.setAttribute('super-hands', '');
   rightHand.setAttribute('raycaster', 'objects: .door');
+  rightHand.setAttribute('oculus-touch-controls', 'hand: right');
   sceneElement.appendChild(rightHand);
 
   // Ajoute la scène au conteneur de scènes
@@ -70,6 +72,7 @@ export function createSceneElement(sceneId, src) {
   remplirSelectTags();
   checkScenesAndToggleSubMenu();
 }
+
 
 // Fonction pour afficher une scène spécifique
 export function displayScene(sceneId) {
