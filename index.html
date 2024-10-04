@@ -151,12 +151,14 @@
           id="leftHand"
           laser-controls="hand: left"
           super-hands
-        ></a-entity>
+        >    <a-entity mixin="handModel"></a-entity>
+      </a-entity>
         <a-entity
           id="rightHand"
           laser-controls="hand: right"
           super-hands
-        ></a-entity>
+        >    <a-entity mixin="handModel"></a-entity>
+      </a-entity>
         <a-assets>
           <img id="myImage" src="/asset/grab-icon.png" />
         </a-assets>

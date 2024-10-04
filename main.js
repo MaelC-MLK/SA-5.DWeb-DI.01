@@ -232,6 +232,7 @@ document.addEventListener("DOMContentLoaded", function () {
         displayScene(sceneId);
         editSceneForm.classList.remove("hidden");
         sceneNameInput.value = `Scène ${scenes.length}`;
+        remplirSelectTags();
       };
       reader.readAsDataURL(file);
     }
