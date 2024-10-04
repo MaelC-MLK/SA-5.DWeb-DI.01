@@ -44,8 +44,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const popup = document.getElementById("popup");
   const closePopup = document.getElementById("close-popup");
   const createVideoTagBtn = document.getElementById("createVideoTagBtn");
-  const volumeControl = document.getElementById("volumeControl");
-  const removeSoundBtn = document.getElementById("removeSoundBtn");
+  // const volumeControl = document.getElementById("volumeControl");
+  // const removeSoundBtn = document.getElementById("removeSoundBtn");
 
   
  
@@ -534,42 +534,44 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Ajoute un écouteur d'événements pour le bouton de téléchargement de son ambiant
 
-    document.getElementById("addSoundBtn").addEventListener("click", function() {
-      const fileInput = document.getElementById("audioFileInput");
-      const file = fileInput.files[0];
-      const sceneId = document.getElementById("sceneDropdown").value;
-      const messageError = document.getElementById("error");
+    // document.getElementById("addSoundBtn").addEventListener("click", function() {
+    //   const fileInput = document.getElementById("audioFileInput");
+    //   const file = fileInput.files[0];
+    //   const sceneId = document.getElementById("sceneDropdown").value;
+    //   const messageError = document.getElementById("error");
 
-      if (!file) {
-        messageError.innerText = "Erreur : Veuillez sélectionner un fichier audio.";
-        return;
-      }
+    //   if (!file) {
+    //     messageError.innerText = "Erreur : Veuillez sélectionner un fichier audio.";
+    //     return;
+    //   }
 
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const audioUrl = event.target.result;
-        addAmbientSound(sceneId, audioUrl);
-        messageError.innerText = "";
-      };
+    //   const reader = new FileReader();
+    //   reader.onload = function(event) {
+    //     const audioUrl = event.target.result;
+    //     addAmbientSound(sceneId, audioUrl);
+    //     messageError.innerText = "";
+    //   };
 
-      reader.readAsDataURL(file);
-    });
-    volumeControl.addEventListener("input", function(event) {
-      const volume = event.target.value;
-      const sceneId = document.getElementById("sceneDropdown").value;
-      setAmbientSoundVolume(sceneId, volume);
-    });
+    //   reader.readAsDataURL(file);
+    // });
+    // volumeControl.addEventListener("input", function(event) {
+    //   const volume = event.target.value;
+    //   const sceneId = document.getElementById("sceneDropdown").value;
+    //   setAmbientSoundVolume(sceneId, volume);
+    // });
 
-    removeSoundBtn.addEventListener("click", function() {
-      const sceneId = document.getElementById("sceneDropdown").value;
-      removeAmbientSound(sceneId);
-    });
+    // removeSoundBtn.addEventListener("click", function() {
+    //   const sceneId = document.getElementById("sceneDropdown").value;
+    //   removeAmbientSound(sceneId);
+    // });
+
+  createSceneElement("scene-1-test", "asset/GS__3523.jpg");
+  createSceneElement("scene-2-test", "asset/GS__3524.jpg");
+  createSceneElement("scene-3-test", "asset/GS__3525.jpg");
+  createSceneElement("scene-4-test", "asset/GS__3526.jpg");
 
   displayDefaultScene();
   updateSceneDropdown();
-
-
-
 
 });
 
@@ -939,25 +941,25 @@ export function addAmbientSound(sceneId, audioUrl) {
   scene.appendChild(audio);
 }
 // Fonction pour définir le volume du son ambiant
-export function setAmbientSoundVolume(sceneId, volume) {
-  const audio = document.getElementById(`ambient-sound-${sceneId}`);
-  if (audio) {
-    audio.setAttribute("volume", volume);
-  }
-}
-// Fonction pour supprimer un son ambiant
-export function removeAmbientSound(sceneId) {
-  const audio = document.getElementById(`ambient-sound-${sceneId}`);
-  if (audio) {
-    audio.parentNode.removeChild(audio);
-  }
+// export function setAmbientSoundVolume(sceneId, volume) {
+//   const audio = document.getElementById(`ambient-sound-${sceneId}`);
+//   if (audio) {
+//     audio.setAttribute("volume", volume);
+//   }
+// }
+// // Fonction pour supprimer un son ambiant
+// export function removeAmbientSound(sceneId) {
+//   const audio = document.getElementById(`ambient-sound-${sceneId}`);
+//   if (audio) {
+//     audio.parentNode.removeChild(audio);
+//   }
 
-  // Vider l'input de fichier
-  const fileInput = document.getElementById("audioFileInput");
-  if (fileInput) {
-    fileInput.value = "";
-  }
-}
+//   // Vider l'input de fichier
+//   const fileInput = document.getElementById("audioFileInput");
+//   if (fileInput) {
+//     fileInput.value = "";
+//   }
+// }
 
 // Fonction pour changer de scène
 export function changeScene(sceneId) {
