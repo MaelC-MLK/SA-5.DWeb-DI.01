@@ -35,7 +35,7 @@ export function createSceneElement(sceneId, src) {
   // Crée un élément ciel et l'ajoute à la scène
   const skyElement = document.createElement('a-sky');
   skyElement.setAttribute('src', src);
-  skyElement.style.transform = 'scaleX(-1)');
+  skyElement.style.transform = 'scaleX(-1)';
   sceneElement.appendChild(skyElement);
 
   // Crée un pointeur et l'ajoute à la scène
