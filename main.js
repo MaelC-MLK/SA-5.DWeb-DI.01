@@ -44,6 +44,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const popup = document.getElementById("popup");
   const closePopup = document.getElementById("close-popup");
   const createVideoTagBtn = document.getElementById("createVideoTagBtn");
+  const volumeControl = document.getElementById("volumeControl");
+  const removeSoundBtn = document.getElementById("removeSoundBtn");
 
   
  
@@ -528,10 +530,47 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("sceneDropdown").addEventListener("change", () => {
     remplirSelectTags();
   })
-  // Écouter les changements sur le sélecteur allTag
+
+
+  // Ajoute un écouteur d'événements pour le bouton de téléchargement de son ambiant
+
+    document.getElementById("addSoundBtn").addEventListener("click", function() {
+      const fileInput = document.getElementById("audioFileInput");
+      const file = fileInput.files[0];
+      const sceneId = document.getElementById("sceneDropdown").value;
+      const messageError = document.getElementById("error");
+
+      if (!file) {
+        messageError.innerText = "Erreur : Veuillez sélectionner un fichier audio.";
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const audioUrl = event.target.result;
+        addAmbientSound(sceneId, audioUrl);
+        messageError.innerText = "";
+      };
+
+      reader.readAsDataURL(file);
+    });
+    volumeControl.addEventListener("input", function(event) {
+      const volume = event.target.value;
+      const sceneId = document.getElementById("sceneDropdown").value;
+      setAmbientSoundVolume(sceneId, volume);
+    });
+
+    removeSoundBtn.addEventListener("click", function() {
+      const sceneId = document.getElementById("sceneDropdown").value;
+      removeAmbientSound(sceneId);
+    });
 
   displayDefaultScene();
   updateSceneDropdown();
+
+
+
+
 });
 
 // Fonction pour créer un tag vidéo
@@ -878,19 +917,77 @@ export function checkScenesAndToggleSubMenu() {
   }
 }
 
+// Fonction pour ajouter un son ambiant
+export function addAmbientSound(sceneId, audioUrl) {
+  const scene = document.getElementById(sceneId);
+  if (!scene) {
+    console.error(`Scene with ID ${sceneId} not found`);
+    return;
+  }
+
+  // Supprimer tout son ambiant existant dans la scène
+  const existingAudio = scene.querySelector("a-sound");
+  if (existingAudio) {
+    existingAudio.parentNode.removeChild(existingAudio);
+  }
+
+  const audio = document.createElement("a-sound");
+  audio.setAttribute("src", audioUrl);
+  audio.setAttribute("autoplay", "true");
+  audio.setAttribute("loop", "true");
+  audio.setAttribute("id", `ambient-sound-${sceneId}`);
+  scene.appendChild(audio);
+}
+// Fonction pour définir le volume du son ambiant
+export function setAmbientSoundVolume(sceneId, volume) {
+  const audio = document.getElementById(`ambient-sound-${sceneId}`);
+  if (audio) {
+    audio.setAttribute("volume", volume);
+  }
+}
+// Fonction pour supprimer un son ambiant
+export function removeAmbientSound(sceneId) {
+  const audio = document.getElementById(`ambient-sound-${sceneId}`);
+  if (audio) {
+    audio.parentNode.removeChild(audio);
+  }
+
+  // Vider l'input de fichier
+  const fileInput = document.getElementById("audioFileInput");
+  if (fileInput) {
+    fileInput.value = "";
+  }
+}
+
 // Fonction pour changer de scène
 export function changeScene(sceneId) {
-  const scene = document.getElementById(sceneId);
   const allScenes = document.querySelectorAll("a-scene");
-  allScenes.forEach((s) => (s.style.display = "none"));
+  allScenes.forEach((scene) => {
+    if (scene.id !== sceneId) {
+      // Mettre en pause le son des autres scènes
+      const audio = scene.querySelector("a-sound");
+      if (audio) {
+        audio.components.sound.pauseSound();
+      }
+    }
+    scene.style.display = "none";
+  });
+
+  const scene = document.getElementById(sceneId);
   scene.style.display = "block";
   document.getElementById("sceneDropdown").value = sceneId;
   updateTagSelectorDoor(sceneId);
+
+  // Vider l'input de fichier audio
+  const fileInput = document.getElementById("audioFileInput");
+  if (fileInput) {
+    fileInput.value = "";
+  }
+
   requestAnimationFrame(() => {
     window.dispatchEvent(new Event("resize"));
   });
 }
-
 
   
 export function remplirSelectTags() {
