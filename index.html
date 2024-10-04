@@ -145,20 +145,21 @@
           camera
           wasd-controls="enabled: false"
           look-controls="enabled: true"
+          events-set__click="mousedown: leftTriggerDown; mouseup: leftTriggerUp"
         ></a-entity>
         <a-sky src="./asset/attente.jpg"></a-sky>
         <a-entity
           id="leftHand"
           laser-controls="hand: left"
           super-hands
-        >    <a-entity mixin="handModel"></a-entity>
-      </a-entity>
+          events-set__click="mousedown: leftTriggerDown; mouseup: leftTriggerUp"
+
+        ></a-entity>
         <a-entity
           id="rightHand"
           laser-controls="hand: right"
           super-hands
-        >    <a-entity mixin="handModel"></a-entity>
-      </a-entity>
+        ></a-entity>
         <a-assets>
           <img id="myImage" src="/asset/grab-icon.png" />
         </a-assets>

@@ -1032,3 +1032,32 @@ export function viewAllTags() {
 }
 
 
+AFRAME.registerComponent('events-set', {
+  schema: {
+    click: { type: 'string' }
+  },
+  init: function () {
+    const el = this.el;
+    const clickEvents = this.data.click.split(';').map(event => event.trim());
+
+    clickEvents.forEach(event => {
+      const [eventName, action] = event.split(':').map(str => str.trim());
+      el.addEventListener(eventName, () => {
+        if (action === 'leftTriggerDown') {
+          simulateMouseEvent('mousedown');
+        } else if (action === 'leftTriggerUp') {
+          simulateMouseEvent('mouseup');
+        }
+      });
+    });
+  }
+});
+
+function simulateMouseEvent(type) {
+  const event = new MouseEvent(type, {
+    bubbles: true,
+    cancelable: true,
+    view: window
+  });
+  document.dispatchEvent(event);
+}

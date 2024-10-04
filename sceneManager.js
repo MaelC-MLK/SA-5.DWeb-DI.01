@@ -52,6 +52,7 @@ export function createSceneElement(sceneId, src) {
   leftHand.setAttribute('laser-controls', 'hand: left');
   leftHand.setAttribute('super-hands', '');
   leftHand.setAttribute('raycaster', 'objects: .door');
+  leftHand.setAttribute('events-set__click', 'mousedown: leftTriggerDown; mouseup: leftTriggerUp');
   sceneElement.appendChild(leftHand);
 
   // Crée une entité pour la main droite et l'ajoute à la scène
@@ -60,6 +61,7 @@ export function createSceneElement(sceneId, src) {
   rightHand.setAttribute('laser-controls', 'hand: right');
   rightHand.setAttribute('super-hands', '');
   rightHand.setAttribute('raycaster', 'objects: .door');
+  rightHand.setAttribute('events-set__click', 'mousedown: leftTriggerDown; mouseup: leftTriggerUp');
   sceneElement.appendChild(rightHand);
 
   // Ajoute la scène au conteneur de scènes
