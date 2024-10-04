@@ -6,7 +6,6 @@
     <link href="./dist/output.css" rel="stylesheet" />
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.min.js"></script>
     <script type="module" src="main.js" defer></script>
     <script src="components/follow-camera.js" defer></script>
     <script src="components/reduction-info.js" defer></script>
@@ -85,7 +84,7 @@
       <div class="w-full flex flex-row gap-3">
         <button
           id="createSceneBtn"
-          class="w-1/2 font-semibold px-4 text-black py-2 rounded bg-white border-2 duration-500 border-black hover:bg-black hover:border-transparent hover:duration-500 hover:bg-grayborder-gray-800 hover:text-white"
+          class="w-full font-semibold px-4 text-black py-2 rounded bg-white border-2 duration-500 border-black hover:bg-black hover:border-transparent hover:duration-500 hover:bg-grayborder-gray-800 hover:text-white"
         >
           Créer une scène
         </button>
@@ -135,7 +134,7 @@
         </button>
       </div>
       <div id="tagsContainer">
-        <p>Mes tags :</p>
+        <h3 class="text-xl font-semibold mt-4">Mes tags :</h3>
       </div>
     </div>
     </div>

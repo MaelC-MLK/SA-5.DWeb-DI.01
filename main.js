@@ -1016,14 +1016,15 @@ export function viewAllTags() {
   const selectedSceneId = document.getElementById("sceneDropdown").value; // Récupérer l'ID de la scène sélectionnée
 
   // Vider le contenu existant pour réafficher la liste
-  tagsContainer.innerHTML = "<p>Mes tags :</p>";
+  tagsContainer.innerHTML = '<h3 class="text-xl font-semibold mt-4">Mes tags :</h3>';
 
   // Vérifier si la scène sélectionnée a des tags
   if (tagsByScene[selectedSceneId]) {
     tagsByScene[selectedSceneId].forEach(tag => {
+      console.log(tag);
       // Créer un élément <p> pour chaque tag et afficher ses informations
       const tagElement = document.createElement("p");
-      tagElement.textContent = `Tag ID : ${tag.id} - Titre : ${tag.title} - Position : ${tag.position.x}, ${tag.position.y}, ${tag.position.z}`;
+      tagElement.textContent = `${tag.cat} ${tag.title} `;
       tagsContainer.appendChild(tagElement);
     });
   }

@@ -44,9 +44,10 @@ class Tag {
 
 // Classe pour les tags de type porte
 class DoorTag extends Tag {
-  constructor(sceneId, title, position, targetSceneId) {
+  constructor(sceneId, title, position, targetSceneId, cat="DoorTag") {
     super(sceneId, title, position);
     this.targetSceneId = targetSceneId;
+    this.cat = cat;
   }
 
   // Méthode pour créer un tag de type porte
@@ -60,7 +61,8 @@ class DoorTag extends Tag {
       dragndrop: "",
       "look-at-camera": "",
       "data-tag-id": this.id,
-      class: "tag"
+      class: "tag",
+      cat : this.cat
     });
 
     const newSphereIcon = this.createElement("a-plane");
@@ -123,10 +125,12 @@ class DoorTag extends Tag {
 
 // Classe pour les tags de type information
 class InfoTag extends Tag {
-  constructor(sceneId, title, position, description, rotation) {
+  constructor(sceneId, title, position, description, rotation, cat = "InfoTag") {
     super(sceneId, title, position);
     this.description = description; // Description du tag
     this.rotation = rotation;
+    this.cat = cat;
+    
   }
 
   // Méthode pour créer un tag de type information
@@ -141,6 +145,7 @@ class InfoTag extends Tag {
       "look-at-camera": "",
       "data-tag-id": this.id,
       class: "tag",
+      cat: this.cat
     });
 
     
@@ -250,9 +255,10 @@ class InfoTag extends Tag {
 
 // Classe pour les tags de type photo
 class PhotoTag extends Tag {
-  constructor(sceneId, title, position, imageUrl) {
+  constructor(sceneId, title, position, imageUrl, cat = "PhotoTag") {
     super(sceneId, title, position);
     this.imageUrl = imageUrl; // URL de l'image pour le tag photo
+    this.cat = cat;
   }
 
   // Méthode pour créer un tag de type photo
@@ -275,7 +281,8 @@ class PhotoTag extends Tag {
       dragndrop: "", 
       "look-at-camera": "",
       "data-tag-id": this.id,
-      class: "tag"
+      class: "tag",
+      cat: this.cat
     });
 
     this.appendToScene(scene, [image]);
@@ -291,9 +298,10 @@ class PhotoTag extends Tag {
 
 // Classe pour les tags de type vidéo
 class VideoTag extends Tag {
-  constructor(sceneId, title, position, videoUrl) {
+  constructor(sceneId, title, position, videoUrl, cat="VideoTag") {
     super(sceneId, title, position);
     this.videoUrl = videoUrl; // URL de la vidéo pour le tag vidéo
+    this.cat = cat;
   }
 
   // Méthode pour créer un tag de type vidéo
@@ -318,7 +326,8 @@ class VideoTag extends Tag {
       dragndrop: "",
       "look-at-camera": "",
       "data-tag-id": this.id,
-      class: "tag"
+      class: "tag",
+      cat: this.cat
     });
 
     this.appendToScene(scene, [video]);
